@@ -1,8 +1,19 @@
-import {cards} from '../mocks/event.js';
-import {getTimeFormat, getRandomIntegerNumber, getRandomArrayItem} from '../utils.js';
+import {getTimeFormat, getRandomIntegerNumber} from '../utils.js';
+import {offers} from '../mocks/event.js';
 
-export const createCardTemplate = () => {
-  const card = getRandomArrayItem(cards);
+const getOffer = (offer) => {
+  const element = offers.find((it) => it.type === offer);
+  if (element) {
+    return `<li class="event__offer">
+          <span class="event__offer-title">${element.name}</span>
+           &plus;
+           &euro;&nbsp;<span class="event__offer-price">${element.price}</span>
+        </li>`;
+  }
+  return `<li class="event__offer"></li>`;
+};
+
+export const createCardTemplate = (event) => {
   const timestamp = new Date().getTime() / 1000;
   const startDate = (timestamp - getRandomIntegerNumber(1000, 300000)) * 1000;
   const endDate = (timestamp - getRandomIntegerNumber(1000, 300000)) * 1000 + (getRandomIntegerNumber(1000, 300000)) * 1000;
@@ -10,9 +21,9 @@ export const createCardTemplate = () => {
     <li class="trip-events__item">
       <div class="event">
         <div class="event__type">
-          <img class="event__type-icon" width="42" height="42" src="img/icons/${card.type.icon}.png" alt="Event type icon">
+          <img class="event__type-icon" width="42" height="42" src="img/icons/${event.type.icon}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${card.type.name} ${card.town}</h3>
+        <h3 class="event__title">${event.type.name} ${event.town}</h3>
 
         <div class="event__schedule">
           <p class="event__time">
@@ -24,16 +35,12 @@ export const createCardTemplate = () => {
         </div>
 
         <p class="event__price">
-          &euro;&nbsp;<span class="event__price-value"> ${card.price} </span>
+          &euro;&nbsp;<span class="event__price-value"> ${event.price} </span>
         </p>
 
         <h4 class="visually-hidden">Offers:</h4>
         <ul class="event__selected-offers">
-          <li class="event__offer">
-            <span class="event__offer-title"> ${card.offer.name}</span>
-            &plus;
-            &euro;&nbsp;<span class="event__offer-price">${card.offer.price}</span>
-           </li>
+        ${getOffer(event.type.icon)}
         </ul>
 
         <button class="event__rollup-btn" type="button">

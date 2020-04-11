@@ -8,6 +8,7 @@ export const types = [
   {
     icon: `train`,
     name: `train to`
+
   },
   {
     icon: `bus`,
@@ -45,31 +46,55 @@ export const types = [
 
 export const offers = [
   {
+    type: `flight`,
     name: `Add luggage`,
     price: 10,
     checked: true
   },
   {
+    type: `flight`,
     name: `Switch to comfort class`,
     price: 150,
     checked: true
   },
   {
+    type: `flight`,
     name: `Add meal`,
     price: 2,
     checked: true
   },
   {
+    type: `flight`,
     name: `Choose seats`,
     price: 9,
     checked: true
   },
   {
+    type: `taxi`,
+    name: `Switch to comfort class`,
+    price: 150,
+    checked: true
+  },
+  {
+    type: `train`,
+    name: `Add meal`,
+    price: 2,
+    checked: true
+  },
+  {
+    type: `bus`,
+    name: `Choose seats`,
+    price: 9,
+    checked: true
+  },
+  {
+    type: `taxi`,
     name: `Order Uber`,
     price: 30,
     checked: true
   },
   {
+    type: `sightseeing`,
     name: `Book tickets`,
     price: 40,
     checked: true
@@ -102,7 +127,6 @@ const generateCard = () => {
   return {
     type: getRandomArrayItem(types),
     town: getRandomArrayItem(towns),
-    offer: getRandomArrayItem(offers),
     description: getRandomArrayItem(descriptions),
     pictures,
     // startDate: Math.min(startDate, endDate),
@@ -117,6 +141,6 @@ const generateCards = (count) => {
     .map(generateCard);
 };
 
-const CARDS_COUNT = 8;
+const CARDS_COUNT = 15;
 
 export const cards = generateCards(CARDS_COUNT);
