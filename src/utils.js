@@ -19,11 +19,10 @@ export const getZeroFormat = (value) => {
 
 export const getDateFormat = (dateUnix) => {
   const date = new Date(dateUnix);
-
   const yyyy = date.getFullYear();
   const mm = getZeroFormat(date.getMonth() + 1);
   const dd = getZeroFormat(date.getDate());
-  return `${yyyy}-${mm}-${dd}`;
+  return `${yyyy}/${mm}/${dd}`;
 };
 
 export const getTimeFormat = (dateUnix) => {

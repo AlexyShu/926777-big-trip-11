@@ -125,7 +125,7 @@ const getRandomDate = () => {
   return Date.now() + 1 + Math.floor(Math.random() * 7) * 24 * getRandomIntegerNumber(0, 60) * 60 * 1000;
 };
 
-const generateCard = () => {
+const generateEvent = () => {
   const startDate = getRandomDate();
   const endDate = getRandomDate();
   return {
@@ -139,16 +139,15 @@ const generateCard = () => {
   };
 };
 
-const generateCards = (count) => {
+const generateEvents = (count) => {
   return new Array(count)
     .fill(``)
-    .map(generateCard);
+    .map(generateEvent);
 };
 
-const CARDS_COUNT = 15;
+const EVENTS_COUNT = 15;
 
-export const cards = generateCards(CARDS_COUNT);
-
+export const cards = generateEvents(EVENTS_COUNT);
 
 export const createOffers = (eventType) => {
   const eventOffers = [];

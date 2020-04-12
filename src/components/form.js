@@ -1,12 +1,12 @@
 import {createOffers} from '../mocks/event.js';
-import {getDateFormat} from '../utils.js';
+import {getDateFormat, getTimeFormat} from '../utils.js';
 
 const createPicturesTemplate = (pics) => {
   return pics.map((picture) => `<img class="event__photo" src="${picture}" alt="Event photo"></img>`).join(`\n`);
 };
 
 export const createFormTemplate = (event) => {
-  const {type, description, town, startDate, endDate} = event;
+  const {type, description, town, startDate, endDate, price} = event;
   const picturesTemplate = createPicturesTemplate(event.pictures);
   const items = createOffers(type.name);
   return (`
@@ -83,19 +83,19 @@ export const createFormTemplate = (event) => {
            <label class="visually-hidden" for="event-start-time-1">
            From
            </label>
-           <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${getDateFormat(startDate)}">
+           <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${getDateFormat(startDate)} ${getTimeFormat(startDate)}">
            &mdash;
            <label class="visually-hidden" for="event-end-time-1">
            To
            </label>
-           <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${getDateFormat(endDate)}">
+           <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${getDateFormat(endDate)} ${getTimeFormat(endDate)}">
         </div>
         <div class="event__field-group  event__field-group--price">
            <label class="event__label" for="event-price-1">
            <span class="visually-hidden">Price</span>
            &euro;
            </label>
-           <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="">
+           <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
         </div>
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
         <button class="event__reset-btn" type="reset">Cancel</button>
