@@ -1,3 +1,4 @@
+
 import {getRandomArrayItem, getRandomIntegerNumber, getZeroFormat} from '../utils.js';
 
 const months = [
@@ -20,5 +21,3 @@ export const day = getRandomIntegerNumber(1, 31);
 const randomYear = getRandomIntegerNumber(1, 9);
 
 export const year = getZeroFormat(randomYear);
-
-

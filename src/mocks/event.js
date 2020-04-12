@@ -2,102 +2,102 @@ import {getRandomArrayItem, getRandomIntegerNumber} from '../utils.js';
 
 export const types = [
   {
-    icon: `taxi`,
-    name: `taxi to`
+    name: `taxi`,
+    course: `to`
   },
   {
-    icon: `train`,
-    name: `train to`
+    name: `train`,
+    course: `to`
 
   },
   {
-    icon: `bus`,
-    name: `bus to`
+    name: `bus`,
+    course: `to`
   },
   {
-    icon: `ship`,
-    name: `ship to`
+    name: `ship`,
+    course: `to`
   },
   {
-    icon: `transport`,
-    name: `transport to`
+    name: `transport`,
+    course: `to`
   },
   {
-    icon: `drive`,
-    name: `drive to`
+    name: `drive`,
+    course: `to`
   },
   {
-    icon: `flight`,
-    name: `flight to`
+    name: `flight`,
+    course: `to`
   },
   {
-    icon: `check-in`,
-    name: `check-in in hotel in`
+    name: `check-in`,
+    course: `in hotel in`
   },
   {
-    icon: `sightseeing`,
-    name: `sightseeing in`
+    name: `sightseeing`,
+    course: `in`
   },
   {
-    icon: `restaurant`,
-    name: `restaurant in`
+    name: `restaurant`,
+    course: `in`
   }
 ];
 
 export const offers = [
   {
     type: `flight`,
-    name: `Add luggage`,
-    price: 10,
-    checked: true
+    offerName: `Add luggage`,
+    offerPrice: 10,
+    isChecked: true
   },
   {
     type: `flight`,
-    name: `Switch to comfort class`,
-    price: 150,
-    checked: true
+    offerName: `Switch to comfort class`,
+    offerPrice: 150,
+    isChecked: true
   },
   {
     type: `flight`,
-    name: `Add meal`,
-    price: 2,
-    checked: true
+    offerName: `Add meal`,
+    offerPrice: 2,
+    isChecked: true
   },
   {
     type: `flight`,
-    name: `Choose seats`,
-    price: 9,
-    checked: true
+    offerName: `Choose seats`,
+    offerPrice: 9,
+    isChecked: true
   },
   {
     type: `taxi`,
-    name: `Switch to comfort class`,
-    price: 150,
-    checked: true
+    offerName: `Switch to comfort class`,
+    offerPrice: 150,
+    isChecked: true
   },
   {
     type: `train`,
-    name: `Add meal`,
-    price: 2,
-    checked: true
+    offerName: `Add meal`,
+    offerPrice: 2,
+    isChecked: true
   },
   {
     type: `bus`,
-    name: `Choose seats`,
-    price: 9,
-    checked: true
+    offerName: `Choose seats`,
+    offerPrice: 9,
+    isChecked: true
   },
   {
     type: `taxi`,
-    name: `Order Uber`,
+    offerName: `Order Uber`,
     price: 30,
-    checked: true
+    isChecked: true
   },
   {
     type: `sightseeing`,
-    name: `Book tickets`,
+    offerName: `Book tickets`,
     price: 40,
-    checked: true
+    isChecked: true
   }
 ];
 
@@ -119,18 +119,22 @@ const descriptions = [
   `Aliquam erat volutpat.`,
   `Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`];
 
-// const startDate = getRandomDate();
-// const endDate = getRandomDate();
 const MAX_PRICE = 500;
 
+const getRandomDate = () => {
+  return Date.now() + 1 + Math.floor(Math.random() * 7) * 24 * getRandomIntegerNumber(0, 60) * 60 * 1000;
+};
+
 const generateCard = () => {
+  const startDate = getRandomDate();
+  const endDate = getRandomDate();
   return {
     type: getRandomArrayItem(types),
     town: getRandomArrayItem(towns),
     description: getRandomArrayItem(descriptions),
     pictures,
-    // startDate: Math.min(startDate, endDate),
-    // endDate: Math.max(startDate, endDate),
+    startDate: Math.min(startDate, endDate),
+    endDate: Math.max(startDate, endDate),
     price: getRandomIntegerNumber(0, MAX_PRICE)
   };
 };
@@ -144,3 +148,13 @@ const generateCards = (count) => {
 const CARDS_COUNT = 15;
 
 export const cards = generateCards(CARDS_COUNT);
+
+
+export const createOffers = (eventType) => {
+  const eventOffers = [];
+  const element = offers.find((it) => it.type === eventType);
+  if (element) {
+    eventOffers.push(element);
+  }
+  return eventOffers;
+};

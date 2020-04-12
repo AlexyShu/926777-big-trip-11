@@ -19,10 +19,11 @@ export const getZeroFormat = (value) => {
 
 export const getDateFormat = (dateUnix) => {
   const date = new Date(dateUnix);
-  const year = date.getFullYear();
-  const month = getZeroFormat(date.getMonth() + 1);
-  const day = getZeroFormat(date.getDate());
-  return `${year}-${month}-${day}`;
+
+  const yyyy = date.getFullYear();
+  const mm = getZeroFormat(date.getMonth() + 1);
+  const dd = getZeroFormat(date.getDate());
+  return `${yyyy}-${mm}-${dd}`;
 };
 
 export const getTimeFormat = (dateUnix) => {
@@ -32,7 +33,29 @@ export const getTimeFormat = (dateUnix) => {
   return `${hours}:${minutes}`;
 };
 
-export const getRandomDate = () => {
-  return Date.now() + 1 + Math.floor(Math.random() * 7) * 24 * getRandomIntegerNumber(0, 60) * 60 * 1000;
+export const calculateTimeInterval = (time1, time2) => {
+  const startDate = new Date(time1);
+  const endDate = new Date(time2);
+  const daysInt = Math.abs(endDate.getDay() - startDate.getDay());
+  const hoursInt = Math.abs(endDate.getHours() - startDate.getHours());
+  const minutesInt = Math.abs(endDate.getMinutes() - startDate.getMinutes());
+  let formattedInt = daysInt > 0 ? castDateInterval(daysInt) : ``;
+  if (daysInt > 0 || hoursInt > 0) {
+    formattedInt += ` ${castHoursInterval(hoursInt)}`;
+  }
+  return formattedInt + ` ${castMinutesInterval(minutesInt)}`;
 };
+
+const castDateInterval = (days) => {
+  return days < 10 ? `0${days}D` : `${days}D`;
+};
+
+const castHoursInterval = (hours) => {
+  return hours < 10 ? `0${hours}H` : `${hours}H`;
+};
+
+const castMinutesInterval = (minutes) => {
+  return minutes < 10 ? `0${minutes}M` : `${minutes}M`;
+};
+
 

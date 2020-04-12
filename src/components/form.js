@@ -1,16 +1,21 @@
+import {createOffers} from '../mocks/event.js';
+import {getDateFormat} from '../utils.js';
+
 const createPicturesTemplate = (pics) => {
   return pics.map((picture) => `<img class="event__photo" src="${picture}" alt="Event photo"></img>`).join(`\n`);
 };
 
 export const createFormTemplate = (event) => {
+  const {type, description, town, startDate, endDate} = event;
   const picturesTemplate = createPicturesTemplate(event.pictures);
+  const items = createOffers(type.name);
   return (`
     <form class="trip-events__item  event  event--edit" action="#" method="post">
       <header class="event__header">
            <div class="event__type-wrapper">
              <label class="event__type  event__type-btn" for="event-type-toggle-1">
                <span class="visually-hidden">Choose event type</span>
-               <img class="event__type-icon" width="17" height="17" src="img/icons/${event.type.icon}.png" alt="Event type icon">
+               <img class="event__type-icon" width="17" height="17" src="img/icons/${type.name}.png" alt="Event type icon">
              </label>
              <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
              <div class="event__type-list">
@@ -64,9 +69,9 @@ export const createFormTemplate = (event) => {
         </div>
         <div class="event__field-group  event__field-group--destination">
            <label class="event__label  event__type-output" for="event-destination-1">
-           ${event.type.name}
+           ${type.name} ${type.course}
            </label>
-           <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${event.town}" list="destination-list-1">
+           <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${town}" list="destination-list-1">
            <datalist id="destination-list-1">
               <option value="Amsterdam"></option>
               <option value="Geneva"></option>
@@ -78,12 +83,12 @@ export const createFormTemplate = (event) => {
            <label class="visually-hidden" for="event-start-time-1">
            From
            </label>
-           <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="18/03/19 00:00">
+           <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${getDateFormat(startDate)}">
            &mdash;
            <label class="visually-hidden" for="event-end-time-1">
            To
            </label>
-           <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="18/03/19 00:00">
+           <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${getDateFormat(endDate)}">
         </div>
         <div class="event__field-group  event__field-group--price">
            <label class="event__label" for="event-price-1">
@@ -99,19 +104,21 @@ export const createFormTemplate = (event) => {
         <section class="event__section  event__section--offers">
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
           <div class="event__available-offers">
-             <div class="event__offer-selector">
-               <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" checked>
-               <label class="event__offer-label" for="event-offer-luggage-1">
-               <span class="event__offer-title">Add luggage</span>
-               &plus;
-              &euro;&nbsp;<span class="event__offer-price">30</span>
-              </label>
-            </div>
+          ${items.map(({offerName, offerPrice, isChecked}) => {
+      return `<div class="event__offer-selector">
+              <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" ${isChecked ? `checked` : ``}>
+              <label class="event__offer-label" for="event-offer-luggage-1">
+              <span class="event__offer-title"> ${offerName} </span>
+              &plus;
+             &euro;&nbsp;<span class="event__offer-price">${offerPrice}</span>
+             </label>
+           </div>`;
+    }).join(`\n`)}
           </div>
         </section>
         <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-          <p class="event__destination-description">${event.description}</p>
+          <p class="event__destination-description">${description}</p>
           <div class="event__photos-container">
              <div class="event__photos-tape">
              ${picturesTemplate}
