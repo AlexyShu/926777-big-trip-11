@@ -10,7 +10,11 @@ import {createEventSortTemplate} from './components/event-sort.js';
 import {render} from './utils.js';
 import {filters} from './mocks/filters.js';
 import {menuItems} from './mocks/menu.js';
-import {cards} from './mocks/event.js';
+import {generateEvents} from './mocks/event.js';
+
+const EVENTS_COUNT = 15;
+
+export const cards = generateEvents(EVENTS_COUNT);
 
 const siteMenuElement = document.querySelector(`.trip-main__trip-controls h2`);
 const siteFilterElement = document.querySelector(`.trip-main__trip-controls`);
@@ -20,12 +24,12 @@ const SiteMainTripElement = document.querySelector(`.trip-main`);
 
 render(siteMenuElement, createMenuTemplate(menuItems), `afterend`);
 render(siteFilterElement, createFilterTemplate(filters));
-render(SiteMainTripElement, createTripInfoTemplate(), `afterbegin`);
+render(SiteMainTripElement, createTripInfoTemplate(cards), `afterbegin`);
 render(siteTripEventElement, createTripDayWrapperTemplate());
 
 const siteTripDayElement = document.querySelector(`.trip-days`);
 
-render(siteTripDayElement, createTripDayItemTemplate());
+render(siteTripDayElement, createTripDayItemTemplate(cards));
 render(siteTripDayElement, createEventSortTemplate(), `beforebegin`);
 
 const siteDayItemElement = document.querySelector(`.trip-days__item`);
@@ -33,7 +37,6 @@ const siteDayItemElement = document.querySelector(`.trip-days__item`);
 render(siteDayItemElement, createEventListTemplate());
 
 const siteEventListElement = document.querySelector(`.trip-events__list`);
-
 
 for (let i = 0; i < cards.length; i++) {
   const card = cards[i];

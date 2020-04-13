@@ -1,109 +1,37 @@
 import {getRandomArrayItem, getRandomIntegerNumber} from '../utils.js';
 
-export const types = [
-  {
-    name: `taxi`,
-    course: `to`
-  },
-  {
-    name: `train`,
-    course: `to`
-
-  },
-  {
-    name: `bus`,
-    course: `to`
-  },
-  {
-    name: `ship`,
-    course: `to`
-  },
-  {
-    name: `transport`,
-    course: `to`
-  },
-  {
-    name: `drive`,
-    course: `to`
-  },
-  {
-    name: `flight`,
-    course: `to`
-  },
-  {
-    name: `check-in`,
-    course: `in hotel in`
-  },
-  {
-    name: `sightseeing`,
-    course: `in`
-  },
-  {
-    name: `restaurant`,
-    course: `in`
-  }
-];
-
-export const offers = [
-  {
-    type: `flight`,
-    offerName: `Add luggage`,
-    offerPrice: 10,
-    isChecked: true
-  },
-  {
-    type: `flight`,
-    offerName: `Switch to comfort class`,
-    offerPrice: 150,
-    isChecked: true
-  },
-  {
-    type: `flight`,
-    offerName: `Add meal`,
-    offerPrice: 2,
-    isChecked: true
-  },
-  {
-    type: `flight`,
-    offerName: `Choose seats`,
-    offerPrice: 9,
-    isChecked: true
-  },
-  {
-    type: `taxi`,
-    offerName: `Switch to comfort class`,
-    offerPrice: 150,
-    isChecked: true
-  },
-  {
-    type: `train`,
-    offerName: `Add meal`,
-    offerPrice: 2,
-    isChecked: true
-  },
-  {
-    type: `bus`,
-    offerName: `Choose seats`,
-    offerPrice: 9,
-    isChecked: true
-  },
-  {
-    type: `taxi`,
-    offerName: `Order Uber`,
-    price: 30,
-    isChecked: true
-  },
-  {
-    type: `sightseeing`,
-    offerName: `Book tickets`,
-    price: 40,
-    isChecked: true
-  }
-];
-
-export const towns = [`Amsterdam`, `Geneva`, `Chamonix`];
-
 const COUNT_PICTURE = 5;
+
+export const types = [`sightseeing`, `taxi`, `train`, `bus`, `ship`, `transport`, `drive`, `flight`, `check-in`, `restaurant`];
+
+const offersGroupedInTypes = {
+  taxi: [`Switch to comfort class`, `Order Uber`],
+  train: [`Switch to comfort class`, `Add meal`, `Choose seats`],
+  bus: [`Choose seats`],
+  ship: [`Add luggage`, `Switch to comfort class`],
+  transport: [`Choose seats`],
+  drive: [],
+  flight: [`Add luggage`, `Switch to comfort class`, `Add meal`, `Choose seats`],
+  check: [],
+  restaurant: [`Order Uber`],
+  sightseeing: [`Book tickets`]
+};
+
+export const chooseOfferCourse = (eventType) => {
+  let offerCourse;
+  if (eventType === `check-in`) {
+    offerCourse = `in hotel in`;
+  }
+  if (eventType === `restaurant` || `sightseeing`) {
+    offerCourse = `in`;
+  } else {
+    offerCourse = `to`;
+  }
+  return offerCourse;
+};
+
+
+export const cities = [`Amsterdam`, `Geneva`, `Chamonix`];
 
 const pictures = new Array(COUNT_PICTURE).fill(``).map(() => `http://picsum.photos/248/152?r=${Math.random()}`);
 
@@ -128,32 +56,36 @@ const getRandomDate = () => {
 const generateEvent = () => {
   const startDate = getRandomDate();
   const endDate = getRandomDate();
+  const type = getRandomArrayItem(types);
   return {
-    type: getRandomArrayItem(types),
-    town: getRandomArrayItem(towns),
+    type,
+    city: getRandomArrayItem(cities),
     description: getRandomArrayItem(descriptions),
     pictures,
     startDate: Math.min(startDate, endDate),
     endDate: Math.max(startDate, endDate),
-    price: getRandomIntegerNumber(0, MAX_PRICE)
+    offers: createOffers(type),
+    price: getRandomIntegerNumber(0, MAX_PRICE),
+    course: chooseOfferCourse(type)
   };
 };
 
-const generateEvents = (count) => {
+export const generateEvents = (count) => {
   return new Array(count)
     .fill(``)
     .map(generateEvent);
 };
 
-const EVENTS_COUNT = 15;
-
-export const cards = generateEvents(EVENTS_COUNT);
-
 export const createOffers = (eventType) => {
-  const eventOffers = [];
-  const element = offers.find((it) => it.type === eventType);
-  if (element) {
-    eventOffers.push(element);
+  const offers = [];
+  const offersCount = getRandomIntegerNumber(0, 5);
+  for (let i = 0; i < offersCount; i++) {
+    offers.push({
+      type: eventType,
+      price: getRandomIntegerNumber(0, 300),
+      isChecked: true,
+      name: getRandomArrayItem(offersGroupedInTypes[eventType])
+    });
   }
-  return eventOffers;
+  return offers;
 };

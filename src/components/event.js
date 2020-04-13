@@ -1,16 +1,28 @@
 import {getTimeFormat, getDateFormat, calculateTimeInterval} from '../utils.js';
-import {createOffers} from '../mocks/event.js';
+
+const createOffersTemplate = (items) => {
+  return (
+    `<ul class="event__selected-offers">
+    ${items.map(({name, price}) => {
+      return `<li class="event__offer">
+                  <span class="event__offer-title">${name}</span>
+                   &plus;
+                   &euro;&nbsp;<span class="event__offer-price">${price}</span>
+                </li>`;
+    }).join(`\n`)}
+    </ul>`
+  );
+};
 
 export const createCardTemplate = (event) => {
-  const {type, town, price, startDate, endDate} = event;
-  const items = createOffers(type.name);
+  const {type, city, price, startDate, endDate, offers, course} = event;
   return (`
     <li class="trip-events__item">
       <div class="event">
         <div class="event__type">
-          <img class="event__type-icon" width="42" height="42" src="img/icons/${type.name}.png" alt="Event type icon">
+          <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${type.name} ${type.course} ${town}</h3>
+        <h3 class="event__title">${type} ${course} ${city}</h3>
 
         <div class="event__schedule">
           <p class="event__time">
@@ -26,15 +38,7 @@ export const createCardTemplate = (event) => {
         </p>
 
         <h4 class="visually-hidden">Offers:</h4>
-        <ul class="event__selected-offers">
-        ${items.map(({offerName, offerPrice}) => {
-      return `<li class="event__offer">
-                      <span class="event__offer-title">${offerName}</span>
-                       &plus;
-                       &euro;&nbsp;<span class="event__offer-price">${offerPrice}</span>
-                    </li>`;
-    }).join(`\n`)}
-        </ul>
+        ${createOffersTemplate(offers)}
         <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>
         </button>

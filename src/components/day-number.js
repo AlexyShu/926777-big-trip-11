@@ -1,9 +1,7 @@
 import {months} from '../mocks/trip-info.js';
-import {cards} from '../mocks/event.js';
 
-
-export const createTripDayItemTemplate = () => {
-  const startRouteDate = new Date(cards[0].startDate);
+export const createTripDayItemTemplate = (events) => {
+  const startRouteDate = new Date(events[0].startDate);
   return (`
     <li class="trip-days__item  day">
       <div class="day__info">
