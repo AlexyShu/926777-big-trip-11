@@ -5,13 +5,13 @@ const createPicturesTemplate = (pics) => {
   return pics.map((picture) => `<img class="event__photo" src="${picture}" alt="Event photo"></img>`).join(`\n`);
 };
 
-const createOffersTemplate = (items) => {
+const createOffersTemplate = (offers) => {
   return (
     `<div class="event__available-offers">
-  ${items.map(({name, price, isChecked}) => {
+  ${offers.map(({name, price, type, isChecked}) => {
       return `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" ${isChecked ? `checked` : ``}>
-      <label class="event__offer-label" for="event-offer-luggage-1">
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-1" type="checkbox" name="event-offer-${type}" ${isChecked ? `checked` : ``}>
+      <label class="event__offer-label" for="event-offer-${type}-1">
       <span class="event__offer-title"> ${name} </span>
       &plus;
      &euro;&nbsp;<span class="event__offer-price">${price}</span>
@@ -22,10 +22,10 @@ const createOffersTemplate = (items) => {
   );
 };
 
-const chooseEventTypeTemplate = (items) => {
+const createEventTypeTemplate = (types) => {
   return (
     `<div>
-  ${items.map((it) => {
+  ${types.map((it) => {
       return `<div class="event__type-item">
       <input id="event-type-${it}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${it}">
       <label class="event__type-label  event__type-label--${it}" for="event-type-${it}-1">${it}</label>
@@ -35,10 +35,10 @@ const chooseEventTypeTemplate = (items) => {
   );
 };
 
-const chooseCityTemplate = (items) => {
+const createCitySelectTemplate = (places) => {
   return (
     `<datalist id="destination-list-1">
-  ${items.map((it) => {
+  ${places.map((it) => {
       return `<option value="${it}"></option>`;
     }).join(`\n`)}
     </datalist>`
@@ -63,11 +63,11 @@ export const createFormTemplate = (event) => {
              <div class="event__type-list">
               <fieldset class="event__type-group">
                 <legend class="visually-hidden">Transfer</legend>
-                ${chooseEventTypeTemplate(transfers)}
+                ${createEventTypeTemplate(transfers)}
               </fieldset>
               <fieldset class="event__type-group">
                  <legend class="visually-hidden">Activity</legend>
-                 ${chooseEventTypeTemplate(activities)}
+                 ${createEventTypeTemplate(activities)}
               </fieldset>
            </div>
         </div>
@@ -76,7 +76,7 @@ export const createFormTemplate = (event) => {
            ${type}
            </label>
            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${city}" list="destination-list-1">
-           ${chooseCityTemplate(cities)}
+           ${createCitySelectTemplate(cities)}
         </div>
         <div class="event__field-group  event__field-group--time">
            <label class="visually-hidden" for="event-start-time-1">

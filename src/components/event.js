@@ -1,9 +1,9 @@
 import {getTimeFormat, getDateFormat, calculateTimeInterval} from '../utils.js';
 
-const createOffersTemplate = (items) => {
+const createOffersTemplate = (offers) => {
   return (
     `<ul class="event__selected-offers">
-    ${items.map(({name, price}) => {
+    ${offers.map(({name, price}) => {
       return `<li class="event__offer">
                   <span class="event__offer-title">${name}</span>
                    &plus;

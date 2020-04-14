@@ -5,16 +5,16 @@ const COUNT_PICTURE = 5;
 export const types = [`sightseeing`, `taxi`, `train`, `bus`, `ship`, `transport`, `drive`, `flight`, `check-in`, `restaurant`];
 
 const offersGroupedInTypes = {
-  taxi: [`Switch to comfort class`, `Order Uber`],
-  train: [`Switch to comfort class`, `Add meal`, `Choose seats`],
-  bus: [`Choose seats`],
-  ship: [`Add luggage`, `Switch to comfort class`],
-  transport: [`Choose seats`],
-  drive: [],
-  flight: [`Add luggage`, `Switch to comfort class`, `Add meal`, `Choose seats`],
-  check: [],
-  restaurant: [`Order Uber`],
-  sightseeing: [`Book tickets`]
+  'taxi': [`Switch to comfort class`, `Order Uber`],
+  'train': [`Switch to comfort class`, `Add meal`, `Choose seats`],
+  'bus': [`Choose seats`],
+  'ship': [`Add luggage`, `Switch to comfort class`],
+  'transport': [`Choose seats`],
+  'drive': [],
+  'flight': [`Add luggage`, `Switch to comfort class`, `Add meal`, `Choose seats`],
+  'check-in': [],
+  'restaurant': [`Order Uber`],
+  'sightseeing': [`Book tickets`]
 };
 
 export const chooseOfferCourse = (eventType) => {
@@ -30,10 +30,9 @@ export const chooseOfferCourse = (eventType) => {
   return offerCourse;
 };
 
-
 export const cities = [`Amsterdam`, `Geneva`, `Chamonix`];
 
-const pictures = new Array(COUNT_PICTURE).fill(``).map(() => `http://picsum.photos/248/152?r=${Math.random()}`);
+const generatePictures = () => `http://picsum.photos/300/150?r=${Math.random()}`;
 
 const descriptions = [
   `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
@@ -61,7 +60,7 @@ const generateEvent = () => {
     type,
     city: getRandomArrayItem(cities),
     description: getRandomArrayItem(descriptions),
-    pictures,
+    pictures: Array(COUNT_PICTURE).fill(``).map(generatePictures),
     startDate: Math.min(startDate, endDate),
     endDate: Math.max(startDate, endDate),
     offers: createOffers(type),
@@ -79,13 +78,15 @@ export const generateEvents = (count) => {
 export const createOffers = (eventType) => {
   const offers = [];
   const offersCount = getRandomIntegerNumber(0, 5);
-  for (let i = 0; i < offersCount; i++) {
-    offers.push({
-      type: eventType,
-      price: getRandomIntegerNumber(0, 300),
-      isChecked: true,
-      name: getRandomArrayItem(offersGroupedInTypes[eventType])
-    });
+  if (offersGroupedInTypes[eventType].length !== 0) {
+    for (let i = 0; i < offersCount; i++) {
+      offers.push({
+        type: eventType,
+        price: getRandomIntegerNumber(0, 300),
+        isChecked: true,
+        name: getRandomArrayItem(offersGroupedInTypes[eventType])
+      });
+    }
   }
   return offers;
 };

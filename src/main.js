@@ -9,6 +9,7 @@ import {createTripInfoTemplate} from './components/trip-info.js';
 import {createEventSortTemplate} from './components/event-sort.js';
 import {render} from './utils.js';
 import {filters} from './mocks/filters.js';
+import {eventSorts} from './mocks/event-sort.js';
 import {menuItems} from './mocks/menu.js';
 import {generateEvents} from './mocks/event.js';
 
@@ -30,7 +31,7 @@ render(siteTripEventElement, createTripDayWrapperTemplate());
 const siteTripDayElement = document.querySelector(`.trip-days`);
 
 render(siteTripDayElement, createTripDayItemTemplate(cards));
-render(siteTripDayElement, createEventSortTemplate(), `beforebegin`);
+render(siteTripDayElement, createEventSortTemplate(eventSorts), `beforebegin`);
 
 const siteDayItemElement = document.querySelector(`.trip-days__item`);
 
