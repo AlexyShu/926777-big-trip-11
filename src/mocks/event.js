@@ -21,11 +21,10 @@ export const chooseOfferCourse = (eventType) => {
   let offerCourse;
   if (eventType === `check-in`) {
     offerCourse = `in hotel in`;
-  }
-  if (eventType === `restaurant` || `sightseeing`) {
-    offerCourse = `in`;
   } else {
-    offerCourse = `to`;
+    if (eventType === `restaurant` || eventType === `sightseeing`) {
+      offerCourse = `in`;
+    } offerCourse = `to`;
   }
   return offerCourse;
 };

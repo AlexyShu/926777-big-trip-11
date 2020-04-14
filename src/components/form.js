@@ -47,7 +47,7 @@ const createCitySelectTemplate = (places) => {
 
 
 export const createFormTemplate = (event) => {
-  const {type, description, city, startDate, endDate, price, offers} = event;
+  const {type, description, city, startDate, endDate, price, offers, course} = event;
   const picturesTemplate = createPicturesTemplate(event.pictures);
   const transfers = [`taxi`, `train`, `bus`, `ship`, `transport`, `drive`, `flight`];
   const activities = [`sightseeing`, `check-in`, `restaurant`];
@@ -73,7 +73,7 @@ export const createFormTemplate = (event) => {
         </div>
         <div class="event__field-group  event__field-group--destination">
            <label class="event__label  event__type-output" for="event-destination-1">
-           ${type}
+           ${type} ${course}
            </label>
            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${city}" list="destination-list-1">
            ${createCitySelectTemplate(cities)}
