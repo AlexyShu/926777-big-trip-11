@@ -1,4 +1,4 @@
-import {getDateFormat, getTimeFormat} from '../utils.js';
+import {getDateFormat, getTimeFormat, createElement} from '../utils.js';
 import {cities} from '../mocks/event.js';
 
 const createPicturesTemplate = (pics) => {
@@ -6,8 +6,7 @@ const createPicturesTemplate = (pics) => {
 };
 
 const createOffersTemplate = (offers) => {
-  return (
-    `<div class="event__available-offers">
+  return (`<div class="event__available-offers">
   ${offers.map(({name, price, type, isChecked}) => {
       return `<div class="event__offer-selector">
       <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-1" type="checkbox" name="event-offer-${type}" ${isChecked ? `checked` : ``}>
@@ -23,8 +22,7 @@ const createOffersTemplate = (offers) => {
 };
 
 const createEventTypeTemplate = (types) => {
-  return (
-    `<div>
+  return (`<div>
   ${types.map((it) => {
       return `<div class="event__type-item">
       <input id="event-type-${it}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${it}">
@@ -36,8 +34,7 @@ const createEventTypeTemplate = (types) => {
 };
 
 const createCitySelectTemplate = (places) => {
-  return (
-    `<datalist id="destination-list-1">
+  return (`<datalist id="destination-list-1">
   ${places.map((it) => {
       return `<option value="${it}"></option>`;
     }).join(`\n`)}
@@ -46,7 +43,7 @@ const createCitySelectTemplate = (places) => {
 };
 
 
-export const createFormTemplate = (event) => {
+const createFormTemplate = (event) => {
   const {type, description, city, startDate, endDate, price, offers, course} = event;
   const picturesTemplate = createPicturesTemplate(event.pictures);
   const transfers = [`taxi`, `train`, `bus`, `ship`, `transport`, `drive`, `flight`];
@@ -117,3 +114,22 @@ export const createFormTemplate = (event) => {
     </form>`
   );
 };
+
+export default class FormComponent {
+  constructor(card) {
+    this._element = null;
+    this._card = card;
+  }
+  getTemplate() {
+    return createFormTemplate(this._card);
+  }
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+  removeElement() {
+    this._element = null;
+  }
+}

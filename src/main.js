@@ -1,13 +1,13 @@
-import {createMenuTemplate} from './components/menu.js';
-import {createFilterTemplate} from './components/filters.js';
-import {createFormTemplate} from './components/form.js';
-import {createTripDayWrapperTemplate} from './components/days-list.js';
-import {createTripDayItemTemplate} from './components/day-number.js';
-import {createEventListTemplate} from './components/events-list.js';
-import {createCardTemplate} from './components/event.js';
-import {createTripInfoTemplate} from './components/trip-info.js';
-import {createEventSortTemplate} from './components/event-sort.js';
-import {render} from './utils.js';
+import SiteMenuComponent from './components/menu.js';
+import FiltersComponent from './components/filters.js';
+import FormComponent from './components/form.js';
+import TripDayWrapperComponent from './components/days-list.js';
+import TripDayItemComponent from './components/day-number.js';
+import EventListComponent from './components/events-list.js';
+import CardComponent from './components/event.js';
+import TripInfoComponent from './components/trip-info.js';
+import EventSortComponent from './components/event-sort.js';
+import {render, RenderPosition} from './utils.js';
 import {filters} from './mocks/filters.js';
 import {eventSorts} from './mocks/event-sort.js';
 import {menuItems} from './mocks/menu.js';
@@ -23,26 +23,25 @@ const siteFilterElement = document.querySelector(`.trip-main__trip-controls`);
 const siteTripEventElement = document.querySelector(`.trip-events`);
 const SiteMainTripElement = document.querySelector(`.trip-main`);
 
-render(siteMenuElement, createMenuTemplate(menuItems), `afterend`);
-render(siteFilterElement, createFilterTemplate(filters));
-render(SiteMainTripElement, createTripInfoTemplate(cards), `afterbegin`);
-render(siteTripEventElement, createTripDayWrapperTemplate());
+render(siteMenuElement, new SiteMenuComponent(menuItems).getElement(), RenderPosition.AFTEREND);
+render(siteFilterElement, new FiltersComponent(filters).getElement(), RenderPosition.BEFOREEND);
+render(SiteMainTripElement, new TripInfoComponent(cards).getElement(), RenderPosition.AFTERBRGIN);
+render(siteTripEventElement, new TripDayWrapperComponent().getElement(), RenderPosition.BEFOREEND);
 
 const siteTripDayElement = document.querySelector(`.trip-days`);
 
-render(siteTripDayElement, createTripDayItemTemplate(cards));
-render(siteTripDayElement, createEventSortTemplate(eventSorts), `beforebegin`);
+render(siteTripDayElement, new TripDayItemComponent(cards).getElement(), RenderPosition.BEFOREEND);
+render(siteTripDayElement, new EventSortComponent(eventSorts).getElement(), RenderPosition.BEFOREBEGIN);
 
 const siteDayItemElement = document.querySelector(`.trip-days__item`);
 
-render(siteDayItemElement, createEventListTemplate());
+render(siteDayItemElement, new EventListComponent().getElement(), RenderPosition.BEFOREEND);
 
 const siteEventListElement = document.querySelector(`.trip-events__list`);
 
 for (let i = 0; i < cards.length; i++) {
   const card = cards[i];
-  render(siteEventListElement, createCardTemplate(card));
+  render(siteEventListElement, new CardComponent(card).getElement(), RenderPosition.BEFOREEND);
+  render(siteEventListElement, new FormComponent(card).getElement(), RenderPosition.BEFOREEND);
 }
 
-const siteEventItemElement = document.querySelector(`.trip-events__item`);
-render(siteEventItemElement, createFormTemplate(cards[0]));

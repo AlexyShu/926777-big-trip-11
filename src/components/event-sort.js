@@ -1,7 +1,8 @@
+import {createElement} from "../utils";
+
 const createSortItemTemplate = (sort) => {
   const {name, title} = sort;
-  return (`
-  <div class="trip-sort__item  trip-sort__item--${name}">
+  return (`<div class="trip-sort__item  trip-sort__item--${name}">
   <input id="sort-${name}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-${name}">
   <label class="trip-sort__btn" for="sort-${name}">
     ${title}
@@ -13,10 +14,9 @@ const createSortItemTemplate = (sort) => {
   );
 };
 
-export const createEventSortTemplate = (sorts) => {
+const createEventSortTemplate = (sorts) => {
   const sortsTemplate = sorts.map((it, i) => createSortItemTemplate(it, i === 0)).join(`\n`);
-  return (`
-  <form class="trip-events__trip-sort  trip-sort" action="#" method="get">
+  return (`<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
     <span class="trip-sort__item  trip-sort__item--day">Day</span>
     <div class="trip-sort__item  trip-sort__item--event">
       <input id="sort-event" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-event" checked>
@@ -26,4 +26,23 @@ export const createEventSortTemplate = (sorts) => {
      <span class="trip-sort__item  trip-sort__item--offers">Offers</span>
   </form>`);
 };
+
+export default class EventSortComponent {
+  constructor(menuItems) {
+    this._element = null;
+    this._menuItems = menuItems;
+  }
+  getTemplate() {
+    return createEventSortTemplate(this._menuItems);
+  }
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+  removeElement() {
+    this._element = null;
+  }
+}
 

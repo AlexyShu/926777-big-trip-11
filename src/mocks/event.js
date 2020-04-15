@@ -24,7 +24,9 @@ export const chooseOfferCourse = (eventType) => {
   } else {
     if (eventType === `restaurant` || eventType === `sightseeing`) {
       offerCourse = `in`;
-    } offerCourse = `to`;
+    } else {
+      offerCourse = `to`;
+    }
   }
   return offerCourse;
 };
