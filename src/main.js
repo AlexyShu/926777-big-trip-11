@@ -41,7 +41,28 @@ const siteEventListElement = document.querySelector(`.trip-events__list`);
 
 for (let i = 0; i < cards.length; i++) {
   const card = cards[i];
-  render(siteEventListElement, new CardComponent(card).getElement(), RenderPosition.BEFOREEND);
-  render(siteEventListElement, new FormComponent(card).getElement(), RenderPosition.BEFOREEND);
+  const eventItem = new CardComponent(card);
+  const eventForm = new FormComponent(card);
+  const replaceFormToEvent = () => {
+    siteEventListElement.replaceChild(eventItem.getElement(), eventForm.getElement());
+  };
+  const replaceEventToForm = () => {
+    siteEventListElement.replaceChild(eventForm.getElement(), eventItem.getElement());
+  };
+  const rollupButton = eventItem.getElement().querySelector(`.event__rollup-btn`);
+  rollupButton.addEventListener(`click`, replaceEventToForm);
+  const saveButton = eventForm.getElement().querySelector(`.event__save-btn`);
+  const resetButton = eventForm.getElement().querySelector(`.event__reset-btn`);
+  saveButton.addEventListener(`click`, replaceFormToEvent);
+  resetButton.addEventListener(`click`, replaceFormToEvent);
+  const submitForm = eventForm.getElement();
+  submitForm.addEventListener(`submit`, (evt) => {
+    evt.preventDefault();
+    submitForm.replaceChild(eventItem.getElement(), eventForm.getElement());
+  });
+  render(siteEventListElement, eventItem.getElement(), RenderPosition.BEFOREEND);
 }
+// render(siteEventListElement, new CardComponent(card).getElement(), RenderPosition.BEFOREEND);
+// render(siteEventListElement, new FormComponent(card).getElement(), RenderPosition.BEFOREEND);
+
 
