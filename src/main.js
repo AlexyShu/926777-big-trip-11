@@ -33,7 +33,7 @@ render(siteTripDayElement, new EventSortComponent(eventSorts).getElement(), Rend
 
 const eventGroups = makeGroupedEvents(cards);
 
-eventGroups.forEach((dayInMillesecondsts, events) => {
+eventGroups.forEach((events, dayInMillesecondsts) => {
   render(siteTripDayElement, new TripDayComponent(events).getElement(), RenderPosition.BEFOREEND);
   const siteDayItemElement = document.querySelector(`.trip-days__item`);
   render(siteDayItemElement, new EventListComponent().getElement(), RenderPosition.BEFOREEND);
