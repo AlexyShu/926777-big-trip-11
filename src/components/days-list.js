@@ -1,6 +1,6 @@
 import {createElement} from "../utils";
 
-export default class TripDayWrapperComponent {
+export default class TripDaysListComponent {
   constructor() {
     this._element = null;
   }

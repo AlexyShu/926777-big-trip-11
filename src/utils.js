@@ -1,5 +1,4 @@
 export const RenderPosition = {
-  AFTERBEGIN: `afterbegin`,
   AFTEREND: `afterend`,
   BEFOREEND: `beforeend`,
   BEFOREBEGIN: `beforebegin`
@@ -7,9 +6,6 @@ export const RenderPosition = {
 
 export const render = (container, element, place) => {
   switch (place) {
-    case RenderPosition.AFTERBEGIN:
-      container.prepend(element);
-      break;
     case RenderPosition.BEFOREEND:
       container.append(element);
       break;
@@ -82,6 +78,19 @@ const castHoursInterval = (hours) => {
 
 const castMinutesInterval = (minutes) => {
   return minutes < 10 ? `0${minutes}M` : `${minutes}M`;
+};
+
+export const makeGroupedEvents = (events) => {
+  const groupedEvents = new Map();
+  events.forEach((event) => {
+    const startInMilliseconds = new Date(event.startDate).setHours(1, 0, 0, 0);
+    if (groupedEvents.has(startInMilliseconds)) {
+      groupedEvents.get(startInMilliseconds).push(event);
+    } else {
+      groupedEvents.set(startInMilliseconds, [event]);
+    }
+  });
+  return groupedEvents;
 };
 
 

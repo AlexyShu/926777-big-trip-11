@@ -114,7 +114,7 @@ const createFormTemplate = (event) => {
   );
 };
 
-export default class FormComponent {
+export default class EventFormComponent {
   constructor(card) {
     this._element = null;
     this._card = card;
