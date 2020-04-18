@@ -73,7 +73,8 @@ const generateEvent = () => {
 export const generateEvents = (count) => {
   return new Array(count)
     .fill(``)
-    .map(generateEvent);
+    .map(generateEvent)
+    .sort((a, b) => a.startDate - b.startDate);
 };
 
 export const createOffers = (eventType) => {

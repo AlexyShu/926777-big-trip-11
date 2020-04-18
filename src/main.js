@@ -33,19 +33,21 @@ render(siteTripDayElement, new EventSortComponent(eventSorts).getElement(), Rend
 
 const eventGroups = makeGroupedEvents(cards);
 
+let dayCount = 0;
 eventGroups.forEach((events, dayInMillesecondsts) => {
-  render(siteTripDayElement, new TripDayComponent(events).getElement(), RenderPosition.BEFOREEND);
-  const siteDayItemElement = document.querySelector(`.trip-days__item`);
-  render(siteDayItemElement, new EventListComponent().getElement(), RenderPosition.BEFOREEND);
-  const siteEventListElement = document.querySelector(`.trip-events__list`);
+  dayCount++;
+  const dayComponent = new TripDayComponent(events, dayCount).getElement();
+  render(siteTripDayElement, dayComponent, RenderPosition.BEFOREEND);
+  const eventList = new EventListComponent().getElement();
+  render(dayComponent, eventList, RenderPosition.BEFOREEND);
   events.forEach((event) => {
     const eventItem = new CardComponent(event);
     const eventForm = new EventFormComponent(event);
     const replaceFormToEvent = () => {
-      siteEventListElement.replaceChild(eventItem.getElement(), eventForm.getElement());
+      eventList.replaceChild(eventItem.getElement(), eventForm.getElement());
     };
     const replaceEventToForm = () => {
-      siteEventListElement.replaceChild(eventForm.getElement(), eventItem.getElement());
+      eventList.replaceChild(eventForm.getElement(), eventItem.getElement());
     };
     const rollupButton = eventItem.getElement().querySelector(`.event__rollup-btn`);
     rollupButton.addEventListener(`click`, replaceEventToForm);
@@ -58,7 +60,7 @@ eventGroups.forEach((events, dayInMillesecondsts) => {
       evt.preventDefault();
       submitForm.replaceChild(eventItem.getElement(), eventForm.getElement());
     });
-    render(siteEventListElement, eventItem.getElement(), RenderPosition.BEFOREEND);
+    render(eventList, eventItem.getElement(), RenderPosition.BEFOREEND);
   });
 });
 
