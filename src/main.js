@@ -7,13 +7,14 @@ import EventListComponent from './components/events-list.js';
 import CardComponent from './components/event.js';
 import TripInfoComponent from './components/trip-info.js';
 import EventSortComponent from './components/event-sort.js';
-import {render, RenderPosition, makeGroupedEvents} from './utils.js';
+import NoEventComponent from './components/no-event.js';
+import {render, RenderPosition, makeGroupedEvents, KeyCode} from './utils.js';
 import {filters} from './mocks/filters.js';
 import {eventSorts} from './mocks/event-sort.js';
 import {menuItems} from './mocks/menu.js';
 import {generateEvents} from './mocks/event.js';
 
-const EVENTS_COUNT = 5;
+const EVENTS_COUNT = 0;
 
 export const cards = generateEvents(EVENTS_COUNT);
 
@@ -24,16 +25,31 @@ const siteTripEventElement = document.querySelector(`.trip-events`);
 
 render(siteMenuElement, new SiteMenuComponent(menuItems).getElement(), RenderPosition.AFTEREND);
 render(siteFilterElement, new FiltersComponent(filters).getElement(), RenderPosition.BEFOREEND);
+
+if (EVENTS_COUNT === 0) {
+  render(siteTripEventElement, new NoEventComponent().getElement(), RenderPosition.BEFOREEND);
+}
+
 render(siteFilterElement, new TripInfoComponent(cards).getElement(), RenderPosition.BEFOREBEGIN);
+
 render(siteTripEventElement, new TripDaysListComponent().getElement(), RenderPosition.BEFOREEND);
 
 const siteTripDayElement = document.querySelector(`.trip-days`);
 
 render(siteTripDayElement, new EventSortComponent(eventSorts).getElement(), RenderPosition.BEFOREBEGIN);
 
+const tripTotalPrice = document.querySelector(`.trip-info__cost-value`);
+tripTotalPrice.textContent = cards.reduce((totalPrice, it) => {
+  return totalPrice + it.price + it.offers.reduce((totalOfferPrice, offer) => {
+    return totalOfferPrice + offer.price;
+  }, 0);
+}, 0);
+
 const eventGroups = makeGroupedEvents(cards);
 
 let dayCount = 0;
+
+
 eventGroups.forEach((events, dayInMillesecondsts) => {
   dayCount++;
   const dayComponent = new TripDayComponent(events, dayCount).getElement();
@@ -49,8 +65,21 @@ eventGroups.forEach((events, dayInMillesecondsts) => {
     const replaceEventToForm = () => {
       eventList.replaceChild(eventForm.getElement(), eventItem.getElement());
     };
+
+    const onEscPress = (evt) => {
+      if (evt.keyCode === KeyCode.ESC) {
+        evt.preventDefault();
+        replaceFormToEvent();
+        document.removeEventListener(`keydown`, onEscPress);
+      }
+    };
+
     const rollupButton = eventItem.getElement().querySelector(`.event__rollup-btn`);
-    rollupButton.addEventListener(`click`, replaceEventToForm);
+    rollupButton.addEventListener(`click`, () => {
+      replaceEventToForm();
+      document.addEventListener(`keydown`, onEscPress);
+    });
+
     const saveButton = eventForm.getElement().querySelector(`.event__save-btn`);
     const resetButton = eventForm.getElement().querySelector(`.event__reset-btn`);
     saveButton.addEventListener(`click`, replaceFormToEvent);
@@ -59,9 +88,8 @@ eventGroups.forEach((events, dayInMillesecondsts) => {
     submitForm.addEventListener(`submit`, (evt) => {
       evt.preventDefault();
       submitForm.replaceChild(eventItem.getElement(), eventForm.getElement());
+
     });
     render(eventList, eventItem.getElement(), RenderPosition.BEFOREEND);
   });
 });
-
-

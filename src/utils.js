@@ -1,3 +1,7 @@
+export const KeyCode = {
+  ESC: 27
+};
+
 export const RenderPosition = {
   AFTEREND: `afterend`,
   BEFOREEND: `beforeend`,
