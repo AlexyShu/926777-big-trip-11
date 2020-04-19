@@ -28,68 +28,67 @@ render(siteFilterElement, new FiltersComponent(filters).getElement(), RenderPosi
 
 if (EVENTS_COUNT === 0) {
   render(siteTripEventElement, new NoEventComponent().getElement(), RenderPosition.BEFOREEND);
-}
+} else {
+  render(siteFilterElement, new TripInfoComponent(cards).getElement(), RenderPosition.BEFOREBEGIN);
+  render(siteTripEventElement, new TripDaysListComponent().getElement(), RenderPosition.BEFOREEND);
 
-render(siteFilterElement, new TripInfoComponent(cards).getElement(), RenderPosition.BEFOREBEGIN);
+  const siteTripDayElement = document.querySelector(`.trip-days`);
 
-render(siteTripEventElement, new TripDaysListComponent().getElement(), RenderPosition.BEFOREEND);
+  render(siteTripDayElement, new EventSortComponent(eventSorts).getElement(), RenderPosition.BEFOREBEGIN);
 
-const siteTripDayElement = document.querySelector(`.trip-days`);
-
-render(siteTripDayElement, new EventSortComponent(eventSorts).getElement(), RenderPosition.BEFOREBEGIN);
-
-const tripTotalPrice = document.querySelector(`.trip-info__cost-value`);
-tripTotalPrice.textContent = cards.reduce((totalPrice, it) => {
-  return totalPrice + it.price + it.offers.reduce((totalOfferPrice, offer) => {
-    return totalOfferPrice + offer.price;
+  const tripTotalPrice = document.querySelector(`.trip-info__cost-value`);
+  tripTotalPrice.textContent = cards.reduce((totalPrice, it) => {
+    return totalPrice + it.price + it.offers.reduce((totalOfferPrice, offer) => {
+      return totalOfferPrice + offer.price;
+    }, 0);
   }, 0);
-}, 0);
 
-const eventGroups = makeGroupedEvents(cards);
+  const eventGroups = makeGroupedEvents(cards);
 
-let dayCount = 0;
+  let dayCount = 0;
 
+  eventGroups.forEach((events, dayInMillesecondsts) => {
+    dayCount++;
+    const dayComponent = new TripDayComponent(events, dayCount).getElement();
+    render(siteTripDayElement, dayComponent, RenderPosition.BEFOREEND);
+    const eventList = new EventListComponent().getElement();
+    render(dayComponent, eventList, RenderPosition.BEFOREEND);
+    events.forEach((event) => {
+      const eventItem = new CardComponent(event);
+      const eventForm = new EventFormComponent(event);
+      const replaceFormToEvent = () => {
+        eventList.replaceChild(eventItem.getElement(), eventForm.getElement());
+      };
+      const replaceEventToForm = () => {
+        eventList.replaceChild(eventForm.getElement(), eventItem.getElement());
+      };
 
-eventGroups.forEach((events, dayInMillesecondsts) => {
-  dayCount++;
-  const dayComponent = new TripDayComponent(events, dayCount).getElement();
-  render(siteTripDayElement, dayComponent, RenderPosition.BEFOREEND);
-  const eventList = new EventListComponent().getElement();
-  render(dayComponent, eventList, RenderPosition.BEFOREEND);
-  events.forEach((event) => {
-    const eventItem = new CardComponent(event);
-    const eventForm = new EventFormComponent(event);
-    const replaceFormToEvent = () => {
-      eventList.replaceChild(eventItem.getElement(), eventForm.getElement());
-    };
-    const replaceEventToForm = () => {
-      eventList.replaceChild(eventForm.getElement(), eventItem.getElement());
-    };
+      const onEscPress = (evt) => {
+        if (evt.keyCode === KeyCode.ESC) {
+          evt.preventDefault();
+          replaceFormToEvent();
+          document.removeEventListener(`keydown`, onEscPress);
+        }
+      };
 
-    const onEscPress = (evt) => {
-      if (evt.keyCode === KeyCode.ESC) {
+      const rollupButton = eventItem.getElement().querySelector(`.event__rollup-btn`);
+      rollupButton.addEventListener(`click`, () => {
+        replaceEventToForm();
+        document.addEventListener(`keydown`, onEscPress);
+      });
+
+      const saveButton = eventForm.getElement().querySelector(`.event__save-btn`);
+      const resetButton = eventForm.getElement().querySelector(`.event__reset-btn`);
+      saveButton.addEventListener(`click`, replaceFormToEvent);
+      resetButton.addEventListener(`click`, replaceFormToEvent);
+      const submitForm = eventForm.getElement();
+      submitForm.addEventListener(`submit`, (evt) => {
         evt.preventDefault();
-        replaceFormToEvent();
-        document.removeEventListener(`keydown`, onEscPress);
-      }
-    };
+        submitForm.replaceChild(eventItem.getElement(), eventForm.getElement());
 
-    const rollupButton = eventItem.getElement().querySelector(`.event__rollup-btn`);
-    rollupButton.addEventListener(`click`, () => {
-      replaceEventToForm();
-      document.addEventListener(`keydown`, onEscPress);
+      });
+      render(eventList, eventItem.getElement(), RenderPosition.BEFOREEND);
     });
-
-    const saveButton = eventForm.getElement().querySelector(`.event__save-btn`);
-    const resetButton = eventForm.getElement().querySelector(`.event__reset-btn`);
-    saveButton.addEventListener(`click`, replaceFormToEvent);
-    resetButton.addEventListener(`click`, replaceFormToEvent);
-    const submitForm = eventForm.getElement();
-    submitForm.addEventListener(`submit`, (evt) => {
-      evt.preventDefault();
-      submitForm.replaceChild(eventItem.getElement(), eventForm.getElement());
-
-    });
-    render(eventList, eventItem.getElement(), RenderPosition.BEFOREEND);
   });
-});
+
+}
