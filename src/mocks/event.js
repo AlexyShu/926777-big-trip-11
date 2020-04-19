@@ -24,7 +24,9 @@ export const chooseOfferCourse = (eventType) => {
   } else {
     if (eventType === `restaurant` || eventType === `sightseeing`) {
       offerCourse = `in`;
-    } offerCourse = `to`;
+    } else {
+      offerCourse = `to`;
+    }
   }
   return offerCourse;
 };
@@ -71,7 +73,8 @@ const generateEvent = () => {
 export const generateEvents = (count) => {
   return new Array(count)
     .fill(``)
-    .map(generateEvent);
+    .map(generateEvent)
+    .sort((a, b) => a.startDate - b.startDate);
 };
 
 export const createOffers = (eventType) => {
@@ -89,3 +92,5 @@ export const createOffers = (eventType) => {
   }
   return offers;
 };
+
+

@@ -1,5 +1,28 @@
-export const render = (container, template, place = `beforeend`) => {
-  container.insertAdjacentHTML(place, template);
+export const RenderPosition = {
+  AFTEREND: `afterend`,
+  BEFOREEND: `beforeend`,
+  BEFOREBEGIN: `beforebegin`
+};
+
+export const render = (container, element, place) => {
+  switch (place) {
+    case RenderPosition.BEFOREEND:
+      container.append(element);
+      break;
+    case RenderPosition.AFTEREND:
+      container.after(element);
+      break;
+    case RenderPosition.BEFOREBEGIN:
+      container.before(element);
+      break;
+  }
+};
+
+// функция для отрисовки DOM-элементов
+export const createElement = (template) => {
+  const newElement = document.createElement(`div`);
+  newElement.innerHTML = template;
+  return newElement.firstChild;
 };
 
 // функция возвращающая случайное целое число
@@ -55,6 +78,19 @@ const castHoursInterval = (hours) => {
 
 const castMinutesInterval = (minutes) => {
   return minutes < 10 ? `0${minutes}M` : `${minutes}M`;
+};
+
+export const makeGroupedEvents = (events) => {
+  const groupedEvents = new Map();
+  events.forEach((event) => {
+    const startInMilliseconds = new Date(event.startDate).setHours(1, 0, 0, 0);
+    if (groupedEvents.has(startInMilliseconds)) {
+      groupedEvents.get(startInMilliseconds).push(event);
+    } else {
+      groupedEvents.set(startInMilliseconds, [event]);
+    }
+  });
+  return groupedEvents;
 };
 
 
