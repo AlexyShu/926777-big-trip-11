@@ -14,7 +14,7 @@ import {eventSorts} from './mocks/event-sort.js';
 import {menuItems} from './mocks/menu.js';
 import {generateEvents} from './mocks/event.js';
 
-const EVENTS_COUNT = 0;
+const EVENTS_COUNT = 5;
 
 export const cards = generateEvents(EVENTS_COUNT);
 
