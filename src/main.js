@@ -8,7 +8,8 @@ import CardComponent from './components/event.js';
 import TripInfoComponent from './components/trip-info.js';
 import EventSortComponent from './components/event-sort.js';
 import NoEventComponent from './components/no-event.js';
-import {render, RenderPosition, makeGroupedEvents, KeyCode} from './utils.js';
+import {makeGroupedEvents, KeyCode} from './utils.js';
+import {render, RenderPosition, replace} from './utils/render.js';
 import {filters} from './mocks/filters.js';
 import {eventSorts} from './mocks/event-sort.js';
 import {menuItems} from './mocks/menu.js';
@@ -23,18 +24,18 @@ const siteFilterElement = document.querySelector(`.trip-main__trip-controls`);
 
 const siteTripEventElement = document.querySelector(`.trip-events`);
 
-render(siteMenuElement, new SiteMenuComponent(menuItems).getElement(), RenderPosition.AFTEREND);
-render(siteFilterElement, new FiltersComponent(filters).getElement(), RenderPosition.BEFOREEND);
+render(siteMenuElement, new SiteMenuComponent(menuItems), RenderPosition.AFTEREND);
+render(siteFilterElement, new FiltersComponent(filters), RenderPosition.BEFOREEND);
 
 if (EVENTS_COUNT === 0) {
-  render(siteTripEventElement, new NoEventComponent().getElement(), RenderPosition.BEFOREEND);
+  render(siteTripEventElement, new NoEventComponent(), RenderPosition.BEFOREEND);
 } else {
-  render(siteFilterElement, new TripInfoComponent(cards).getElement(), RenderPosition.BEFOREBEGIN);
-  render(siteTripEventElement, new TripDaysListComponent().getElement(), RenderPosition.BEFOREEND);
+  render(siteFilterElement, new TripInfoComponent(cards), RenderPosition.BEFOREBEGIN);
+  render(siteTripEventElement, new TripDaysListComponent(), RenderPosition.BEFOREEND);
 
   const siteTripDayElement = document.querySelector(`.trip-days`);
 
-  render(siteTripDayElement, new EventSortComponent(eventSorts).getElement(), RenderPosition.BEFOREBEGIN);
+  render(siteTripDayElement, new EventSortComponent(eventSorts), RenderPosition.BEFOREBEGIN);
 
   const tripTotalPrice = document.querySelector(`.trip-info__cost-value`);
   tripTotalPrice.textContent = cards.reduce((totalPrice, it) => {
@@ -49,18 +50,18 @@ if (EVENTS_COUNT === 0) {
 
   eventGroups.forEach((events) => {
     dayCount++;
-    const dayComponent = new TripDayComponent(events, dayCount).getElement();
+    const dayComponent = new TripDayComponent(events, dayCount);
     render(siteTripDayElement, dayComponent, RenderPosition.BEFOREEND);
-    const eventList = new EventListComponent().getElement();
+    const eventList = new EventListComponent();
     render(dayComponent, eventList, RenderPosition.BEFOREEND);
     events.forEach((event) => {
       const eventItem = new CardComponent(event);
       const eventForm = new EventFormComponent(event);
       const replaceFormToEvent = () => {
-        eventList.replaceChild(eventItem.getElement(), eventForm.getElement());
+        replace(eventList, eventItem.getElement(), eventForm.getElement());
       };
       const replaceEventToForm = () => {
-        eventList.replaceChild(eventForm.getElement(), eventItem.getElement());
+        replace(eventList, eventForm.getElement(), eventItem.getElement());
       };
 
       const onEscPress = (evt) => {
@@ -87,7 +88,7 @@ if (EVENTS_COUNT === 0) {
         submitForm.replaceChild(eventItem.getElement(), eventForm.getElement());
 
       });
-      render(eventList, eventItem.getElement(), RenderPosition.BEFOREEND);
+      render(eventList, eventItem, RenderPosition.BEFOREEND);
     });
   });
 

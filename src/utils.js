@@ -2,32 +2,32 @@ export const KeyCode = {
   ESC: 27
 };
 
-export const RenderPosition = {
-  AFTEREND: `afterend`,
-  BEFOREEND: `beforeend`,
-  BEFOREBEGIN: `beforebegin`
-};
+// export const RenderPosition = {
+//   AFTEREND: `afterend`,
+//   BEFOREEND: `beforeend`,
+//   BEFOREBEGIN: `beforebegin`
+// };
 
-export const render = (container, element, place) => {
-  switch (place) {
-    case RenderPosition.BEFOREEND:
-      container.append(element);
-      break;
-    case RenderPosition.AFTEREND:
-      container.after(element);
-      break;
-    case RenderPosition.BEFOREBEGIN:
-      container.before(element);
-      break;
-  }
-};
+// export const render = (container, element, place) => {
+//   switch (place) {
+//     case RenderPosition.BEFOREEND:
+//       container.append(element);
+//       break;
+//     case RenderPosition.AFTEREND:
+//       container.after(element);
+//       break;
+//     case RenderPosition.BEFOREBEGIN:
+//       container.before(element);
+//       break;
+//   }
+// };
 
-// функция для отрисовки DOM-элементов
-export const createElement = (template) => {
-  const newElement = document.createElement(`div`);
-  newElement.innerHTML = template;
-  return newElement.firstChild;
-};
+// // функция для отрисовки DOM-элементов
+// export const createElement = (template) => {
+//   const newElement = document.createElement(`div`);
+//   newElement.innerHTML = template;
+//   return newElement.firstChild;
+// };
 
 // функция возвращающая случайное целое число
 export const getRandomIntegerNumber = (min, max) => {
