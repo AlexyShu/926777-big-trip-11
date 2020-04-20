@@ -47,7 +47,7 @@ if (EVENTS_COUNT === 0) {
 
   let dayCount = 0;
 
-  eventGroups.forEach((events, dayInMillesecondsts) => {
+  eventGroups.forEach((events) => {
     dayCount++;
     const dayComponent = new TripDayComponent(events, dayCount).getElement();
     render(siteTripDayElement, dayComponent, RenderPosition.BEFOREEND);

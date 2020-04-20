@@ -1,5 +1,6 @@
-import {getDateFormat, getTimeFormat, createElement} from '../utils.js';
+import {getDateFormat, getTimeFormat} from '../utils.js';
 import {cities} from '../mocks/event.js';
+import AbstractComponent from "./abstract-component.js";
 
 const createPicturesTemplate = (pics) => {
   return pics.map((picture) => `<img class="event__photo" src="${picture}" alt="Event photo"></img>`).join(`\n`);
@@ -114,21 +115,12 @@ const createFormTemplate = (event) => {
   );
 };
 
-export default class EventFormComponent {
+export default class EventFormComponent extends AbstractComponent {
   constructor(card) {
-    this._element = null;
+    super();
     this._card = card;
   }
   getTemplate() {
     return createFormTemplate(this._card);
-  }
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-  removeElement() {
-    this._element = null;
   }
 }

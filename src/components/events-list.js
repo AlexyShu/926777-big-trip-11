@@ -1,21 +1,9 @@
-import {createElement} from "../utils";
+import AbstractComponent from "./abstract-component.js";
 
-export default class EventListComponent {
-  constructor() {
-    this._element = null;
-  }
+export default class EventListComponent extends AbstractComponent {
   getTemplate() {
     return (`<ul class="trip-events__list">
     </ul>`
     );
-  }
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-  removeElement() {
-    this._element = null;
   }
 }
