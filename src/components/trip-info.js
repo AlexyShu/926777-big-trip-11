@@ -1,6 +1,6 @@
 import {cities} from '../mocks/event.js';
 import {months} from '../mocks/trip-info.js';
-import {getRandomArrayItem} from '../utils.js';
+import {getRandomArrayItem} from '../utils/common.js';
 import AbstractComponent from "./abstract-component.js";
 
 const createTripInfoTemplate = (events) => {

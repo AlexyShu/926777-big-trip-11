@@ -1,4 +1,4 @@
-import {getDateFormat, getTimeFormat} from '../utils.js';
+import {getDateFormat, getTimeFormat} from '../utils/common.js';
 import {cities} from '../mocks/event.js';
 import AbstractComponent from "./abstract-component.js";
 
@@ -122,5 +122,14 @@ export default class EventFormComponent extends AbstractComponent {
   }
   getTemplate() {
     return createFormTemplate(this._card);
+  }
+  setSaveButton(handler) {
+    this.getElement().querySelector(`.event__save-btn`).addEventListener(`click`, handler);
+  }
+  setResetButton(handler) {
+    this.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, handler);
+  }
+  setSubmitForm(handler) {
+    this.getElement().addEventListener(`submit`, handler);
   }
 }
