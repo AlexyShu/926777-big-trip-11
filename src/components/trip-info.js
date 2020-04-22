@@ -1,6 +1,7 @@
 import {cities} from '../mocks/event.js';
 import {months} from '../mocks/trip-info.js';
-import {getRandomArrayItem, createElement} from '../utils.js';
+import {getRandomArrayItem} from '../utils/common.js';
+import AbstractComponent from "./abstract-component.js";
 
 const createTripInfoTemplate = (events) => {
   const startRouteDate = new Date(events[0].startDate);
@@ -17,21 +18,12 @@ const createTripInfoTemplate = (events) => {
   );
 };
 
-export default class TripInfoComponent {
+export default class TripInfoComponent extends AbstractComponent {
   constructor(cards) {
-    this._element = null;
+    super();
     this._cards = cards;
   }
   getTemplate() {
     return createTripInfoTemplate(this._cards);
-  }
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-  removeElement() {
-    this._element = null;
   }
 }

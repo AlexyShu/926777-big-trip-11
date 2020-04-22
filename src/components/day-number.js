@@ -1,5 +1,5 @@
 import {months} from '../mocks/trip-info.js';
-import {createElement} from "../utils";
+import AbstractComponent from "./abstract-component.js";
 
 
 const createTripDayItemTemplate = (events, dayCount) => {
@@ -16,22 +16,13 @@ const createTripDayItemTemplate = (events, dayCount) => {
   );
 };
 
-export default class TripDayComponent {
+export default class TripDayComponent extends AbstractComponent {
   constructor(cards, dayCount) {
-    this._element = null;
+    super();
     this._cards = cards;
     this._dayCount = dayCount;
   }
   getTemplate() {
     return createTripDayItemTemplate(this._cards, this._dayCount);
-  }
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-  removeElement() {
-    this._element = null;
   }
 }

@@ -1,4 +1,5 @@
-import {getTimeFormat, getDateFormat, calculateTimeInterval, createElement} from '../utils.js';
+import {getTimeFormat, getDateFormat, calculateTimeInterval} from '../utils/common.js';
+import AbstractComponent from "./abstract-component.js";
 
 const createOffersTemplate = (offers) => {
   return (`<ul class="event__selected-offers">
@@ -42,21 +43,15 @@ const createCardTemplate = (event) => {
   );
 };
 
-export default class CardComponent {
+export default class CardComponent extends AbstractComponent {
   constructor(card) {
-    this._element = null;
+    super();
     this._card = card;
   }
   getTemplate() {
     return createCardTemplate(this._card);
   }
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-  removeElement() {
-    this._element = null;
+  setRollupButtonHandler(handler) {
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, handler);
   }
 }
