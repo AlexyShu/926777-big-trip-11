@@ -123,13 +123,13 @@ export default class EventFormComponent extends AbstractComponent {
   getTemplate() {
     return createFormTemplate(this._card);
   }
-  setSaveButton(handler) {
+  setSaveButtonHandler(handler) {
     this.getElement().querySelector(`.event__save-btn`).addEventListener(`click`, handler);
   }
-  setResetButton(handler) {
+  setResetButtonHandler(handler) {
     this.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, handler);
   }
-  setSubmitForm(handler) {
+  setSubmitFormHandler(handler) {
     this.getElement().addEventListener(`submit`, handler);
   }
 }
