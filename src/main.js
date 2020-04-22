@@ -16,6 +16,6 @@ const siteFilterElement = document.querySelector(`.trip-main__trip-controls`);
 render(siteMenuElement, new SiteMenuComponent(menuItems), RenderPosition.AFTEREND);
 render(siteFilterElement, new FiltersComponent(filters), RenderPosition.BEFOREEND);
 
-export const eventList = new EventListComponent();
+const eventList = new EventListComponent();
 const tripController = new TripController(eventList.getElement());
 tripController.render(cards);

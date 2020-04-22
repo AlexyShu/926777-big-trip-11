@@ -5,7 +5,6 @@ import TripInfoComponent from '../components/trip-info.js';
 import EventSortComponent from '../components/event-sort.js';
 import TripDaysListComponent from '../components/days-list.js';
 import TripDayComponent from '../components/day-number.js';
-import eventList from '../main.js';
 import {eventSorts} from '../mocks/event-sort.js';
 import {render, RenderPosition, replace} from '../utils/render.js';
 import {KeyCode, makeGroupedEvents, EVENTS_COUNT} from '../utils/common.js';
@@ -38,7 +37,7 @@ export default class TripController {
         dayCount++;
         const dayComponent = new TripDayComponent(tripEvents, dayCount);
         render(tripDaysList.getElement(), dayComponent, RenderPosition.BEFOREEND);
-        render(dayComponent.getElement(), eventList, RenderPosition.BEFOREEND);
+        render(dayComponent.getElement(), this._container, RenderPosition.BEFOREEND);
 
         events.forEach((event) => {
           const eventItem = new CardComponent(event);
