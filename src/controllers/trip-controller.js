@@ -3,8 +3,8 @@ import CardComponent from '../components/event.js';
 import NoEventComponent from '../components/no-event.js';
 import TripInfoComponent from '../components/trip-info.js';
 import EventSortComponent from '../components/event-sort.js';
-import TripDaysListComponent from '../components/days-list.js';
 import TripDayComponent from '../components/day-number.js';
+import EventListComponent from '../components/events-list.js';
 import {eventSorts} from '../mocks/event-sort.js';
 import {render, RenderPosition, replace} from '../utils/render.js';
 import {KeyCode, makeGroupedEvents, EVENTS_COUNT} from '../utils/common.js';
@@ -13,6 +13,7 @@ export default class TripController {
   constructor(container) {
     this._container = container;
   }
+
   render(events) {
     const siteTripEventElement = document.querySelector(`.trip-events`);
     const siteFilterElement = document.querySelector(`.trip-main__trip-controls`);
@@ -20,9 +21,8 @@ export default class TripController {
       render(siteTripEventElement, new NoEventComponent(), RenderPosition.BEFOREEND);
     } else {
       render(siteFilterElement, new TripInfoComponent(events), RenderPosition.BEFOREBEGIN);
-      const tripDaysList = new TripDaysListComponent();
-      render(siteTripEventElement, tripDaysList, RenderPosition.BEFOREEND);
-      render(tripDaysList.getElement(), new EventSortComponent(eventSorts), RenderPosition.BEFOREBEGIN);
+      render(siteTripEventElement, this._container, RenderPosition.BEFOREEND);
+      render(this._container.getElement(), new EventSortComponent(eventSorts), RenderPosition.BEFOREBEGIN);
 
       const tripTotalPrice = document.querySelector(`.trip-info__cost-value`);
       tripTotalPrice.textContent = events.reduce((totalPrice, it) => {
@@ -36,8 +36,9 @@ export default class TripController {
       eventGroups.forEach((tripEvents) => {
         dayCount++;
         const dayComponent = new TripDayComponent(tripEvents, dayCount);
-        render(tripDaysList.getElement(), dayComponent, RenderPosition.BEFOREEND);
-        render(dayComponent.getElement(), this._container, RenderPosition.BEFOREEND);
+        render(this._container.getElement(), dayComponent, RenderPosition.BEFOREEND);
+        const eventList = new EventListComponent();
+        render(dayComponent.getElement(), eventList, RenderPosition.BEFOREEND);
 
         events.forEach((event) => {
           const eventItem = new CardComponent(event);
@@ -69,7 +70,7 @@ export default class TripController {
             evt.preventDefault();
             eventForm.getElement().replaceChild(eventItem.getElement(), eventForm.getElement());
           });
-          render(this._container, eventItem, RenderPosition.BEFOREEND);
+          render(eventList.getElement(), eventItem, RenderPosition.BEFOREEND);
         });
       });
     }
