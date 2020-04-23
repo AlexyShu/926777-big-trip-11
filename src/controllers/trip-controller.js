@@ -11,6 +11,23 @@ import {SortType} from '../mocks/event-sort.js';
 import {render, RenderPosition, replace} from '../utils/render.js';
 import {KeyCode, makeGroupedEvents, EVENTS_COUNT} from '../utils/common.js';
 
+// const getEventsSort = (sortType, events) => {
+//   let sortedEvents = [];
+//   const showingEvents = events.slice();
+//   switch (sortType) {
+//     case SortType.EVENT:
+//       sortedEvents = showingEvents;
+//       break;
+//     case SortType.TIME:
+//       sortedEvents = showingEvents.sort((a, b) => b.startDate - a.startDate);
+//       break;
+//     case SortType.PRICE:
+//       sortedEvents = showingEvents.sort((a, b) => b.price - a.price);
+//       break;
+//   }
+//   return sortedEvents.slice();
+// };
+
 export default class TripController {
   constructor(container) {
     this._container = container;
@@ -47,23 +64,6 @@ export default class TripController {
           const eventItem = new CardComponent(event);
           const eventForm = new EventFormComponent(event);
 
-          this._eventsSort.setSortTypeChangeHandler((sortType) => {
-            let sortedEvents = [];
-            const showingEvents = events.slice();
-            switch (sortType) {
-              case SortType.EVENT:
-                sortedEvents = showingEvents;
-                break;
-              case SortType.TIME:
-                sortedEvents = showingEvents.sort((a, b) => b.startDate - a.startDate);
-                break;
-              case SortType.PRICE:
-                sortedEvents = showingEvents.sort((a, b) => b.price - a.price);
-                break;
-            }
-            return sortedEvents.slice();
-          });
-
           const replaceFormToEvent = () => {
             replace(eventItem, eventForm);
           };
@@ -93,6 +93,21 @@ export default class TripController {
           });
           render(eventList.getElement(), eventItem, RenderPosition.BEFOREEND);
 
+          this._eventsSort.setSortTypeChangeHandler((sortType) => {
+            events = [];
+            switch (sortType) {
+              case SortType.EVENT:
+                events.slice();
+                break;
+              case SortType.TIME:
+                events.sort((a, b) => b.startDate - a.startDate);
+                break;
+              case SortType.PRICE:
+                events.sort((a, b) => b.price - a.price);
+                break;
+            }
+            return events.slice();
+          });
         });
       });
 
