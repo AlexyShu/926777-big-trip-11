@@ -3,7 +3,6 @@
 import EventFormComponent from '../components/form.js';
 import CardComponent from '../components/event.js';
 import NoEventComponent from '../components/no-event.js';
-import TripInfoComponent from '../components/trip-info.js';
 import EventSortComponent from '../components/event-sort.js';
 import TripDayComponent from '../components/day-number.js';
 import EventListComponent from '../components/events-list.js';
@@ -19,7 +18,7 @@ const getEventsSort = (events, sortType, from, to) => {
       sortedItems = showingEvents;
       break;
     case SortType.TIME:
-      sortedItems = showingEvents.sort((a, b) => b.startDate - a.startDate);
+      sortedItems = showingEvents.sort((a, b) => (b.endDate - b.startDate) - (a.endDate - a.startDate));
       break;
     case SortType.PRICE:
       sortedItems = showingEvents.sort((a, b) => b.price - a.price);
@@ -36,14 +35,11 @@ export default class TripController {
 
   render(events) {
     const siteTripEventElement = document.querySelector(`.trip-events`);
-    const siteFilterElement = document.querySelector(`.trip-main__trip-controls`);
     if (EVENTS_COUNT === 0) {
       render(siteTripEventElement, new NoEventComponent(), RenderPosition.BEFOREEND);
     } else {
-      render(siteFilterElement, new TripInfoComponent(events), RenderPosition.BEFOREBEGIN);
       render(siteTripEventElement, this._container, RenderPosition.BEFOREEND);
       render(this._container.getElement(), this._eventsSort, RenderPosition.BEFOREBEGIN);
-
       const tripTotalPrice = document.querySelector(`.trip-info__cost-value`);
       tripTotalPrice.textContent = events.reduce((totalPrice, it) => {
         return totalPrice + it.price + it.offers.reduce((totalOfferPrice, offer) => {
@@ -93,17 +89,10 @@ export default class TripController {
           });
           render(eventList.getElement(), eventItem, RenderPosition.BEFOREEND);
 
-          // const renderEvent = (eventListElement, items) => {
-          //   items.forEach((it) => {
-          //     renderEvent(eventList, events);
-          //   });
-          // };
-
-
           this._eventsSort.setSortTypeChangeHandler((sortType) => {
             const sortedEvents = getEventsSort(events, sortType, 0, EVENTS_COUNT);
-            eventList.innerHTML = ``;
-            // render(eventList.getElement(), sortedEvents, RenderPosition.BEFOREEND);
+            this._container.getElement().innerHTML = ``;
+            this.render(sortedEvents);
           });
         });
       });
