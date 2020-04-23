@@ -11,22 +11,22 @@ import {SortType} from '../mocks/event-sort.js';
 import {render, RenderPosition, replace} from '../utils/render.js';
 import {KeyCode, makeGroupedEvents, EVENTS_COUNT} from '../utils/common.js';
 
-// const getEventsSort = (sortType, events) => {
-//   let sortedEvents = [];
-//   const showingEvents = events.slice();
-//   switch (sortType) {
-//     case SortType.EVENT:
-//       sortedEvents = showingEvents;
-//       break;
-//     case SortType.TIME:
-//       sortedEvents = showingEvents.sort((a, b) => b.startDate - a.startDate);
-//       break;
-//     case SortType.PRICE:
-//       sortedEvents = showingEvents.sort((a, b) => b.price - a.price);
-//       break;
-//   }
-//   return sortedEvents.slice();
-// };
+const getEventsSort = (events, sortType, from, to) => {
+  let sortedItems = [];
+  const showingEvents = events.slice();
+  switch (sortType) {
+    case SortType.EVENT:
+      sortedItems = showingEvents;
+      break;
+    case SortType.TIME:
+      sortedItems = showingEvents.sort((a, b) => b.startDate - a.startDate);
+      break;
+    case SortType.PRICE:
+      sortedItems = showingEvents.sort((a, b) => b.price - a.price);
+      break;
+  }
+  return sortedItems.slice(from, to);
+};
 
 export default class TripController {
   constructor(container) {
@@ -93,20 +93,17 @@ export default class TripController {
           });
           render(eventList.getElement(), eventItem, RenderPosition.BEFOREEND);
 
+          // const renderEvent = (eventListElement, items) => {
+          //   items.forEach((it) => {
+          //     renderEvent(eventList, events);
+          //   });
+          // };
+
+
           this._eventsSort.setSortTypeChangeHandler((sortType) => {
-            events = [];
-            switch (sortType) {
-              case SortType.EVENT:
-                events.slice();
-                break;
-              case SortType.TIME:
-                events.sort((a, b) => b.startDate - a.startDate);
-                break;
-              case SortType.PRICE:
-                events.sort((a, b) => b.price - a.price);
-                break;
-            }
-            return events.slice();
+            const sortedEvents = getEventsSort(events, sortType, 0, EVENTS_COUNT);
+            eventList.innerHTML = ``;
+            // render(eventList.getElement(), sortedEvents, RenderPosition.BEFOREEND);
           });
         });
       });
