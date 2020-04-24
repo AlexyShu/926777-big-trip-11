@@ -6,7 +6,7 @@ import TripDayComponent from '../components/day-number.js';
 import EventListComponent from '../components/events-list.js';
 import {SortType} from '../mocks/event-sort.js';
 import {render, RenderPosition, replace} from '../utils/render.js';
-import {KeyCode, makeGroupedEvents, EVENTS_COUNT, calculateTimeInterval} from '../utils/common.js';
+import {KeyCode, makeGroupedEvents, EVENTS_COUNT} from '../utils/common.js';
 
 const getEventsSort = (events, sortType, from, to) => {
   let sortedItems = [];
@@ -17,11 +17,6 @@ const getEventsSort = (events, sortType, from, to) => {
       break;
     case SortType.TIME:
       sortedItems = showingEvents.sort((a, b) => (b.endDate - b.startDate) - (a.endDate - a.startDate));
-
-      // sortedItems = showingEvents.map((item) => {
-      //   item.interval = calculateTimeInterval(item.startDate, item.endDate);
-      //   return item.interval;
-      // }).sort((a, b) => b.interval - a.interval);
       break;
     case SortType.PRICE:
       sortedItems = showingEvents.sort((a, b) => b.price - a.price);
@@ -61,9 +56,9 @@ export default class TripController {
         const eventList = new EventListComponent();
         render(dayComponent.getElement(), eventList, RenderPosition.BEFOREEND);
 
-        events.forEach((event) => {
-          const eventItem = new CardComponent(event);
-          const eventForm = new EventFormComponent(event);
+        tripEvents.forEach((tripEvent) => {
+          const eventItem = new CardComponent(tripEvent);
+          const eventForm = new EventFormComponent(tripEvent);
 
           const replaceFormToEvent = () => {
             replace(eventItem, eventForm);
@@ -78,6 +73,7 @@ export default class TripController {
               document.removeEventListener(`keydown`, onEscPress);
             }
           };
+
           eventItem.setRollupButtonHandler(() => {
             replaceEventToForm();
             document.addEventListener(`keydown`, onEscPress);
@@ -93,17 +89,32 @@ export default class TripController {
             eventForm.getElement().replaceChild(eventItem.getElement(), eventForm.getElement());
           });
 
+
           render(eventList.getElement(), eventItem, RenderPosition.BEFOREEND);
 
           this._eventsSort.setSortTypeChangeHandler((sortType) => {
             const sortedEvents = getEventsSort(events, sortType, 0, EVENTS_COUNT);
             this._container.getElement().innerHTML = ``;
-            this.render(sortedEvents);
+            const daySort = document.querySelector(`.trip-sort__item--day`);
+            daySort.innerHTML = ``;
+            const siteDayComponent = new TripDayComponent(sortedEvents, 1);
+            render(this._container.getElement(), siteDayComponent, RenderPosition.BEFOREEND);
+            const siteEventListComponent = new EventListComponent();
+            render(siteDayComponent.getElement(), siteEventListComponent, RenderPosition.BEFOREEND);
+            sortedEvents.forEach((it) => {
+              render(siteEventListComponent.getElement(), new CardComponent(it), RenderPosition.BEFOREEND);
+            });
+            const dayCounter = document.querySelectorAll(`.day__counter`);
+            const dayDate = document.querySelectorAll(`.day__date`);
+            dayCounter.forEach((dayNumber) => {
+              dayNumber.remove();
+            });
+            dayDate.forEach((date) => {
+              date.remove();
+            });
           });
 
-
         });
-
 
       });
 
