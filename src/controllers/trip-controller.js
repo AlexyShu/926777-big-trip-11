@@ -1,5 +1,3 @@
-/* eslint-disable max-nested-callbacks */
-
 import EventFormComponent from '../components/form.js';
 import CardComponent from '../components/event.js';
 import NoEventComponent from '../components/no-event.js';
@@ -8,7 +6,7 @@ import TripDayComponent from '../components/day-number.js';
 import EventListComponent from '../components/events-list.js';
 import {SortType} from '../mocks/event-sort.js';
 import {render, RenderPosition, replace} from '../utils/render.js';
-import {KeyCode, makeGroupedEvents, EVENTS_COUNT} from '../utils/common.js';
+import {KeyCode, makeGroupedEvents, EVENTS_COUNT, calculateTimeInterval} from '../utils/common.js';
 
 const getEventsSort = (events, sortType, from, to) => {
   let sortedItems = [];
@@ -19,6 +17,11 @@ const getEventsSort = (events, sortType, from, to) => {
       break;
     case SortType.TIME:
       sortedItems = showingEvents.sort((a, b) => (b.endDate - b.startDate) - (a.endDate - a.startDate));
+
+      // sortedItems = showingEvents.map((item) => {
+      //   item.interval = calculateTimeInterval(item.startDate, item.endDate);
+      //   return item.interval;
+      // }).sort((a, b) => b.interval - a.interval);
       break;
     case SortType.PRICE:
       sortedItems = showingEvents.sort((a, b) => b.price - a.price);
@@ -41,6 +44,7 @@ export default class TripController {
       render(siteTripEventElement, this._container, RenderPosition.BEFOREEND);
       render(this._container.getElement(), this._eventsSort, RenderPosition.BEFOREBEGIN);
       const tripTotalPrice = document.querySelector(`.trip-info__cost-value`);
+
       tripTotalPrice.textContent = events.reduce((totalPrice, it) => {
         return totalPrice + it.price + it.offers.reduce((totalOfferPrice, offer) => {
           return totalOfferPrice + offer.price;
@@ -49,6 +53,7 @@ export default class TripController {
 
       const eventGroups = makeGroupedEvents(events);
       let dayCount = 0;
+
       eventGroups.forEach((tripEvents) => {
         dayCount++;
         const dayComponent = new TripDayComponent(tripEvents, dayCount);
@@ -87,6 +92,7 @@ export default class TripController {
             evt.preventDefault();
             eventForm.getElement().replaceChild(eventItem.getElement(), eventForm.getElement());
           });
+
           render(eventList.getElement(), eventItem, RenderPosition.BEFOREEND);
 
           this._eventsSort.setSortTypeChangeHandler((sortType) => {
@@ -94,7 +100,11 @@ export default class TripController {
             this._container.getElement().innerHTML = ``;
             this.render(sortedEvents);
           });
+
+
         });
+
+
       });
 
     }

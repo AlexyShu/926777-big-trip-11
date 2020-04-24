@@ -66,7 +66,7 @@ const generateEvent = () => {
     endDate: Math.max(startDate, endDate),
     offers: createOffers(type),
     price: getRandomIntegerNumber(0, MAX_PRICE),
-    course: chooseOfferCourse(type)
+    course: chooseOfferCourse(type),
   };
 };
 
