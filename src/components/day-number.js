@@ -1,16 +1,19 @@
 import {months} from '../mocks/trip-info.js';
 import AbstractComponent from "./abstract-component.js";
 
-
-const createTripDayItemTemplate = (events, dayCount) => {
-  const startRouteDate = new Date(events[0].startDate);
-  const day = startRouteDate.getDate();
-  const month = months[startRouteDate.getMonth()];
-  const year = startRouteDate.getFullYear();
+const createTripDayItemTemplate = (dayCount, startDate) => {
+  let dayInfoTemplate = ``;
+  if (dayCount > 0) {
+    const startRouteDate = new Date(startDate);
+    const day = startRouteDate.getDate();
+    const month = months[startRouteDate.getMonth()];
+    const year = startRouteDate.getFullYear();
+    dayInfoTemplate = `<span class="day__counter"> ${dayCount} </span>
+    <time class="day__date" datetime="${year}-${month}-${day}"> ${month} ${day}</time>`;
+  }
   return (`<li class="trip-days__item  day">
       <div class="day__info">
-        <span class="day__counter"> ${dayCount} </span>
-        <time class="day__date" datetime="${year}-${month}-${day}"> ${month} ${day}</time>
+        ${dayInfoTemplate}
       </div>
     </li>`
   );
@@ -23,6 +26,6 @@ export default class TripDayComponent extends AbstractComponent {
     this._dayCount = dayCount;
   }
   getTemplate() {
-    return createTripDayItemTemplate(this._cards, this._dayCount);
+    return createTripDayItemTemplate(this._dayCount, this._cards[0].startDate);
   }
 }
