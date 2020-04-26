@@ -1,10 +1,6 @@
-export const eventSorts = [
-  {
-    name: `time`,
-    title: `Time`
-  },
-  {
-    name: `price`,
-    title: `Price`
-  },
-];
+export const SortType = {
+  EVENT: `event`,
+  TIME: `time`,
+  PRICE: `price`,
+};
+

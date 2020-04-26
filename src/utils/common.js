@@ -35,29 +35,14 @@ export const getTimeFormat = (dateUnix) => {
 };
 
 export const calculateTimeInterval = (time1, time2) => {
-  const startDate = new Date(time1);
-  const endDate = new Date(time2);
-  const daysInterval = Math.abs(endDate.getDay() - startDate.getDay());
-  const hoursInterval = Math.abs(endDate.getHours() - startDate.getHours());
-  const minutesInterval = Math.abs(endDate.getMinutes() - startDate.getMinutes());
-  let formattedInterval = daysInterval > 0 ? castDateInterval(daysInterval) : ``;
-  if (daysInterval > 0 || hoursInterval > 0) {
-    formattedInterval += ` ${castHoursInterval(hoursInterval)}`;
-  }
-  return formattedInterval + ` ${castMinutesInterval(minutesInterval)}`;
+  const daysInterval = Math.floor((time2 - time1) / (1000 * 60 * 60 * 24));
+  const hoursInterval = Math.floor((time2 - time1) / (1000 * 60 * 60)) - daysInterval * 24;
+  const minutesInterval = Math.floor((time2 - time1) / (1000 * 60)) - daysInterval * 60 * 24 - hoursInterval * 60;
+  const formattedInterval = `${daysInterval > 0 ? castInterval(daysInterval, `D`) : ``} ${hoursInterval > 0 ? castInterval(hoursInterval, `H`) : ``} ${castInterval(minutesInterval, `M`)}`;
+  return formattedInterval;
 };
 
-const castDateInterval = (days) => {
-  return days < 10 ? `0${days}D` : `${days}D`;
-};
-
-const castHoursInterval = (hours) => {
-  return hours < 10 ? `0${hours}H` : `${hours}H`;
-};
-
-const castMinutesInterval = (minutes) => {
-  return minutes < 10 ? `0${minutes}M` : `${minutes}M`;
-};
+const castInterval = (timeValue, unitOfTime) => timeValue < 10 ? `0${timeValue}${unitOfTime}` : `${timeValue}${unitOfTime}`;
 
 export const makeGroupedEvents = (events) => {
   const groupedEvents = new Map();
