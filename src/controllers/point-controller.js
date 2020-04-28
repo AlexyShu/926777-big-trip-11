@@ -1,12 +1,13 @@
 import EventFormComponent from '../components/form.js';
 import CardComponent from '../components/event.js';
-import {replace} from '../utils/render.js';
+import {replace, render, RenderPosition} from '../utils/render.js';
 import {KeyCode} from '../utils/common.js';
 
 
 export default class PointController {
-  constructor(container) {
+  constructor(container, onDataChange) {
     this._container = container;
+    this._onDataChange = onDataChange;
 
   }
 
@@ -42,14 +43,14 @@ export default class PointController {
       eventForm.getElement().replaceChild(eventItem.getElement(), eventForm.getElement());
     });
 
-    // eventForm.setFavotiteButtonClickHandler(() => {
-    //   this._onDataChange(this, this._event, Object.assign({}, this._event, {
-    //     isFavorite: !this._event.isFavorite,
-    //   }));
-    // });
+    render(this._container, eventItem, RenderPosition.BEFOREEND);
 
+    eventForm.setFavotiteButtonClickHandler(() => {
+      this._onDataChange(this, event, Object.assign({}, event, {
+        isFavorite: !event.isFavorite,
+      }));
+    });
 
-    return eventItem;
   }
 
 }

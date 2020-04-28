@@ -2,7 +2,10 @@ import {getRandomArrayItem, getRandomIntegerNumber} from '../utils/common.js';
 
 const COUNT_PICTURE = 5;
 
-export const types = [`sightseeing`, `taxi`, `train`, `bus`, `ship`, `transport`, `drive`, `flight`, `check-in`, `restaurant`];
+export const types = {
+  TRANSFER: [`bus`, `drive`, `flight`, `ship`, `taxi`, `train`, `transport`, `trip`],
+  ACTIVITY: [`check-in`, `restaurant`, `sightseeing`]
+};
 
 const offersGroupedInTypes = {
   'taxi': [`Switch to comfort class`, `Order Uber`],
@@ -56,7 +59,7 @@ const getRandomDate = () => {
 const generateEvent = () => {
   const startDate = getRandomDate();
   const endDate = getRandomDate();
-  const type = getRandomArrayItem(types);
+  const type = getRandomArrayItem(Math.random() > 0.5 ? types.TRANSFER : types.ACTIVITY);
   return {
     type,
     city: getRandomArrayItem(cities),
@@ -67,6 +70,7 @@ const generateEvent = () => {
     offers: createOffers(type),
     price: getRandomIntegerNumber(0, MAX_PRICE),
     course: chooseOfferCourse(type),
+    isFavorite: Math.random() > 0.5
   };
 };
 
