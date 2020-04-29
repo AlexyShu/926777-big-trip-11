@@ -70,7 +70,7 @@ const generateEvent = () => {
     offers: createOffers(type),
     price: getRandomIntegerNumber(0, MAX_PRICE),
     course: chooseOfferCourse(type),
-    isFavorite: Math.random() > 0.5
+    isFavorite: true
   };
 };
 

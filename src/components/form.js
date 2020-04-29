@@ -127,7 +127,7 @@ export default class EventFormComponent extends AbstractSmartComponent {
 
     this._city = card.city;
     this._description = card.description;
-    this._type = card.type;
+    this.type = card.type;
     this._offers = card.offers;
     this.addListeners();
   }
