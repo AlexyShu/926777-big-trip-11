@@ -38,7 +38,7 @@ export const cities = [`Amsterdam`, `Geneva`, `Chamonix`];
 
 const generatePictures = () => `http://picsum.photos/300/150?r=${Math.random()}`;
 
-const descriptions = [
+export const descriptions = [
   `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
   `Cras aliquet varius magna, non porta ligula feugiat eget.`,
   `Fusce tristique felis at fermentum pharetra.`,

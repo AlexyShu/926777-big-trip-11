@@ -28,8 +28,10 @@ export default class TripController {
     this._container = container;
     this._eventsSort = new EventSortComponent();
 
+    this._pointControllers = [];
     this._events = [];
     this._onDataChange = this._onDataChange.bind(this);
+    this._onViewChange = this._onViewChange.bind(this);
   }
 
   renderDay(events, dayCount) {
@@ -38,7 +40,8 @@ export default class TripController {
     const eventList = new EventListComponent();
     render(dayComponent.getElement(), eventList, RenderPosition.BEFOREEND);
     events.forEach((event) => {
-      const pointController = new PointController(eventList.getElement(), this._onDataChange);
+      const pointController = new PointController(eventList.getElement(), this._onDataChange, this._onViewChange);
+      this._pointControllers.push(pointController);
       pointController.render(event);
     });
   }
@@ -91,4 +94,9 @@ export default class TripController {
     pointController.render(this._events[index]);
   }
 
+  _onViewChange() {
+    this._pointControllers.forEach((it) => {
+      it._setDefaultView();
+    });
+  }
 }

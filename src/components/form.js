@@ -1,5 +1,5 @@
-import {getDateFormat, getTimeFormat, doFirstLetterUppercase} from '../utils/common.js';
-import {cities, types} from '../mocks/event.js';
+import {getDateFormat, getTimeFormat, doFirstLetterUppercase, getRandomArrayItem} from '../utils/common.js';
+import {cities, types, descriptions} from '../mocks/event.js';
 import AbstractSmartComponent from "./abstract-smart-component.js";
 
 const createPicturesTemplate = (pics) => {
@@ -124,16 +124,13 @@ export default class EventFormComponent extends AbstractSmartComponent {
   constructor(card) {
     super();
     this._card = card;
-
-    this._city = card.city;
-    this._description = card.description;
-    this.type = card.type;
-    this._offers = card.offers;
     this.addListeners();
   }
+
   getTemplate() {
     return createFormTemplate(this._card);
   }
+
   setSaveButtonHandler(handler) {
     this.getElement().querySelector(`.event__save-btn`).addEventListener(`click`, handler);
   }
@@ -157,30 +154,17 @@ export default class EventFormComponent extends AbstractSmartComponent {
 
     element.querySelectorAll(`.event__type-input`).forEach((it) => {
       it.addEventListener(`change`, (evt) => {
-        this.type = evt.target.value;
+        this._card.type = evt.target.value;
         this.rerender();
       });
     });
+
+    const eventInput = element.querySelector(`.event__input--destination`);
+    eventInput.addEventListener(`change`, (evt) => {
+      this._card.city = evt.target.value;
+      this._card.description = getRandomArrayItem(descriptions);
+      this.rerender();
+    });
   }
 }
-
-// const eventInput = element.querySelector(`.event__input--destination`);
-// eventInput.addEventListener(`change`, (evt) => {
-//   this._city = evt.target.value;
-//   this._description = evt.target.value;
-//   this.rerender();
-// });
-
-// this._city = evt.target.value;
-// this._description = evt.target.value;
-// this._offers = evt.target.value;
-
-
-// element.querySelectorAll(`.event__type-input`).forEach((it) => {
-//   it.addEventListener(`change`, (evt) => {
-//     this._type = evt.target.value;
-//     this._offers = evt.target.value;
-//     this.rerender();
-//   });
-// });
 

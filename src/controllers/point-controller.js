@@ -1,56 +1,73 @@
 import EventFormComponent from '../components/form.js';
 import CardComponent from '../components/event.js';
 import {replace, render, RenderPosition} from '../utils/render.js';
-import {KeyCode} from '../utils/common.js';
+import {KeyCode, Mode} from '../utils/common.js';
 
 
 export default class PointController {
-  constructor(container, onDataChange) {
+  constructor(container, onDataChange, onViewChange) {
     this._container = container;
     this._onDataChange = onDataChange;
-
+    this._onViewChange = onViewChange;
+    this._mode = Mode.DEFAULT;
+    this._eventItem = null;
+    this._eventForm = null;
+    this._replaceFormToEvent = this._replaceFormToEvent.bind(this);
+    this._replaceEventToForm = this._replaceEventToForm.bind(this);
+    this._onEscPress = this._onEscPress.bind(this);
   }
 
   render(event) {
-    const eventItem = new CardComponent(event);
-    const eventForm = new EventFormComponent(event);
+    this._eventItem = new CardComponent(event);
+    this._eventForm = new EventFormComponent(event);
 
-    const replaceFormToEvent = () => {
-      replace(eventItem, eventForm);
-    };
-    const replaceEventToForm = () => {
-      replace(eventForm, eventItem);
-    };
-    const onEscPress = (evt) => {
-      if (evt.keyCode === KeyCode.ESC) {
-        evt.preventDefault();
-        replaceFormToEvent();
-        document.removeEventListener(`keydown`, onEscPress);
-      }
-    };
-    eventItem.setRollupButtonHandler(() => {
-      replaceEventToForm();
-      document.addEventListener(`keydown`, onEscPress);
+    this._eventItem.setRollupButtonHandler(() => {
+      this._replaceEventToForm();
+      document.addEventListener(`keydown`, this._onEscPress);
     });
-    eventForm.setSaveButtonHandler(() => {
-      replaceFormToEvent();
+    this._eventForm.setSaveButtonHandler(() => {
+      this._replaceFormToEvent();
     });
-    eventForm.setResetButtonHandler(() => {
-      replaceFormToEvent();
+    this._eventForm.setResetButtonHandler(() => {
+      this._replaceFormToEvent();
     });
-    eventForm.setSubmitFormHandler((evt) => {
+    this._eventForm.setSubmitFormHandler((evt) => {
       evt.preventDefault();
-      eventForm.getElement().replaceChild(eventItem.getElement(), eventForm.getElement());
+      this._eventForm.getElement().replaceChild(this._eventItem.getElement(), this._eventForm.getElement());
     });
 
-    render(this._container, eventItem, RenderPosition.BEFOREEND);
+    render(this._container, this._eventItem, RenderPosition.BEFOREEND);
 
-    eventForm.setFavotiteButtonClickHandler(() => {
+    this._eventForm.setFavotiteButtonClickHandler(() => {
       this._onDataChange(this, event, Object.assign({}, event, {
         isFavorite: !event.isFavorite,
       }));
     });
+  }
 
+  _replaceFormToEvent() {
+    this._mode = Mode.DEFAULT;
+    replace(this._eventItem, this._eventForm);
+  }
+
+  _replaceEventToForm() {
+    this._onViewChange();
+    this._mode = Mode.EDIT;
+    replace(this._eventForm, this._eventItem);
+  }
+
+  _onEscPress(evt) {
+    if (evt.keyCode === KeyCode.ESC) {
+      evt.preventDefault();
+      this._replaceFormToEvent();
+      document.removeEventListener(`keydown`, this._onEscPress);
+    }
+  }
+
+  _setDefaultView() {
+    if (this._mode !== Mode.DEFAULT) {
+      this._replaceFormToEvent();
+    }
   }
 
 }
