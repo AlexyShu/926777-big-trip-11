@@ -1,6 +1,6 @@
-import {getDateFormat, getTimeFormat} from '../utils/common.js';
-import {cities} from '../mocks/event.js';
-import AbstractComponent from "./abstract-component.js";
+import {getDateFormat, getTimeFormat, doFirstLetterUppercase, getRandomArrayItem} from '../utils/common.js';
+import {cities, types, descriptions, createOffers} from '../mocks/event.js';
+import AbstractSmartComponent from "./abstract-smart-component.js";
 
 const createPicturesTemplate = (pics) => {
   return pics.map((picture) => `<img class="event__photo" src="${picture}" alt="Event photo"></img>`).join(`\n`);
@@ -22,18 +22,6 @@ const createOffersTemplate = (offers) => {
   );
 };
 
-const createEventTypeTemplate = (types) => {
-  return (`<div>
-  ${types.map((it) => {
-      return `<div class="event__type-item">
-      <input id="event-type-${it}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${it}">
-      <label class="event__type-label  event__type-label--${it}" for="event-type-${it}-1">${it}</label>
-    </div>`;
-    }).join(`\n`)}
-  </div>`
-  );
-};
-
 const createCitySelectTemplate = (places) => {
   return (`<datalist id="destination-list-1">
   ${places.map((it) => {
@@ -43,12 +31,9 @@ const createCitySelectTemplate = (places) => {
   );
 };
 
-
 const createFormTemplate = (event) => {
-  const {type, description, city, startDate, endDate, price, offers, course} = event;
+  const {type, description, city, startDate, endDate, price, offers, course, isFavorite} = event;
   const picturesTemplate = createPicturesTemplate(event.pictures);
-  const transfers = [`taxi`, `train`, `bus`, `ship`, `transport`, `drive`, `flight`];
-  const activities = [`sightseeing`, `check-in`, `restaurant`];
   return (`<form class="trip-events__item  event  event--edit" action="#" method="post">
       <header class="event__header">
            <div class="event__type-wrapper">
@@ -58,15 +43,20 @@ const createFormTemplate = (event) => {
              </label>
              <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
              <div class="event__type-list">
-              <fieldset class="event__type-group">
-                <legend class="visually-hidden">Transfer</legend>
-                ${createEventTypeTemplate(transfers)}
-              </fieldset>
-              <fieldset class="event__type-group">
-                 <legend class="visually-hidden">Activity</legend>
-                 ${createEventTypeTemplate(activities)}
-              </fieldset>
-           </div>
+             ${Object.keys(types).map((group) => {
+      return (`<fieldset class="event__type-group">
+                  <legend class="visually-hidden">${types[group]}</legend>
+                ${types[group].map((el) => {
+          return (`<div class="event__type-item">
+                      <input id="event-type-${el}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${el}" ${type === el && `checked`}>
+                      <label class="event__type-label  event__type-label--${el}" for="event-type-${el}-1">${doFirstLetterUppercase(el)}</label>
+                    </div>`
+          );
+        }).join(`\n`)}
+                </fieldset>`
+      );
+    }).join(`\n`)}
+         </div>
         </div>
         <div class="event__field-group  event__field-group--destination">
            <label class="event__label  event__type-output" for="event-destination-1">
@@ -94,7 +84,20 @@ const createFormTemplate = (event) => {
            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
         </div>
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-        <button class="event__reset-btn" type="reset">Cancel</button>
+        <button class="event__reset-btn" type="reset">Delete</button>
+
+        <input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite ? `checked` : ``}>
+        <label class="event__favorite-btn" for="event-favorite-1">
+          <span class="visually-hidden">Add to favorite</span>
+          <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
+             <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"/>
+           </svg>
+         </label>
+
+        <button class="event__rollup-btn" type="button">
+          <span class="visually-hidden">Open event</span>
+        </button>
+
       </header>
       <section class="event__details">
         <section class="event__section  event__section--offers">
@@ -115,14 +118,17 @@ const createFormTemplate = (event) => {
   );
 };
 
-export default class EventFormComponent extends AbstractComponent {
+export default class EventFormComponent extends AbstractSmartComponent {
   constructor(card) {
     super();
     this._card = card;
+    this.addListeners();
   }
+
   getTemplate() {
     return createFormTemplate(this._card);
   }
+
   setSaveButtonHandler(handler) {
     this.getElement().querySelector(`.event__save-btn`).addEventListener(`click`, handler);
   }
@@ -132,4 +138,32 @@ export default class EventFormComponent extends AbstractComponent {
   setSubmitFormHandler(handler) {
     this.getElement().addEventListener(`submit`, handler);
   }
+
+  setFavotiteButtonClickHandler(handler) {
+    this.getElement().querySelector(`.event__favorite-checkbox`).addEventListener(`click`, handler);
+  }
+
+  recoveryListeners() {
+    this.addListeners();
+  }
+
+  addListeners() {
+    const element = this.getElement();
+
+    element.querySelectorAll(`.event__type-input`).forEach((it) => {
+      it.addEventListener(`change`, (evt) => {
+        this._card.type = evt.target.value;
+        this._card.offers = createOffers(this._card.type);
+        this.rerender();
+      });
+    });
+
+    const eventInput = element.querySelector(`.event__input--destination`);
+    eventInput.addEventListener(`change`, (evt) => {
+      this._card.city = evt.target.value;
+      this._card.description = getRandomArrayItem(descriptions);
+      this.rerender();
+    });
+  }
 }
+

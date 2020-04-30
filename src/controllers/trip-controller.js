@@ -1,24 +1,23 @@
-import EventFormComponent from '../components/form.js';
-import CardComponent from '../components/event.js';
 import NoEventComponent from '../components/no-event.js';
 import EventSortComponent from '../components/event-sort.js';
 import TripDayComponent from '../components/day-number.js';
 import EventListComponent from '../components/events-list.js';
 import {SortType} from '../mocks/event-sort.js';
-import {render, RenderPosition, replace} from '../utils/render.js';
-import {KeyCode, makeGroupedEvents} from '../utils/common.js';
+import {render, RenderPosition} from '../utils/render.js';
+import {makeGroupedEvents} from '../utils/common.js';
+import PointController from './point-controller.js';
 
 const getEventsSort = (events, sortType) => {
   let sortedItems = [];
   switch (sortType) {
     case SortType.EVENT:
-      sortedItems = events.slice().sort((a, b) => a.startDate - b.startDate);
+      sortedItems = events.slice();
       break;
     case SortType.TIME:
-      sortedItems = events.sort((a, b) => (b.endDate - b.startDate) - (a.endDate - a.startDate));
+      sortedItems = events.slice().sort((a, b) => (b.endDate - b.startDate) - (a.endDate - a.startDate));
       break;
     case SortType.PRICE:
-      sortedItems = events.sort((a, b) => b.price - a.price);
+      sortedItems = events.slice().sort((a, b) => b.price - a.price);
       break;
   }
   return sortedItems;
@@ -28,6 +27,11 @@ export default class TripController {
   constructor(container) {
     this._container = container;
     this._eventsSort = new EventSortComponent();
+
+    this._pointControllers = [];
+    this._events = [];
+    this._onDataChange = this._onDataChange.bind(this);
+    this._onViewChange = this._onViewChange.bind(this);
   }
 
   renderDay(events, dayCount) {
@@ -35,48 +39,15 @@ export default class TripController {
     render(this._container.getElement(), dayComponent, RenderPosition.BEFOREEND);
     const eventList = new EventListComponent();
     render(dayComponent.getElement(), eventList, RenderPosition.BEFOREEND);
-    events.forEach((it) => {
-      const event = this.createEvent(it);
-      render(eventList.getElement(), event, RenderPosition.BEFOREEND);
+    events.forEach((event) => {
+      const pointController = new PointController(eventList.getElement(), this._onDataChange, this._onViewChange);
+      this._pointControllers.push(pointController);
+      pointController.render(event);
     });
   }
-
-
-  createEvent(event) {
-    const eventItem = new CardComponent(event);
-    const eventForm = new EventFormComponent(event);
-    const replaceFormToEvent = () => {
-      replace(eventItem, eventForm);
-    };
-    const replaceEventToForm = () => {
-      replace(eventForm, eventItem);
-    };
-    const onEscPress = (evt) => {
-      if (evt.keyCode === KeyCode.ESC) {
-        evt.preventDefault();
-        replaceFormToEvent();
-        document.removeEventListener(`keydown`, onEscPress);
-      }
-    };
-    eventItem.setRollupButtonHandler(() => {
-      replaceEventToForm();
-      document.addEventListener(`keydown`, onEscPress);
-    });
-    eventForm.setSaveButtonHandler(() => {
-      replaceFormToEvent();
-    });
-    eventForm.setResetButtonHandler(() => {
-      replaceFormToEvent();
-    });
-    eventForm.setSubmitFormHandler((evt) => {
-      evt.preventDefault();
-      eventForm.getElement().replaceChild(eventItem.getElement(), eventForm.getElement());
-    });
-    return eventItem;
-  }
-
 
   render(events, isGroupOnDays = true) {
+    this._events = events;
     const siteTripEventElement = document.querySelector(`.trip-events`);
     if (!events.length) {
       render(siteTripEventElement, new NoEventComponent(), RenderPosition.BEFOREEND);
@@ -113,6 +84,19 @@ export default class TripController {
 
     }
   }
+
+  _onDataChange(pointController, oldData, newData) {
+    const index = this._events.findIndex((it) => it === oldData);
+    if (index === -1) {
+      return;
+    }
+    this._events = [].concat(this._events.slice(0, index), newData, this._events.slice(index + 1));
+    pointController.render(this._events[index]);
+  }
+
+  _onViewChange() {
+    this._pointControllers.forEach((it) => {
+      it._setDefaultView();
+    });
+  }
 }
-
-

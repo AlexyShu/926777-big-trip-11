@@ -17,10 +17,9 @@ const siteFilterElement = document.querySelector(`.trip-main__trip-controls`);
 render(siteMenuElement, new SiteMenuComponent(menuItems), RenderPosition.AFTEREND);
 render(siteFilterElement, new FiltersComponent(filters), RenderPosition.BEFOREEND);
 
-if (EVENTS_COUNT !== 0) {
+if (cards.length !== 0) {
   render(siteFilterElement, new TripInfoComponent(cards), RenderPosition.BEFOREBEGIN);
 }
-
 
 const tripDaysList = new TripDaysListComponent();
 const tripController = new TripController(tripDaysList);
