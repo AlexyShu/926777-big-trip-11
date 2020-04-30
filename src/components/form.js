@@ -1,5 +1,5 @@
 import {getDateFormat, getTimeFormat, doFirstLetterUppercase, getRandomArrayItem} from '../utils/common.js';
-import {cities, types, descriptions} from '../mocks/event.js';
+import {cities, types, descriptions, createOffers} from '../mocks/event.js';
 import AbstractSmartComponent from "./abstract-smart-component.js";
 
 const createPicturesTemplate = (pics) => {
@@ -22,7 +22,6 @@ const createOffersTemplate = (offers) => {
   );
 };
 
-
 const createCitySelectTemplate = (places) => {
   return (`<datalist id="destination-list-1">
   ${places.map((it) => {
@@ -31,7 +30,6 @@ const createCitySelectTemplate = (places) => {
     </datalist>`
   );
 };
-
 
 const createFormTemplate = (event) => {
   const {type, description, city, startDate, endDate, price, offers, course, isFavorite} = event;
@@ -155,6 +153,7 @@ export default class EventFormComponent extends AbstractSmartComponent {
     element.querySelectorAll(`.event__type-input`).forEach((it) => {
       it.addEventListener(`change`, (evt) => {
         this._card.type = evt.target.value;
+        this._card.offers = createOffers(this._card.type);
         this.rerender();
       });
     });

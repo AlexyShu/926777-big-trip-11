@@ -3,7 +3,7 @@ import {getRandomArrayItem, getRandomIntegerNumber} from '../utils/common.js';
 const COUNT_PICTURE = 5;
 
 export const types = {
-  TRANSFER: [`bus`, `drive`, `flight`, `ship`, `taxi`, `train`, `transport`, `trip`],
+  TRANSFER: [`bus`, `drive`, `flight`, `ship`, `taxi`, `train`, `transport`],
   ACTIVITY: [`check-in`, `restaurant`, `sightseeing`]
 };
 
@@ -70,7 +70,7 @@ const generateEvent = () => {
     offers: createOffers(type),
     price: getRandomIntegerNumber(0, MAX_PRICE),
     course: chooseOfferCourse(type),
-    isFavorite: true
+    isFavorite: Math.random() > 0.5
   };
 };
 
