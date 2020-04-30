@@ -18,6 +18,9 @@ export default class PointController {
   }
 
   render(event) {
+    const oldEventItem = this._eventItem;
+    const oldEventForm = this._eventForm;
+
     this._eventItem = new CardComponent(event);
     this._eventForm = new EventFormComponent(event);
 
@@ -36,13 +39,19 @@ export default class PointController {
       this._eventForm.getElement().replaceChild(this._eventItem.getElement(), this._eventForm.getElement());
     });
 
-    render(this._container, this._eventItem, RenderPosition.BEFOREEND);
-
     this._eventForm.setFavotiteButtonClickHandler(() => {
       this._onDataChange(this, event, Object.assign({}, event, {
         isFavorite: !event.isFavorite,
       }));
     });
+
+    if (oldEventItem && oldEventForm) {
+      replace(this._eventItem, oldEventItem);
+      replace(this._eventForm, oldEventForm);
+    } else {
+      render(this._container, this._eventItem, RenderPosition.BEFOREEND);
+    }
+
   }
 
   _replaceFormToEvent() {
