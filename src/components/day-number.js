@@ -9,7 +9,7 @@ const createTripDayItemTemplate = (dayCount, startDate) => {
     const day = startRouteDate.getDate();
     const month = months[startRouteDate.getMonth()];
     dayInfoTemplate = `<span class="day__counter"> ${dayCount} </span>
-    <time class="day__date" datetime="${dateFormat(day)}"> ${month} ${day}</time>`;
+    <time class="day__date" datetime="${dateFormat(startDate)}"> ${month} ${day}</time>`;
   }
   return (`<li class="trip-days__item  day">
       <div class="day__info">
