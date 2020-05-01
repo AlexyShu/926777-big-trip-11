@@ -1,5 +1,6 @@
 import {months} from '../mocks/trip-info.js';
 import AbstractComponent from "./abstract-component.js";
+import {dateFormat} from '../utils/common.js';
 
 const createTripDayItemTemplate = (dayCount, startDate) => {
   let dayInfoTemplate = ``;
@@ -7,9 +8,8 @@ const createTripDayItemTemplate = (dayCount, startDate) => {
     const startRouteDate = new Date(startDate);
     const day = startRouteDate.getDate();
     const month = months[startRouteDate.getMonth()];
-    const year = startRouteDate.getFullYear();
     dayInfoTemplate = `<span class="day__counter"> ${dayCount} </span>
-    <time class="day__date" datetime="${year}-${month}-${day}"> ${month} ${day}</time>`;
+    <time class="day__date" datetime="${dateFormat(day)}"> ${month} ${day}</time>`;
   }
   return (`<li class="trip-days__item  day">
       <div class="day__info">
