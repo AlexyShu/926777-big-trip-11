@@ -26,7 +26,7 @@ export const timeFormat = (date) => {
 };
 
 export const dateFormat = (date) => {
-  return moment(date).format();
+  return moment(date).format(`YYYY-MM-DD hh:mm`);
 };
 
 // export const getDateFormat = (dateUnix) => {
