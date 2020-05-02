@@ -1,4 +1,4 @@
-import {getTimeFormat, getDateFormat, calculateTimeInterval} from '../utils/common.js';
+import {timeFormat, dateFormat, calculateTimeInterval} from '../utils/common.js';
 import AbstractComponent from "./abstract-component.js";
 
 const createOffersTemplate = (offers) => {
@@ -24,9 +24,9 @@ const createCardTemplate = (event) => {
         <h3 class="event__title">${type} ${course} ${city}</h3>
         <div class="event__schedule">
           <p class="event__time">
-          <time class="event__start-time" datetime="${getDateFormat(startDate)}T${getTimeFormat(startDate)}">${getTimeFormat(startDate)}</time>
+          <time class="event__start-time" datetime="${dateFormat(startDate)}">${timeFormat(startDate)}</time>
           &mdash;
-          <time class="event__end-time" datetime="${getDateFormat(endDate)}T${getTimeFormat(endDate)}">${getTimeFormat(endDate)}</time>
+          <time class="event__end-time" datetime="${dateFormat(endDate)}">${timeFormat(endDate)}</time>
         </p>
         <p class="event__duration">${calculateTimeInterval(startDate, endDate)}</p>
         </div>

@@ -1,6 +1,9 @@
-import {getDateFormat, getTimeFormat, doFirstLetterUppercase, getRandomArrayItem} from '../utils/common.js';
+import {doFirstLetterUppercase, getRandomArrayItem, dateFormat} from '../utils/common.js';
 import {cities, types, descriptions, createOffers} from '../mocks/event.js';
 import AbstractSmartComponent from "./abstract-smart-component.js";
+import flatpickr from "flatpickr";
+
+import "flatpickr/dist/flatpickr.min.css";
 
 const createPicturesTemplate = (pics) => {
   return pics.map((picture) => `<img class="event__photo" src="${picture}" alt="Event photo"></img>`).join(`\n`);
@@ -69,12 +72,12 @@ const createFormTemplate = (event) => {
            <label class="visually-hidden" for="event-start-time-1">
            From
            </label>
-           <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${getDateFormat(startDate)} ${getTimeFormat(startDate)}">
+           <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dateFormat(startDate)}">
            &mdash;
            <label class="visually-hidden" for="event-end-time-1">
            To
            </label>
-           <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${getDateFormat(endDate)} ${getTimeFormat(endDate)}">
+           <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dateFormat(endDate)}">
         </div>
         <div class="event__field-group  event__field-group--price">
            <label class="event__label" for="event-price-1">
@@ -122,12 +125,47 @@ export default class EventFormComponent extends AbstractSmartComponent {
   constructor(card) {
     super();
     this._card = card;
+    this._flatpickr = null;
+    this._applyFlatpickr();
     this.addListeners();
   }
 
   getTemplate() {
     return createFormTemplate(this._card);
   }
+
+  removeElement() {
+    if (this._flatpickr) {
+      this._flatpickr.destroy();
+      this._flatpickr = null;
+    }
+    super.removeElement();
+  }
+
+  rerender() {
+    super.rerender();
+    this._applyFlatpickr();
+  }
+
+  _applyFlatpickr() {
+    if (this._flatpickr) {
+      this._flatpickr.destroy();
+      this._flatpickr = null;
+    }
+    this._setFlatpickr(this.getElement().querySelector(`#event-start-time-1`), this._startDate);
+    this._setFlatpickr(this.getElement().querySelector(`#event-end-time-1`), this._endDate);
+  }
+
+  _setFlatpickr(input, defaultTime) {
+    this._flatpickr = flatpickr(input, {
+      enableTime: true,
+      dateFormat: `d/m/y H:i`,
+      minDate: `today`,
+      defaultDate: defaultTime,
+      allowInput: true,
+    });
+  }
+
 
   setSaveButtonHandler(handler) {
     this.getElement().querySelector(`.event__save-btn`).addEventListener(`click`, handler);

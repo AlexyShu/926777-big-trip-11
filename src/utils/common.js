@@ -1,3 +1,5 @@
+import moment from "moment";
+
 export const KeyCode = {
   ESC: 27
 };
@@ -15,29 +17,37 @@ export const getRandomArrayItem = (array) => {
   return array[randomIndex];
 };
 
-export const getZeroFormat = (value) => {
-  return value < 10 ? `0${value}` : String(value);
+// export const getZeroFormat = (value) => {
+//   return value < 10 ? `0${value}` : String(value);
+// };
+
+export const timeFormat = (date) => {
+  return moment(date).format(`hh:mm`);
 };
 
-export const getDateFormat = (dateUnix) => {
-  const date = new Date(dateUnix);
-  const year = date.getFullYear();
-  const month = getZeroFormat(date.getMonth() + 1);
-  const day = getZeroFormat(date.getDate());
-  return `${year}/${month}/${day}`;
+export const dateFormat = (date) => {
+  return moment(date).format(`YYYY-MM-DD hh:mm`);
 };
 
-export const getTimeFormat = (dateUnix) => {
-  const date = new Date(dateUnix);
-  const hours = getZeroFormat(date.getHours());
-  const minutes = getZeroFormat(date.getMinutes());
-  return `${hours}:${minutes}`;
-};
+// export const getDateFormat = (dateUnix) => {
+//   const date = new Date(dateUnix);
+//   const year = date.getFullYear();
+//   const month = getZeroFormat(date.getMonth() + 1);
+//   const day = getZeroFormat(date.getDate());
+//   return `${year}/${month}/${day}`;
+// };
+
+// export const getTimeFormat = (dateUnix) => {
+//   const date = new Date(dateUnix);
+//   const hours = getZeroFormat(date.getHours());
+//   const minutes = getZeroFormat(date.getMinutes());
+//   return `${hours}:${minutes}`;
+// };
 
 export const calculateTimeInterval = (time1, time2) => {
-  const daysInterval = Math.floor((time2 - time1) / (1000 * 60 * 60 * 24));
-  const hoursInterval = Math.floor((time2 - time1) / (1000 * 60 * 60)) - daysInterval * 24;
-  const minutesInterval = Math.floor((time2 - time1) / (1000 * 60)) - daysInterval * 60 * 24 - hoursInterval * 60;
+  const daysInterval = moment(time2).diff(moment(time1), `days`);
+  const hoursInterval = moment(time2).diff(moment(time1), `hours`) - daysInterval * 24;
+  const minutesInterval = moment(time2).diff(moment(time1), `minutes`) - daysInterval * 60 * 24 - hoursInterval * 60;
   const formattedInterval = `${daysInterval > 0 ? castInterval(daysInterval, `D`) : ``} ${hoursInterval > 0 ? castInterval(hoursInterval, `H`) : ``} ${castInterval(minutesInterval, `M`)}`;
   return formattedInterval;
 };
@@ -65,3 +75,4 @@ export const Mode = {
   DEFAULT: `default`,
   EDIT: `edit`
 };
+
