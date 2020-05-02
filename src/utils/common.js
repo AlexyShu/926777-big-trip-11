@@ -17,32 +17,13 @@ export const getRandomArrayItem = (array) => {
   return array[randomIndex];
 };
 
-// export const getZeroFormat = (value) => {
-//   return value < 10 ? `0${value}` : String(value);
-// };
-
 export const timeFormat = (date) => {
   return moment(date).format(`hh:mm`);
 };
 
 export const dateFormat = (date) => {
-  return moment(date).format(`YYYY-MM-DD hh:mm`);
+  return moment(date).format(`YYYY/MM/DD hh:mm`);
 };
-
-// export const getDateFormat = (dateUnix) => {
-//   const date = new Date(dateUnix);
-//   const year = date.getFullYear();
-//   const month = getZeroFormat(date.getMonth() + 1);
-//   const day = getZeroFormat(date.getDate());
-//   return `${year}/${month}/${day}`;
-// };
-
-// export const getTimeFormat = (dateUnix) => {
-//   const date = new Date(dateUnix);
-//   const hours = getZeroFormat(date.getHours());
-//   const minutes = getZeroFormat(date.getMinutes());
-//   return `${hours}:${minutes}`;
-// };
 
 export const calculateTimeInterval = (time1, time2) => {
   const daysInterval = moment(time2).diff(moment(time1), `days`);

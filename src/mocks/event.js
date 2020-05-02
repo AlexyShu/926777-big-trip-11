@@ -61,6 +61,7 @@ const generateEvent = () => {
   const endDate = getRandomDate();
   const type = getRandomArrayItem(Math.random() > 0.5 ? types.TRANSFER : types.ACTIVITY);
   return {
+    id: Math.random(),
     type,
     city: getRandomArrayItem(cities),
     description: getRandomArrayItem(descriptions),
