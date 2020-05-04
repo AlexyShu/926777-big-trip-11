@@ -20,10 +20,10 @@ export default class FiltersComponent extends AbstractComponent {
   </form>`;
   }
 
-  // setOnFilterChange(handler) {
-  //   this.getElement().addEventListener(`change`, (evt) => {
-  //     handler(evt.target.dataset.filter);
-  //   });
-  // }
+  setOnFilterChange(handler) {
+    this.getElement().addEventListener(`change`, (evt) => {
+      handler(evt.target.dataset.filter);
+    });
+  }
 
 }

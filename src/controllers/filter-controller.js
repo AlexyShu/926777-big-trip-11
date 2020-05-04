@@ -9,8 +9,8 @@ export default class FilterController {
 
     this._filterComponent = null;
     this._activeFilterType = FilterType.EVERYTHING;
-    this._onDataChange = this._onDataChange.bind(this);
-    this._onFilterChange = this._onFilterChange.bind(this);
+    // this._onDataChange = this._onDataChange.bind(this);
+    // this._onFilterChange = this._onFilterChange.bind(this);
   }
 
   render() {
@@ -38,7 +38,7 @@ export default class FilterController {
     this._activeFilterType = filterType;
   }
 
-  _onDataChange() {
-    this.render();
-  }
+  // _onDataChange() {
+  //   this.render();
+  // }
 }

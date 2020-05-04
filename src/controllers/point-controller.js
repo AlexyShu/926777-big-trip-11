@@ -1,6 +1,6 @@
 import EventFormComponent from '../components/form.js';
 import CardComponent from '../components/event.js';
-import {replace, render, RenderPosition} from '../utils/render.js';
+import {replace, render, remove, RenderPosition} from '../utils/render.js';
 import {KeyCode, Mode} from '../utils/common.js';
 
 
@@ -77,6 +77,12 @@ export default class PointController {
     if (this._mode !== Mode.DEFAULT) {
       this._replaceFormToEvent();
     }
+  }
+
+  destroy() {
+    remove(this._eventItem);
+    remove(this._eventForm);
+    document.removeEventListener(`keydown`, this._onEscPress);
   }
 
 }

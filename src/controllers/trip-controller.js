@@ -32,6 +32,9 @@ export default class TripController {
     this._pointsModel = pointsModel;
     this._onDataChange = this._onDataChange.bind(this);
     this._onViewChange = this._onViewChange.bind(this);
+
+    this._onFilterChange = this._onFilterChange.bind(this);
+    this._pointsModel.setFilterChangeHandler(this._onFilterChange);
   }
 
   renderDay(events, dayCount) {
@@ -96,5 +99,20 @@ export default class TripController {
     this._pointControllers.forEach((it) => {
       it._setDefaultView();
     });
+  }
+
+  _removeEvents() {
+    this._container.innerHTML = ``;
+    this._pointControllers.forEach((_pointController) => _pointController.destroy());
+    this._pointControllers = [];
+  }
+
+  _updateEvents() {
+    this._removeEvents();
+    this.render();
+  }
+
+  _onFilterChange() {
+    this._updateEvents();
   }
 }
