@@ -3,7 +3,7 @@ import TripController from './controllers/trip-controller.js';
 import FlterController from './controllers/filter-controller.js';
 import TripDaysListComponent from './components/days-list.js';
 import TripInfoComponent from './components/trip-info.js';
-import PointsModel from "./models/points.js";
+import PointsModel from "./models/points-model.js";
 import {render, RenderPosition} from './utils/render.js';
 import {menuItems} from './mocks/menu.js';
 import {generateEvents} from './mocks/event.js';

@@ -89,7 +89,7 @@ export default class TripController {
   }
 
   _onDataChange(pointController, oldData, newData) {
-    const isSuccess = this._eventsModel.updateTask(oldData.id, newData);
+    const isSuccess = this._pointsModel.updateTask(oldData.id, newData);
     if (isSuccess) {
       pointController.render(newData);
     }
@@ -102,7 +102,7 @@ export default class TripController {
   }
 
   _removeEvents() {
-    this._container.innerHTML = ``;
+    this._container.getElement().innerHTML = ``;
     this._pointControllers.forEach((_pointController) => _pointController.destroy());
     this._pointControllers = [];
   }

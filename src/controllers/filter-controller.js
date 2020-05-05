@@ -3,14 +3,13 @@ import {FilterType} from "../const.js";
 import FiltersComponent from '../components/filters.js';
 
 export default class FilterController {
-  constructor(container, eventsModel) {
+  constructor(container, pointsModel) {
     this._container = container;
-    this._eventsModel = eventsModel;
+    this._pointsModel = pointsModel;
 
     this._filterComponent = null;
     this._activeFilterType = FilterType.EVERYTHING;
-    // this._onDataChange = this._onDataChange.bind(this);
-    // this._onFilterChange = this._onFilterChange.bind(this);
+    this._onFilterChange = this._onFilterChange.bind(this);
   }
 
   render() {
@@ -24,7 +23,7 @@ export default class FilterController {
     const oldComponent = this._filterComponent;
 
     this._filterComponent = new FiltersComponent(filters);
-    // this._filterComponent.setFilterChangeHandler(this._onFilterChange);
+    this._filterComponent.setOnFilterChange(this._onFilterChange);
 
     if (oldComponent) {
       replace(this._filterComponent, oldComponent);
@@ -34,11 +33,7 @@ export default class FilterController {
   }
 
   _onFilterChange(filterType) {
-    this._enentsModel.setFilter(filterType);
     this._activeFilterType = filterType;
+    this._pointsModel.setFilter(filterType);
   }
-
-  // _onDataChange() {
-  //   this.render();
-  // }
 }
