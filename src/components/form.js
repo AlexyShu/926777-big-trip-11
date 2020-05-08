@@ -1,7 +1,8 @@
-import {doFirstLetterUppercase, getRandomArrayItem, dateFormat} from '../utils/common.js';
+import {doFirstLetterUppercase, getRandomArrayItem, dateFormat, parseDate, Mode} from '../utils/common.js';
 import {cities, types, descriptions, createOffers} from '../mocks/event.js';
 import AbstractSmartComponent from "./abstract-smart-component.js";
 import flatpickr from "flatpickr";
+// import {encode} from "he";
 
 import "flatpickr/dist/flatpickr.min.css";
 
@@ -88,7 +89,6 @@ const createFormTemplate = (event) => {
         </div>
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
         <button class="event__reset-btn" type="reset">Delete</button>
-
         <input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite ? `checked` : ``}>
         <label class="event__favorite-btn" for="event-favorite-1">
           <span class="visually-hidden">Add to favorite</span>
@@ -96,11 +96,9 @@ const createFormTemplate = (event) => {
              <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"/>
            </svg>
          </label>
-
         <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>
         </button>
-
       </header>
       <section class="event__details">
         <section class="event__section  event__section--offers">
@@ -121,11 +119,30 @@ const createFormTemplate = (event) => {
   );
 };
 
+
+const parseFormData = (formData) => {
+  return {
+    type: formData.get(`event-type`),
+    description: formData.get(`event__destination-description`),
+    city: formData.get(`event__input--destination`),
+    startDate: parseDate(formData.get(`event-start-time`)),
+    endDate: parseDate(formData.get(`event-end-time`)),
+    price: formData.get(`event__input--price`),
+    isFavorite: false
+  };
+};
+
+
 export default class EventFormComponent extends AbstractSmartComponent {
   constructor(card) {
     super();
     this._card = card;
     this._flatpickr = null;
+    this._rollupHandler = null;
+    this._resetHandler = null;
+    this._submitHandler = null;
+    this._mode = Mode.DEFAULT;
+
     this._applyFlatpickr();
     this.addListeners();
   }
@@ -166,23 +183,35 @@ export default class EventFormComponent extends AbstractSmartComponent {
     });
   }
 
-
-  setSaveButtonHandler(handler) {
-    this.getElement().querySelector(`.event__save-btn`).addEventListener(`click`, handler);
+  setRpllupFormButtonClick(handler) {
+    this.getElement().querySelector(`.event__rollup-btn`)
+      .addEventListener(`click`, handler);
+    this._rollupHandler = handler;
   }
+
   setResetButtonHandler(handler) {
     this.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, handler);
+    this._resetHandler = handler;
   }
+
   setSubmitFormHandler(handler) {
     this.getElement().addEventListener(`submit`, handler);
+    this._submitHandler = handler;
   }
 
   setFavotiteButtonClickHandler(handler) {
-    this.getElement().querySelector(`.event__favorite-checkbox`).addEventListener(`click`, handler);
+    this.getElement().querySelector(`.event__favorite-btn`)
+      .addEventListener(`click`, handler);
   }
 
   recoveryListeners() {
+    this.setSubmitFormHandler(this._submitHandler);
+    this.setResetButtonHandler(this._resetHandler);
     this.addListeners();
+
+    if (this._mode === Mode.DEFAULT) {
+      this.setOnCancelButtonClick(this._cancelHandler);
+    }
   }
 
   addListeners() {
@@ -203,5 +232,16 @@ export default class EventFormComponent extends AbstractSmartComponent {
       this.rerender();
     });
   }
-}
 
+  getData() {
+    const form = this.getElement();
+    const formData = new FormData(form);
+    return parseFormData(formData);
+  }
+
+  setMode(mode) {
+    this._mode = mode;
+    this.rerender();
+  }
+
+}

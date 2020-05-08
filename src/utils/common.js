@@ -25,6 +25,10 @@ export const dateFormat = (date) => {
   return moment(date).format(`YYYY/MM/DD hh:mm`);
 };
 
+export const parseDateWithoutTime = (dateString) => moment(dateString, `YYYY MMM DD`).valueOf();
+
+export const parseDate = (dateString) => moment(dateString, `DD/MM/YY HH:mm`).valueOf();
+
 export const calculateTimeInterval = (time1, time2) => {
   const daysInterval = moment(time2).diff(moment(time1), `days`);
   const hoursInterval = moment(time2).diff(moment(time1), `hours`) - daysInterval * 24;
@@ -54,6 +58,20 @@ export const doFirstLetterUppercase = (string) => {
 
 export const Mode = {
   DEFAULT: `default`,
-  EDIT: `edit`
+  EDIT: `edit`,
+  ADD: `add`
+};
+
+export const EmptyPoint = {
+  id: 0,
+  type: `flight`,
+  destination: ``,
+  description: ``,
+  photosUrls: [],
+  offers: [{}],
+  startDate: Date.now(),
+  endDate: Date.now(),
+  price: 0,
+  isFavorite: false
 };
 

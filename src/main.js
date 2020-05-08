@@ -2,6 +2,7 @@ import SiteMenuComponent from './components/menu.js';
 import TripController from './controllers/trip-controller.js';
 import FlterController from './controllers/filter-controller.js';
 import TripDaysListComponent from './components/days-list.js';
+import AddEventButton from './components/add-buutton.js';
 import TripInfoComponent from './components/trip-info.js';
 import PointsModel from "./models/points-model.js";
 import {render, RenderPosition} from './utils/render.js';
@@ -21,6 +22,8 @@ render(siteMenuElement, new SiteMenuComponent(menuItems), RenderPosition.AFTEREN
 const filterController = new FlterController(siteFilterElement, pointsModel);
 filterController.render();
 
+const addEventButton = new AddEventButton();
+render(siteFilterElement, addEventButton, RenderPosition.AFTEREND);
 
 if (cards.length !== 0) {
   render(siteFilterElement, new TripInfoComponent(cards), RenderPosition.BEFOREBEGIN);
@@ -29,3 +32,7 @@ if (cards.length !== 0) {
 const tripDaysList = new TripDaysListComponent();
 const tripController = new TripController(tripDaysList, pointsModel);
 tripController.render();
+
+addEventButton.setClichButtonHandler(() => {
+  tripController.createPoint();
+});

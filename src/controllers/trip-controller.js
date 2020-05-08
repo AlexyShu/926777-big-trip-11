@@ -4,7 +4,7 @@ import TripDayComponent from '../components/day-number.js';
 import EventListComponent from '../components/events-list.js';
 import {SortType} from '../mocks/event-sort.js';
 import {render, RenderPosition} from '../utils/render.js';
-import {makeGroupedEvents} from '../utils/common.js';
+import {Mode as PointControllerMode, makeGroupedEvents, EmptyPoint} from '../utils/common.js';
 import PointController from './point-controller.js';
 
 const getEventsSort = (events, sortType) => {
@@ -29,6 +29,7 @@ export default class TripController {
     this._eventsSort = new EventSortComponent();
 
     this._pointControllers = [];
+    this._creatingPoint = null;
     this._pointsModel = pointsModel;
     this._onDataChange = this._onDataChange.bind(this);
     this._onViewChange = this._onViewChange.bind(this);
@@ -45,7 +46,7 @@ export default class TripController {
     events.forEach((event) => {
       const pointController = new PointController(eventList.getElement(), this._onDataChange, this._onViewChange);
       this._pointControllers.push(pointController);
-      pointController.render(event);
+      pointController.render(event, PointControllerMode.DEFAULT);
     });
   }
 
@@ -89,9 +90,25 @@ export default class TripController {
   }
 
   _onDataChange(pointController, oldData, newData) {
-    const isSuccess = this._pointsModel.updateTask(oldData.id, newData);
-    if (isSuccess) {
-      pointController.render(newData);
+    // добавление
+    if (oldData === EmptyPoint) {
+      this._creatingPoint = null;
+      if (newData === null) {
+        pointController.destroy();
+      } else {
+        this._pointsModel.addEvent(newData);
+        pointController.render(newData, PointControllerMode.ADD);
+      }
+    }
+    // удаление
+    if (newData === null) {
+      this._pointsModel.removeEvent(oldData.id);
+    } else {
+      // обнавление
+      const isSuccess = this._pointsModel.updateEvent(oldData.id, newData);
+      if (isSuccess) {
+        pointController.render(newData, PointControllerMode.DEFAULT);
+      }
     }
   }
 
@@ -114,5 +131,14 @@ export default class TripController {
 
   _onFilterChange() {
     this._updateEvents();
+  }
+
+  createPoint() {
+    if (this._creatingPoint) {
+      return;
+    }
+    const eventsListElement = this.eventList.getElement();
+    this._creatingPoint = new PointController(eventsListElement, this._onDataChange, this._onViewChange);
+    this._creatingPoint(EmptyPoint, PointControllerMode.ADD);
   }
 }
