@@ -120,9 +120,9 @@ const createFormTemplate = (event) => {
 };
 
 
-const parseFormData = (formData) => {
+const parseFormData = (formData, type) => {
   return {
-    type: formData.get(`event-type`),
+    type,
     description: formData.get(`event__destination-description`),
     city: formData.get(`event__input--destination`),
     startDate: parseDate(formData.get(`event-start-time`)),
@@ -131,7 +131,6 @@ const parseFormData = (formData) => {
     isFavorite: false
   };
 };
-
 
 export default class EventFormComponent extends AbstractSmartComponent {
   constructor(card) {
@@ -142,6 +141,7 @@ export default class EventFormComponent extends AbstractSmartComponent {
     this._resetHandler = null;
     this._submitHandler = null;
     this._mode = Mode.DEFAULT;
+    this._type = card.type;
 
     this._applyFlatpickr();
     this.addListeners();
@@ -236,7 +236,7 @@ export default class EventFormComponent extends AbstractSmartComponent {
   getData() {
     const form = this.getElement();
     const formData = new FormData(form);
-    return parseFormData(formData);
+    return parseFormData(formData, this._type);
   }
 
   setMode(mode) {

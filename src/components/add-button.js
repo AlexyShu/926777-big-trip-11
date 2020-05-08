@@ -7,7 +7,7 @@ export default class AddEventButton extends AbstractComponent {
     );
   }
 
-  setClichButtonHandler(handler) {
+  setClickButtonHandler(handler) {
     this.getElement().addEventListener(`click`, handler);
   }
 }

@@ -137,8 +137,8 @@ export default class TripController {
     if (this._creatingPoint) {
       return;
     }
-    const eventsListElement = this.eventList.getElement();
+    const eventsListElement = eventList.getElement();
     this._creatingPoint = new PointController(eventsListElement, this._onDataChange, this._onViewChange);
-    this._creatingPoint(EmptyPoint, PointControllerMode.ADD);
+    this._creatingPoint.render(EmptyPoint, PointControllerMode.ADD);
   }
 }

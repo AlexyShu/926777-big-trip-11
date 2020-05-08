@@ -2,7 +2,7 @@ import SiteMenuComponent from './components/menu.js';
 import TripController from './controllers/trip-controller.js';
 import FlterController from './controllers/filter-controller.js';
 import TripDaysListComponent from './components/days-list.js';
-import AddEventButton from './components/add-buutton.js';
+import AddEventButton from './components/add-button.js';
 import TripInfoComponent from './components/trip-info.js';
 import PointsModel from "./models/points-model.js";
 import {render, RenderPosition} from './utils/render.js';
@@ -33,6 +33,7 @@ const tripDaysList = new TripDaysListComponent();
 const tripController = new TripController(tripDaysList, pointsModel);
 tripController.render();
 
-addEventButton.setClichButtonHandler(() => {
+addEventButton.setClickButtonHandler(() => {
+  // console.log(`NEW`);
   tripController.createPoint();
 });
