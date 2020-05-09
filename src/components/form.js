@@ -1,4 +1,5 @@
-import {doFirstLetterUppercase, getRandomArrayItem, dateFormat, parseDate, Mode} from '../utils/common.js';
+/* eslint-disable no-unreachable */
+import {doFirstLetterUppercase, getRandomArrayItem, dateFormat, Mode} from '../utils/common.js';
 import {cities, types, descriptions, createOffers} from '../mocks/event.js';
 import AbstractSmartComponent from "./abstract-smart-component.js";
 import flatpickr from "flatpickr";
@@ -9,6 +10,9 @@ import "flatpickr/dist/flatpickr.min.css";
 const createPicturesTemplate = (pics) => {
   return pics.map((picture) => `<img class="event__photo" src="${picture}" alt="Event photo"></img>`).join(`\n`);
 };
+
+// const checkbox = document.querySelector(`.event__offer-checkbox`);
+// checkbox.addEventListener(`click`, if (offer.isChecked === true) { offer.isChecked === false});
 
 const createOffersTemplate = (offers) => {
   return (`<div class="event__available-offers">
@@ -120,10 +124,11 @@ const createFormTemplate = (event) => {
 };
 
 
-const parseFormData = (formData, type, offers) => {
+const parseFormData = (formData, type, offers, pictures) => {
   const offersChecked = offers.filter((offer) => offer.isChecked === true);
   return {
     type,
+    pictures,
     offers: offersChecked,
     city: formData.get(`event-destination`),
     startDate: formData.get(`event-start-time`),
@@ -186,12 +191,13 @@ export default class EventFormComponent extends AbstractSmartComponent {
 
   setRpllupFormButtonClick(handler) {
     this.getElement().querySelector(`.event__rollup-btn`)
-      .addEventListener(`click`, handler);
+    .addEventListener(`click`, handler);
     this._rollupHandler = handler;
   }
 
   setResetButtonHandler(handler) {
-    this.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, handler);
+    this.getElement().querySelector(`.event__reset-btn`)
+    .addEventListener(`click`, handler);
     this._resetHandler = handler;
   }
 
@@ -204,6 +210,7 @@ export default class EventFormComponent extends AbstractSmartComponent {
     this.getElement().querySelector(`.event__favorite-btn`)
       .addEventListener(`click`, handler);
   }
+
 
   recoveryListeners() {
     this.setSubmitFormHandler(this._submitHandler);
@@ -237,7 +244,7 @@ export default class EventFormComponent extends AbstractSmartComponent {
   getData() {
     const form = this.getElement();
     const formData = new FormData(form);
-    return parseFormData(formData, this._type, this._card.offers);
+    return parseFormData(formData, this._type, this._card.offers, this._card.pictures);
   }
 
 }

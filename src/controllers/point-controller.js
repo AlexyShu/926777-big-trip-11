@@ -62,14 +62,12 @@ export default class PointController {
         if (oldEventItem && oldEventForm) {
           replace(this._eventItem, oldEventItem);
           replace(this._eventForm, oldEventForm);
-          this. _replaceFormToEvent();
           this._replaceFormToEvent();
         } else {
           render(this._container, this._eventItem, RenderPosition.BEFOREEND);
         }
         break;
       case Mode.ADD:
-        this._eventForm.setMode(Mode);
         if (oldEventItem && oldEventForm) {
           remove(oldEventItem);
           remove(oldEventForm);

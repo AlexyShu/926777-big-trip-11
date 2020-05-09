@@ -4,7 +4,7 @@ export const KeyCode = {
   ESC: 27
 };
 
-export const EVENTS_COUNT = 20;
+export const EVENTS_COUNT = 10;
 
 // функция возвращающая случайное целое число
 export const getRandomIntegerNumber = (min, max) => {
