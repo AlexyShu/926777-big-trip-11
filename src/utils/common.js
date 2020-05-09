@@ -65,9 +65,10 @@ export const Mode = {
 export const EmptyPoint = {
   id: 0,
   type: `flight`,
-  destination: ``,
   description: ``,
-  photosUrls: [],
+  city: ``,
+  course: ``,
+  pictures: [],
   offers: [{}],
   startDate: Date.now(),
   endDate: Date.now(),

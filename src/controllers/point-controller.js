@@ -51,7 +51,6 @@ export default class PointController {
 
     switch (mode) {
       case Mode.DEFAULT:
-        this._eventForm.setMode(Mode);
         this._eventForm.setRpllupFormButtonClick(() => {
           this._replaceFormToEvent();
         });

@@ -85,7 +85,7 @@ const createFormTemplate = (event) => {
            <span class="visually-hidden">Price</span>
            &euro;
            </label>
-           <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
+           <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price}">
         </div>
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
         <button class="event__reset-btn" type="reset">Delete</button>
@@ -120,14 +120,15 @@ const createFormTemplate = (event) => {
 };
 
 
-const parseFormData = (formData, type) => {
+const parseFormData = (formData, type, offers) => {
+  const offersChecked = offers.filter((offer) => offer.isChecked === true);
   return {
     type,
-    description: formData.get(`event__destination-description`),
-    city: formData.get(`event__input--destination`),
-    startDate: parseDate(formData.get(`event-start-time`)),
-    endDate: parseDate(formData.get(`event-end-time`)),
-    price: formData.get(`event__input--price`),
+    offers: offersChecked,
+    city: formData.get(`event-destination`),
+    startDate: formData.get(`event-start-time`),
+    endDate: formData.get(`event-end-time`),
+    price: formData.get(`event-price`),
     isFavorite: false
   };
 };
@@ -210,7 +211,7 @@ export default class EventFormComponent extends AbstractSmartComponent {
     this.addListeners();
 
     if (this._mode === Mode.DEFAULT) {
-      this.setOnCancelButtonClick(this._cancelHandler);
+      this.setResetButtonHandler(this._cancelHandler);
     }
   }
 
@@ -236,12 +237,7 @@ export default class EventFormComponent extends AbstractSmartComponent {
   getData() {
     const form = this.getElement();
     const formData = new FormData(form);
-    return parseFormData(formData, this._type);
-  }
-
-  setMode(mode) {
-    this._mode = mode;
-    this.rerender();
+    return parseFormData(formData, this._type, this._card.offers);
   }
 
 }
