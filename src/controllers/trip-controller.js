@@ -3,7 +3,7 @@ import EventSortComponent from '../components/event-sort.js';
 import TripDayComponent from '../components/day-number.js';
 import EventListComponent from '../components/events-list.js';
 import {SortType} from '../mocks/event-sort.js';
-import {render, RenderPosition} from '../utils/render.js';
+import {render, RenderPosition, remove} from '../utils/render.js';
 import {Mode as PointControllerMode, makeGroupedEvents, EmptyPoint} from '../utils/common.js';
 import PointController from './point-controller.js';
 
@@ -27,6 +27,7 @@ export default class TripController {
   constructor(container, pointsModel) {
     this._container = container;
     this._eventsSort = new EventSortComponent();
+    this._noEventComponent = new NoEventComponent();
 
     this._pointControllers = [];
     this._creatingPoint = null;
@@ -54,8 +55,9 @@ export default class TripController {
     const events = this._pointsModel.getEvents();
     const siteTripEventElement = document.querySelector(`.trip-events`);
     if (!events.length) {
-      render(siteTripEventElement, new NoEventComponent(), RenderPosition.BEFOREEND);
+      render(siteTripEventElement, this._noEventComponent, RenderPosition.BEFOREEND);
     } else {
+      remove(this._noEventComponent);
       render(siteTripEventElement, this._container, RenderPosition.BEFOREEND);
       render(this._container.getElement(), this._eventsSort, RenderPosition.BEFOREBEGIN);
 
@@ -97,7 +99,11 @@ export default class TripController {
         pointController.destroy();
       } else {
         this._pointsModel.addEvent(newData);
-        pointController.render(newData, PointControllerMode.ADD);
+        remove(this._container);
+        const form = document.querySelector(`.trip-events__item`);
+        form.remove();
+        this.render();
+        // pointController.render(newData, PointControllerMode.ADD);
       }
     }
     // удаление
@@ -137,8 +143,7 @@ export default class TripController {
     if (this._creatingPoint) {
       return;
     }
-    const eventsListElement = eventList.getElement();
-    this._creatingPoint = new PointController(eventsListElement, this._onDataChange, this._onViewChange);
+    this._creatingPoint = new PointController(this._container.getElement(), this._onDataChange, this._onViewChange);
     this._creatingPoint.render(EmptyPoint, PointControllerMode.ADD);
   }
 }

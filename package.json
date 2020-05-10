@@ -23,7 +23,6 @@
     "node": "10"
   },
   "dependencies": {
-    "he": "1.2.0",
     "flatpickr": "4.6.3",
     "moment": "2.24.0"
   }

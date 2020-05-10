@@ -34,6 +34,5 @@ const tripController = new TripController(tripDaysList, pointsModel);
 tripController.render();
 
 addEventButton.setClickButtonHandler(() => {
-  // console.log(`NEW`);
   tripController.createPoint();
 });

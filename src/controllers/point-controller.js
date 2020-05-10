@@ -33,12 +33,15 @@ export default class PointController {
     });
     this._eventForm.setResetButtonHandler(() => {
       this._onDataChange(this, event, null);
+      remove(this._eventItem);
+      remove(this._eventForm);
     });
     this._eventForm.setSubmitFormHandler((evt) => {
       evt.preventDefault();
       const data = this._eventForm.getData();
       this._onDataChange(this, event, data);
     });
+    this._eventForm.setOfferCheckboxClickHadler(() => false);
 
 
     // if (oldEventItem && oldEventForm) {
@@ -73,7 +76,7 @@ export default class PointController {
           remove(oldEventForm);
         } else {
           document.querySelector(`.trip-sort`).after(this._eventForm.getElement());
-          render(this._container, this._eventForm, RenderPosition.BEFOREEND);
+          render(this._container, this._eventForm, RenderPosition.BEFOREBEGIN);
         }
         break;
     }

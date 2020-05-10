@@ -1,9 +1,7 @@
-/* eslint-disable no-unreachable */
 import {doFirstLetterUppercase, getRandomArrayItem, dateFormat, Mode} from '../utils/common.js';
 import {cities, types, descriptions, createOffers} from '../mocks/event.js';
 import AbstractSmartComponent from "./abstract-smart-component.js";
 import flatpickr from "flatpickr";
-// import {encode} from "he";
 
 import "flatpickr/dist/flatpickr.min.css";
 
@@ -211,6 +209,16 @@ export default class EventFormComponent extends AbstractSmartComponent {
       .addEventListener(`click`, handler);
   }
 
+  setOfferCheckboxClickHadler() {
+    const ofefersCheckboxes = this.getElement().querySelectorAll(`.event__offer-checkbox`);
+    for (let i = 0; i < ofefersCheckboxes.length; i++) {
+      const offerCheckbox = ofefersCheckboxes[i];
+      offerCheckbox.addEventListener(`change`, (evt) => {
+        const checked = evt.target.checked;
+        this._card.offers[i].isChecked = checked;
+      });
+    }
+  }
 
   recoveryListeners() {
     this.setSubmitFormHandler(this._submitHandler);
