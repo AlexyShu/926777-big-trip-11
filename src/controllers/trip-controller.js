@@ -6,22 +6,7 @@ import {SortType} from '../mocks/event-sort.js';
 import {render, RenderPosition, remove} from '../utils/render.js';
 import {Mode as PointControllerMode, makeGroupedEvents, EmptyPoint} from '../utils/common.js';
 import PointController from './point-controller.js';
-
-const getEventsSort = (events, sortType) => {
-  let sortedItems = [];
-  switch (sortType) {
-    case SortType.EVENT:
-      sortedItems = events.slice();
-      break;
-    case SortType.TIME:
-      sortedItems = events.slice().sort((a, b) => (b.endDate - b.startDate) - (a.endDate - a.startDate));
-      break;
-    case SortType.PRICE:
-      sortedItems = events.slice().sort((a, b) => b.price - a.price);
-      break;
-  }
-  return sortedItems;
-};
+import {FilterType} from '../const.js';
 
 export default class TripController {
   constructor(container, pointsModel) {
@@ -61,22 +46,6 @@ export default class TripController {
       render(siteTripEventElement, this._container, RenderPosition.BEFOREEND);
       render(this._container.getElement(), this._eventsSort, RenderPosition.BEFOREBEGIN);
 
-      this._eventsSort.setSortTypeChangeHandler((sortType) => {
-        const sortedEvents = getEventsSort(events, sortType);
-        this._container.getElement().innerHTML = ``;
-        const sortDayItem = document.querySelector(`.trip-sort__item--day`);
-        sortDayItem.innerHTML = ``;
-        this.render(sortedEvents, sortType === `event`);
-      });
-
-      const tripTotalPrice = document.querySelector(`.trip-info__cost-value`);
-
-      tripTotalPrice.textContent = events.reduce((totalPrice, it) => {
-        return totalPrice + it.price + it.offers.reduce((totalOfferPrice, offer) => {
-          return totalOfferPrice + offer.price;
-        }, 0);
-      }, 0);
-
       if (isGroupOnDays) {
         const eventGroups = makeGroupedEvents(events);
         let dayCount = 0;
@@ -84,10 +53,53 @@ export default class TripController {
           dayCount++;
           this.renderDay(tripEvents, dayCount);
         });
+
+        this._eventsSort.setSortTypeChangeHandler((sortType) => {
+          this.getEventsSort(sortType);
+        });
+
       } else {
         this.renderDay(events, 0);
+
+        this._eventsSort.setSortTypeChangeHandler((sortType) => {
+          this.getEventsSort(sortType);
+        });
       }
 
+      const tripTotalPrice = document.querySelector(`.trip-info__cost-value`);
+
+      tripTotalPrice.textContent = events.reduce((totalPrice, it) => {
+        return totalPrice + parseInt(it.price, 10) + it.offers.reduce((totalOfferPrice, offer) => {
+          return totalOfferPrice + offer.price;
+        }, 0);
+      }, 0);
+    }
+  }
+
+  getEventsSort(sortType) {
+    const sortDayItem = document.querySelector(`.trip-sort__item--day`);
+    const sortByNotDefult = () => {
+      this._container.getElement().innerHTML = ``;
+      sortDayItem.innerHTML = ``;
+    };
+    const events = this._pointsModel.getEvents();
+    let sortedItems = [];
+    switch (sortType) {
+      case SortType.EVENT:
+        this._container.getElement().innerHTML = ``;
+        sortedItems = events.slice();
+        this.render();
+        break;
+      case SortType.TIME:
+        sortByNotDefult();
+        sortedItems = events.slice().sort((a, b) => (b.endDate - b.startDate) - (a.endDate - a.startDate));
+        this.renderDay(sortedItems);
+        break;
+      case SortType.PRICE:
+        sortByNotDefult();
+        sortedItems = events.slice().sort((a, b) => b.price - a.price);
+        this.renderDay(sortedItems);
+        break;
     }
   }
 
@@ -143,6 +155,11 @@ export default class TripController {
     if (this._creatingPoint) {
       return;
     }
+    this._onViewChange();
+    this.getEventsSort(SortType.EVENT);
+    document.querySelector(`#sort-event`).setAttribute(`checked`, true);
+    this._pointsModel.setFilter(FilterType.EVERYTHING);
+    document.querySelector(`#filter-everything`).setAttribute(`checked`, true);
     this._creatingPoint = new PointController(this._container.getElement(), this._onDataChange, this._onViewChange);
     this._creatingPoint.render(EmptyPoint, PointControllerMode.ADD);
   }

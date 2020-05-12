@@ -39,18 +39,9 @@ export default class PointController {
     this._eventForm.setSubmitFormHandler((evt) => {
       evt.preventDefault();
       const data = this._eventForm.getData();
+      // console.log(data)
       this._onDataChange(this, event, data);
     });
-    this._eventForm.setOfferCheckboxClickHadler(() => false);
-
-
-    // if (oldEventItem && oldEventForm) {
-    //   replace(this._eventItem, oldEventItem);
-    //   replace(this._eventForm, oldEventForm);
-    //   this. _replaceFormToEvent();
-    // } else {
-    //   render(this._container, this._eventItem, RenderPosition.BEFOREEND);
-    // }
 
     switch (mode) {
       case Mode.DEFAULT:

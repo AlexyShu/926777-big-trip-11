@@ -25,7 +25,7 @@ export const dateFormat = (date) => {
   return moment(date).format(`YYYY/MM/DD hh:mm`);
 };
 
-export const parseDateWithoutTime = (dateString) => moment(dateString, `YYYY MMM DD`).valueOf();
+// export const parseDateWithoutTime = (dateString) => moment(dateString, `YYYY MMM DD`).valueOf();
 
 export const parseDate = (dateString) => moment(dateString, `DD/MM/YY HH:mm`).valueOf();
 

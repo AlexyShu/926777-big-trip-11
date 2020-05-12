@@ -1,4 +1,4 @@
-import {doFirstLetterUppercase, getRandomArrayItem, dateFormat, Mode} from '../utils/common.js';
+import {doFirstLetterUppercase, getRandomArrayItem, Mode} from '../utils/common.js';
 import {cities, types, descriptions, createOffers} from '../mocks/event.js';
 import AbstractSmartComponent from "./abstract-smart-component.js";
 import flatpickr from "flatpickr";
@@ -9,15 +9,12 @@ const createPicturesTemplate = (pics) => {
   return pics.map((picture) => `<img class="event__photo" src="${picture}" alt="Event photo"></img>`).join(`\n`);
 };
 
-// const checkbox = document.querySelector(`.event__offer-checkbox`);
-// checkbox.addEventListener(`click`, if (offer.isChecked === true) { offer.isChecked === false});
-
 const createOffersTemplate = (offers) => {
   return (`<div class="event__available-offers">
-  ${offers.map(({name, price, type, isChecked}) => {
+  ${offers.map(({name, price, type, isChecked, id}) => {
       return `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-1" type="checkbox" name="event-offer-${type}" ${isChecked ? `checked` : ``}>
-      <label class="event__offer-label" for="event-offer-${type}-1">
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-${id}" type="checkbox" name="event-offer-${type}" ${isChecked ? `checked` : ``}>
+      <label class="event__offer-label" for="event-offer-${type}-${id}">
       <span class="event__offer-title"> ${name} </span>
       &plus;
      &euro;&nbsp;<span class="event__offer-price">${price}</span>
@@ -75,12 +72,12 @@ const createFormTemplate = (event) => {
            <label class="visually-hidden" for="event-start-time-1">
            From
            </label>
-           <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dateFormat(startDate)}">
+           <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startDate}">
            &mdash;
            <label class="visually-hidden" for="event-end-time-1">
            To
            </label>
-           <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dateFormat(endDate)}">
+           <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${endDate}">
         </div>
         <div class="event__field-group  event__field-group--price">
            <label class="event__label" for="event-price-1">
@@ -122,15 +119,16 @@ const createFormTemplate = (event) => {
 };
 
 
-const parseFormData = (formData, type, offers, pictures) => {
+const parseFormData = (formData, type, offers, pictures, course) => {
   const offersChecked = offers.filter((offer) => offer.isChecked === true);
   return {
     type,
     pictures,
+    course,
     offers: offersChecked,
     city: formData.get(`event-destination`),
-    startDate: formData.get(`event-start-time`),
-    endDate: formData.get(`event-end-time`),
+    startDate: flatpickr.parseDate(formData.get(`event-start-time`), `d/m/y H:i`),
+    endDate: flatpickr.parseDate(formData.get(`event-end-time`), `d/m/y H:i`),
     price: formData.get(`event-price`),
     isFavorite: false
   };
@@ -140,7 +138,8 @@ export default class EventFormComponent extends AbstractSmartComponent {
   constructor(card) {
     super();
     this._card = card;
-    this._flatpickr = null;
+    this._flatpickrStartDate = null;
+    this._flatpickrEndDate = null;
     this._rollupHandler = null;
     this._resetHandler = null;
     this._submitHandler = null;
@@ -156,10 +155,7 @@ export default class EventFormComponent extends AbstractSmartComponent {
   }
 
   removeElement() {
-    if (this._flatpickr) {
-      this._flatpickr.destroy();
-      this._flatpickr = null;
-    }
+    this._deleteFlatpickrs();
     super.removeElement();
   }
 
@@ -168,20 +164,27 @@ export default class EventFormComponent extends AbstractSmartComponent {
     this._applyFlatpickr();
   }
 
-  _applyFlatpickr() {
-    if (this._flatpickr) {
-      this._flatpickr.destroy();
-      this._flatpickr = null;
+  _deleteFlatpickrs() {
+    if (this._flatpickrStartDate && this._flatpickrEndDate) {
+      this._flatpickrStartDate.destroy();
+      this._flatpickrStartDate = null;
+      this._flatpickrEndDate.destroy();
+      this._flatpickrEndDate = null;
     }
-    this._setFlatpickr(this.getElement().querySelector(`#event-start-time-1`), this._startDate);
-    this._setFlatpickr(this.getElement().querySelector(`#event-end-time-1`), this._endDate);
   }
 
-  _setFlatpickr(input, defaultTime) {
-    this._flatpickr = flatpickr(input, {
+  _applyFlatpickr() {
+    this._deleteFlatpickrs();
+
+    this._flatpickrStartDate = this._setFlatpickr(this.getElement().querySelector(`#event-start-time-1`), this._card.startDate);
+    this._flatpickrEndDate = this._setFlatpickr(this.getElement().querySelector(`#event-end-time-1`), this._card.endDate, this._card.startDate);
+  }
+
+  _setFlatpickr(input, defaultTime, dateMin = `today`) {
+    return flatpickr(input, {
       enableTime: true,
       dateFormat: `d/m/y H:i`,
-      minDate: `today`,
+      minDate: dateMin,
       defaultDate: defaultTime,
       allowInput: true,
     });
@@ -207,17 +210,6 @@ export default class EventFormComponent extends AbstractSmartComponent {
   setFavotiteButtonClickHandler(handler) {
     this.getElement().querySelector(`.event__favorite-btn`)
       .addEventListener(`click`, handler);
-  }
-
-  setOfferCheckboxClickHadler() {
-    const ofefersCheckboxes = this.getElement().querySelectorAll(`.event__offer-checkbox`);
-    for (let i = 0; i < ofefersCheckboxes.length; i++) {
-      const offerCheckbox = ofefersCheckboxes[i];
-      offerCheckbox.addEventListener(`change`, (evt) => {
-        const checked = evt.target.checked;
-        this._card.offers[i].isChecked = checked;
-      });
-    }
   }
 
   recoveryListeners() {
@@ -252,7 +244,7 @@ export default class EventFormComponent extends AbstractSmartComponent {
   getData() {
     const form = this.getElement();
     const formData = new FormData(form);
-    return parseFormData(formData, this._type, this._card.offers, this._card.pictures);
+    return parseFormData(formData, this._type, this._card.offers, this._card.pictures, this._card.course);
   }
 
 }

@@ -36,3 +36,5 @@ tripController.render();
 addEventButton.setClickButtonHandler(() => {
   tripController.createPoint();
 });
+
+
