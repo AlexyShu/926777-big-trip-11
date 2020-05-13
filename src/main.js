@@ -10,6 +10,7 @@ import {menuItems} from './mocks/menu.js';
 import {generateEvents} from './mocks/event.js';
 import {EVENTS_COUNT} from './utils/common.js';
 
+
 export const cards = generateEvents(EVENTS_COUNT);
 
 const siteMenuElement = document.querySelector(`.trip-main__trip-controls h2`);
@@ -35,6 +36,9 @@ tripController.render();
 
 addEventButton.setClickButtonHandler(() => {
   tripController.createPoint();
+
+  filterController.changeByDefultFilter();
+  filterController.render();
 });
 
 

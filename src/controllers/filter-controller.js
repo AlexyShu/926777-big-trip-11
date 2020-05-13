@@ -12,11 +12,15 @@ export default class FilterController {
     this._onFilterChange = this._onFilterChange.bind(this);
   }
 
+  changeByDefultFilter() {
+    this._activeFilterType = FilterType.EVERYTHING;
+  }
+
   render() {
     const filters = Object.values(FilterType).map((filterType) => {
       return {
         name: filterType,
-        checked: filterType === this._activeFilterType,
+        isChecked: filterType === this._activeFilterType,
       };
     });
 
@@ -36,4 +40,5 @@ export default class FilterController {
     this._activeFilterType = filterType;
     this._pointsModel.setFilter(filterType);
   }
+
 }

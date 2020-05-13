@@ -67,7 +67,7 @@ export default class PointController {
           remove(oldEventForm);
         } else {
           document.querySelector(`.trip-sort`).after(this._eventForm.getElement());
-          render(this._container, this._eventForm, RenderPosition.BEFOREBEGIN);
+          // render(this._container, this._eventForm, RenderPosition.BEFOREBEGIN);
         }
         break;
     }

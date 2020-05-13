@@ -11,7 +11,8 @@ const createPicturesTemplate = (pics) => {
 
 const createOffersTemplate = (offers) => {
   return (`<div class="event__available-offers">
-  ${offers.map(({name, price, type, isChecked, id}) => {
+  ${offers.map(({name, price, type, isChecked}) => {
+      const id = Math.random();
       return `<div class="event__offer-selector">
       <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-${id}" type="checkbox" name="event-offer-${type}" ${isChecked ? `checked` : ``}>
       <label class="event__offer-label" for="event-offer-${type}-${id}">
@@ -119,13 +120,24 @@ const createFormTemplate = (event) => {
 };
 
 
-const parseFormData = (formData, type, offers, pictures, course) => {
-  const offersChecked = offers.filter((offer) => offer.isChecked === true);
+const parseFormData = (formData, type, pictures, course, description) => {
+  // const offersChecked = Array.from(document.querySelectorAll(`.event__offer-checkbox`)).filter((it) => it.checked);
+  const offersChecked = Array.from(document.querySelectorAll(`.event__offer-checkbox`))
+  .map((input) => {
+    return {
+      type,
+      name: input.parentElement.querySelector(`.event__offer-title`).textContent,
+      price: input.parentElement.querySelector(`.event__offer-price`).textContent,
+      isChecked: input.checked
+    };
+  });
+
   return {
     type,
     pictures,
     course,
-    offers: offersChecked,
+    description,
+    offers: offersChecked.filter((it) => it.isChecked),
     city: formData.get(`event-destination`),
     startDate: flatpickr.parseDate(formData.get(`event-start-time`), `d/m/y H:i`),
     endDate: flatpickr.parseDate(formData.get(`event-end-time`), `d/m/y H:i`),
@@ -244,7 +256,7 @@ export default class EventFormComponent extends AbstractSmartComponent {
   getData() {
     const form = this.getElement();
     const formData = new FormData(form);
-    return parseFormData(formData, this._type, this._card.offers, this._card.pictures, this._card.course);
+    return parseFormData(formData, this._type, this._card.pictures, this._card.course, this._card.description);
   }
 
 }

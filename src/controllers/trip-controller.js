@@ -159,7 +159,8 @@ export default class TripController {
     this.getEventsSort(SortType.EVENT);
     document.querySelector(`#sort-event`).setAttribute(`checked`, true);
     this._pointsModel.setFilter(FilterType.EVERYTHING);
-    document.querySelector(`#filter-everything`).setAttribute(`checked`, true);
+
+    // document.querySelector(`#filter-everything`).setAttribute(`checked`, true);
     this._creatingPoint = new PointController(this._container.getElement(), this._onDataChange, this._onViewChange);
     this._creatingPoint.render(EmptyPoint, PointControllerMode.ADD);
   }
