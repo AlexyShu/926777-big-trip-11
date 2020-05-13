@@ -37,7 +37,7 @@ tripController.render();
 addEventButton.setClickButtonHandler(() => {
   tripController.createPoint();
 
-  filterController.changeByDefultFilter();
+  filterController.changeByDefaultFilter();
   filterController.render();
 });
 

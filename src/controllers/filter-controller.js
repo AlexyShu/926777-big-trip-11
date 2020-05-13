@@ -12,7 +12,7 @@ export default class FilterController {
     this._onFilterChange = this._onFilterChange.bind(this);
   }
 
-  changeByDefultFilter() {
+  changeByDefaultFilter() {
     this._activeFilterType = FilterType.EVERYTHING;
   }
 
