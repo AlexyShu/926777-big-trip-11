@@ -90,7 +90,7 @@ export const createOffers = (eventType) => {
       offers.push({
         type: eventType,
         price: getRandomIntegerNumber(0, 300),
-        // id: Math.random(),
+        id: Math.random(),
         isChecked: true,
         name: getRandomArrayItem(offersGroupedInTypes[eventType])
       });
