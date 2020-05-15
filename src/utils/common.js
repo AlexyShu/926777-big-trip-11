@@ -4,7 +4,7 @@ export const KeyCode = {
   ESC: 27
 };
 
-export const EVENTS_COUNT = 5;
+export const EVENTS_COUNT = 10;
 
 // функция возвращающая случайное целое число
 export const getRandomIntegerNumber = (min, max) => {
@@ -17,32 +17,17 @@ export const getRandomArrayItem = (array) => {
   return array[randomIndex];
 };
 
-// export const getZeroFormat = (value) => {
-//   return value < 10 ? `0${value}` : String(value);
-// };
-
 export const timeFormat = (date) => {
   return moment(date).format(`hh:mm`);
 };
 
 export const dateFormat = (date) => {
-  return moment(date).format(`YYYY-MM-DD hh:mm`);
+  return moment(date).format(`YYYY/MM/DD hh:mm`);
 };
 
-// export const getDateFormat = (dateUnix) => {
-//   const date = new Date(dateUnix);
-//   const year = date.getFullYear();
-//   const month = getZeroFormat(date.getMonth() + 1);
-//   const day = getZeroFormat(date.getDate());
-//   return `${year}/${month}/${day}`;
-// };
+// export const parseDateWithoutTime = (dateString) => moment(dateString, `YYYY MMM DD`).valueOf();
 
-// export const getTimeFormat = (dateUnix) => {
-//   const date = new Date(dateUnix);
-//   const hours = getZeroFormat(date.getHours());
-//   const minutes = getZeroFormat(date.getMinutes());
-//   return `${hours}:${minutes}`;
-// };
+export const parseDate = (dateString) => moment(dateString, `DD/MM/YY HH:mm`).valueOf();
 
 export const calculateTimeInterval = (time1, time2) => {
   const daysInterval = moment(time2).diff(moment(time1), `days`);
@@ -73,6 +58,21 @@ export const doFirstLetterUppercase = (string) => {
 
 export const Mode = {
   DEFAULT: `default`,
-  EDIT: `edit`
+  EDIT: `edit`,
+  ADD: `add`
+};
+
+export const EmptyPoint = {
+  id: 0,
+  type: `flight`,
+  description: ``,
+  city: ``,
+  course: `to`,
+  pictures: [],
+  offers: [],
+  startDate: Date.now(),
+  endDate: Date.now(),
+  price: 0,
+  isFavorite: false
 };
 

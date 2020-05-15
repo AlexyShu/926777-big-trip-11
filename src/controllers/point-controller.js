@@ -1,8 +1,9 @@
 import EventFormComponent from '../components/form.js';
 import CardComponent from '../components/event.js';
-import {replace, render, RenderPosition} from '../utils/render.js';
+import {replace, render, remove, RenderPosition} from '../utils/render.js';
 import {KeyCode, Mode} from '../utils/common.js';
 
+export const EmptyEvent = {};
 
 export default class PointController {
   constructor(container, onDataChange, onViewChange) {
@@ -17,7 +18,9 @@ export default class PointController {
     this._onEscPress = this._onEscPress.bind(this);
   }
 
-  render(event) {
+  render(event, mode) {
+    this._mode = mode;
+
     const oldEventItem = this._eventItem;
     const oldEventForm = this._eventForm;
 
@@ -28,35 +31,59 @@ export default class PointController {
       this._replaceEventToForm();
       document.addEventListener(`keydown`, this._onEscPress);
     });
-    this._eventForm.setSaveButtonHandler(() => {
-      this._replaceFormToEvent();
-    });
     this._eventForm.setResetButtonHandler(() => {
-      this._replaceFormToEvent();
+      this._onDataChange(this, event, null);
+      remove(this._eventItem);
+      remove(this._eventForm);
     });
     this._eventForm.setSubmitFormHandler((evt) => {
       evt.preventDefault();
-      this._eventForm.getElement().replaceChild(this._eventItem.getElement(), this._eventForm.getElement());
+      const data = this._eventForm.getData();
+      // console.log(data)
+      this._onDataChange(this, event, data);
     });
 
-    this._eventForm.setFavotiteButtonClickHandler(() => {
-      this._onDataChange(this, event, Object.assign({}, event, {
-        isFavorite: !event.isFavorite,
-      }));
-    });
-
-    if (oldEventItem && oldEventForm) {
-      replace(this._eventItem, oldEventItem);
-      replace(this._eventForm, oldEventForm);
-    } else {
-      render(this._container, this._eventItem, RenderPosition.BEFOREEND);
+    switch (mode) {
+      case Mode.DEFAULT:
+        this._eventForm.setRpllupFormButtonClick(() => {
+          this._replaceFormToEvent();
+        });
+        this._eventForm.setFavotiteButtonClickHandler(() => {
+          this._onDataChange(this, event, Object.assign({}, event, {
+            isFavorite: !event.isFavorite,
+          }));
+        });
+        if (oldEventItem && oldEventForm) {
+          replace(this._eventItem, oldEventItem);
+          replace(this._eventForm, oldEventForm);
+          this._replaceFormToEvent();
+        } else {
+          render(this._container, this._eventItem, RenderPosition.BEFOREEND);
+        }
+        break;
+      case Mode.ADD:
+        if (oldEventItem && oldEventForm) {
+          remove(oldEventItem);
+          remove(oldEventForm);
+        } else {
+          document.querySelector(`.trip-sort`).after(this._eventForm.getElement());
+          // render(this._container, this._eventForm, RenderPosition.BEFOREBEGIN);
+        }
+        break;
     }
+  }
 
+  setDefaultView() {
+    if (this._mode !== Mode.DEFAULT) {
+      this. _replaceFormToEvent();
+    }
   }
 
   _replaceFormToEvent() {
     this._mode = Mode.DEFAULT;
-    replace(this._eventItem, this._eventForm);
+    if (document.contains(this._eventForm.getElement())) {
+      replace(this._eventItem, this._eventForm);
+    }
   }
 
   _replaceEventToForm() {
@@ -77,6 +104,12 @@ export default class PointController {
     if (this._mode !== Mode.DEFAULT) {
       this._replaceFormToEvent();
     }
+  }
+
+  destroy() {
+    remove(this._eventItem);
+    remove(this._eventForm);
+    document.removeEventListener(`keydown`, this._onEscPress);
   }
 
 }

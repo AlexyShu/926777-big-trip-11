@@ -1,4 +1,4 @@
-import {doFirstLetterUppercase, getRandomArrayItem, dateFormat} from '../utils/common.js';
+import {doFirstLetterUppercase, getRandomArrayItem, Mode} from '../utils/common.js';
 import {cities, types, descriptions, createOffers} from '../mocks/event.js';
 import AbstractSmartComponent from "./abstract-smart-component.js";
 import flatpickr from "flatpickr";
@@ -11,10 +11,10 @@ const createPicturesTemplate = (pics) => {
 
 const createOffersTemplate = (offers) => {
   return (`<div class="event__available-offers">
-  ${offers.map(({name, price, type, isChecked}) => {
+  ${offers.map(({name, price, type, isChecked, id}) => {
       return `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-1" type="checkbox" name="event-offer-${type}" ${isChecked ? `checked` : ``}>
-      <label class="event__offer-label" for="event-offer-${type}-1">
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-${id}" type="checkbox" name="event-offer-${type}" ${isChecked ? `checked` : ``}>
+      <label class="event__offer-label" for="event-offer-${type}-${id}">
       <span class="event__offer-title"> ${name} </span>
       &plus;
      &euro;&nbsp;<span class="event__offer-price">${price}</span>
@@ -72,23 +72,22 @@ const createFormTemplate = (event) => {
            <label class="visually-hidden" for="event-start-time-1">
            From
            </label>
-           <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dateFormat(startDate)}">
+           <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startDate}">
            &mdash;
            <label class="visually-hidden" for="event-end-time-1">
            To
            </label>
-           <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dateFormat(endDate)}">
+           <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${endDate}">
         </div>
         <div class="event__field-group  event__field-group--price">
            <label class="event__label" for="event-price-1">
            <span class="visually-hidden">Price</span>
            &euro;
            </label>
-           <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
+           <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price}">
         </div>
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
         <button class="event__reset-btn" type="reset">Delete</button>
-
         <input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite ? `checked` : ``}>
         <label class="event__favorite-btn" for="event-favorite-1">
           <span class="visually-hidden">Add to favorite</span>
@@ -96,11 +95,9 @@ const createFormTemplate = (event) => {
              <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"/>
            </svg>
          </label>
-
         <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>
         </button>
-
       </header>
       <section class="event__details">
         <section class="event__section  event__section--offers">
@@ -121,11 +118,19 @@ const createFormTemplate = (event) => {
   );
 };
 
+
 export default class EventFormComponent extends AbstractSmartComponent {
   constructor(card) {
     super();
     this._card = card;
-    this._flatpickr = null;
+    this._flatpickrStartDate = null;
+    this._flatpickrEndDate = null;
+    this._rollupHandler = null;
+    this._resetHandler = null;
+    this._submitHandler = null;
+    this._mode = Mode.DEFAULT;
+    this._type = card.type;
+
     this._applyFlatpickr();
     this.addListeners();
   }
@@ -135,10 +140,7 @@ export default class EventFormComponent extends AbstractSmartComponent {
   }
 
   removeElement() {
-    if (this._flatpickr) {
-      this._flatpickr.destroy();
-      this._flatpickr = null;
-    }
+    this._deleteFlatpickrs();
     super.removeElement();
   }
 
@@ -147,42 +149,62 @@ export default class EventFormComponent extends AbstractSmartComponent {
     this._applyFlatpickr();
   }
 
-  _applyFlatpickr() {
-    if (this._flatpickr) {
-      this._flatpickr.destroy();
-      this._flatpickr = null;
+  _deleteFlatpickrs() {
+    if (this._flatpickrStartDate && this._flatpickrEndDate) {
+      this._flatpickrStartDate.destroy();
+      this._flatpickrStartDate = null;
+      this._flatpickrEndDate.destroy();
+      this._flatpickrEndDate = null;
     }
-    this._setFlatpickr(this.getElement().querySelector(`#event-start-time-1`), this._startDate);
-    this._setFlatpickr(this.getElement().querySelector(`#event-end-time-1`), this._endDate);
   }
 
-  _setFlatpickr(input, defaultTime) {
-    this._flatpickr = flatpickr(input, {
+  _applyFlatpickr() {
+    this._deleteFlatpickrs();
+
+    this._flatpickrStartDate = this._setFlatpickr(this.getElement().querySelector(`#event-start-time-1`), this._card.startDate);
+    this._flatpickrEndDate = this._setFlatpickr(this.getElement().querySelector(`#event-end-time-1`), this._card.endDate, this._card.startDate);
+  }
+
+  _setFlatpickr(input, defaultTime, dateMin = `today`) {
+    return flatpickr(input, {
       enableTime: true,
       dateFormat: `d/m/y H:i`,
-      minDate: `today`,
+      minDate: dateMin,
       defaultDate: defaultTime,
       allowInput: true,
     });
   }
 
+  setRpllupFormButtonClick(handler) {
+    this.getElement().querySelector(`.event__rollup-btn`)
+    .addEventListener(`click`, handler);
+    this._rollupHandler = handler;
+  }
 
-  setSaveButtonHandler(handler) {
-    this.getElement().querySelector(`.event__save-btn`).addEventListener(`click`, handler);
-  }
   setResetButtonHandler(handler) {
-    this.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, handler);
+    this.getElement().querySelector(`.event__reset-btn`)
+    .addEventListener(`click`, handler);
+    this._resetHandler = handler;
   }
+
   setSubmitFormHandler(handler) {
     this.getElement().addEventListener(`submit`, handler);
+    this._submitHandler = handler;
   }
 
   setFavotiteButtonClickHandler(handler) {
-    this.getElement().querySelector(`.event__favorite-checkbox`).addEventListener(`click`, handler);
+    this.getElement().querySelector(`.event__favorite-btn`)
+      .addEventListener(`click`, handler);
   }
 
   recoveryListeners() {
+    this.setSubmitFormHandler(this._submitHandler);
+    this.setResetButtonHandler(this._resetHandler);
     this.addListeners();
+
+    if (this._mode === Mode.DEFAULT) {
+      this.setResetButtonHandler(this._cancelHandler);
+    }
   }
 
   addListeners() {
@@ -203,5 +225,31 @@ export default class EventFormComponent extends AbstractSmartComponent {
       this.rerender();
     });
   }
-}
 
+  getData() {
+    const form = this.getElement();
+
+    const checkboxes = document.querySelectorAll(`.event__offer-checkbox`);
+    const offersChecked = [];
+    checkboxes.forEach((element, index) => {
+      if (element.checked) {
+        offersChecked.push(this._card.offers[index]);
+      }
+    });
+
+    const formData = new FormData(form);
+
+    return {
+      type: this._card.type,
+      pictures: this._card.pictures,
+      course: this._card.course,
+      description: this._card.descriptions,
+      offers: offersChecked,
+      city: formData.get(`event-destination`),
+      startDate: flatpickr.parseDate(formData.get(`event-start-time`), `d/m/y H:i`),
+      endDate: flatpickr.parseDate(formData.get(`event-end-time`), `d/m/y H:i`),
+      price: formData.get(`event-price`),
+      isFavorite: false
+    };
+  }
+}

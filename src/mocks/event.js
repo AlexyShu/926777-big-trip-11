@@ -61,6 +61,7 @@ const generateEvent = () => {
   const endDate = getRandomDate();
   const type = getRandomArrayItem(Math.random() > 0.5 ? types.TRANSFER : types.ACTIVITY);
   return {
+    id: Math.random(),
     type,
     city: getRandomArrayItem(cities),
     description: getRandomArrayItem(descriptions),
@@ -89,6 +90,7 @@ export const createOffers = (eventType) => {
       offers.push({
         type: eventType,
         price: getRandomIntegerNumber(0, 300),
+        id: Math.random(),
         isChecked: true,
         name: getRandomArrayItem(offersGroupedInTypes[eventType])
       });
