@@ -6,7 +6,6 @@ import AddEventButton from './components/add-button.js';
 import TripInfoComponent from './components/trip-info.js';
 import StatisticsComponent from './components/statistics.js';
 import PointsModel from "./models/points-model.js";
-import {menuItems} from './mocks/menu.js';
 import {generateEvents} from './mocks/event.js';
 import {render, RenderPosition} from './utils/render.js';
 import {EVENTS_COUNT} from './utils/common.js';
@@ -20,7 +19,8 @@ const siteFilterElement = document.querySelector(`.trip-main__trip-controls`);
 const pointsModel = new PointsModel();
 pointsModel.setEvents(cards);
 
-render(siteMenuElement, new SiteMenuComponent(menuItems), RenderPosition.AFTEREND);
+const menu = new SiteMenuComponent();
+render(siteMenuElement, menu, RenderPosition.AFTEREND);
 const filterController = new FlterController(siteFilterElement, pointsModel);
 filterController.render();
 
@@ -43,7 +43,20 @@ addEventButton.setClickButtonHandler(() => {
 });
 
 const tripEventsSection = document.querySelector(`.trip-events`);
+const statistics = new StatisticsComponent();
+render(tripEventsSection, statistics, RenderPosition.AFTEREND);
+statistics.hide();
 
-render(tripEventsSection, new StatisticsComponent, RenderPosition.AFTEREND);
+menu.setStatisticsButtonClickHandler(() => {
+  menu.getActiveStatistics();
+  tripController.hide();
+  statistics.show();
+});
+
+menu.setTableButtonClickHandler(() => {
+  menu.getActiveTable();
+  tripController.show();
+  statistics.hide();
+});
 
 

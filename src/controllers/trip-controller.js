@@ -167,10 +167,12 @@ export default class TripController {
 
   hide() {
     this._container.hide();
+    this._eventsSort.hide();
   }
 
   show() {
     this._container.show();
+    this._eventsSort.show();
   }
 
 }
