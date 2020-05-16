@@ -164,4 +164,13 @@ export default class TripController {
     this._creatingPoint = new PointController(this._container.getElement(), this._onDataChange, this._onViewChange);
     this._creatingPoint.render(EmptyPoint, PointControllerMode.ADD);
   }
+
+  hide() {
+    this._container.hide();
+  }
+
+  show() {
+    this._container.show();
+  }
+
 }

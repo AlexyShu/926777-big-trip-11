@@ -4,10 +4,11 @@ import FlterController from './controllers/filter-controller.js';
 import TripDaysListComponent from './components/days-list.js';
 import AddEventButton from './components/add-button.js';
 import TripInfoComponent from './components/trip-info.js';
+import StatisticsComponent from './components/statistics.js';
 import PointsModel from "./models/points-model.js";
-import {render, RenderPosition} from './utils/render.js';
 import {menuItems} from './mocks/menu.js';
 import {generateEvents} from './mocks/event.js';
+import {render, RenderPosition} from './utils/render.js';
 import {EVENTS_COUNT} from './utils/common.js';
 
 
@@ -40,5 +41,9 @@ addEventButton.setClickButtonHandler(() => {
   filterController.changeByDefaultFilter();
   filterController.render();
 });
+
+const tripEventsSection = document.querySelector(`.trip-events`);
+
+render(tripEventsSection, new StatisticsComponent, RenderPosition.AFTEREND);
 
 
