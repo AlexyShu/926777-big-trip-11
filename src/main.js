@@ -7,7 +7,7 @@ import TripInfoComponent from './components/trip-info.js';
 import StatisticsComponent from './components/statistics.js';
 import PointsModel from "./models/points-model.js";
 import {generateEvents} from './mocks/event.js';
-import {render, RenderPosition, remove} from './utils/render.js';
+import {render, RenderPosition} from './utils/render.js';
 import {EVENTS_COUNT} from './const.js';
 
 

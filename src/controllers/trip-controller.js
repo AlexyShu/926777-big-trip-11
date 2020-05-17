@@ -17,10 +17,11 @@ export default class TripController {
     this._pointControllers = [];
     this._creatingPoint = null;
     this._pointsModel = pointsModel;
+
     this._onDataChange = this._onDataChange.bind(this);
     this._onViewChange = this._onViewChange.bind(this);
-
     this._onFilterChange = this._onFilterChange.bind(this);
+
     this._pointsModel.setFilterChangeHandler(this._onFilterChange);
   }
 
@@ -44,7 +45,7 @@ export default class TripController {
     } else {
       remove(this._noEventComponent);
       render(siteTripEventElement, this._container, RenderPosition.BEFOREEND);
-      render(this._container.getElement(), this._eventsSort, RenderPosition.BEFOREBEGIN);
+      render(siteTripEventElement, this._eventsSort, RenderPosition.AFTERBEGIN);
 
       if (isGroupOnDays) {
         const eventGroups = makeGroupedEvents(events);
@@ -159,8 +160,6 @@ export default class TripController {
     this.getEventsSort(SortType.EVENT);
     document.querySelector(`#sort-event`).setAttribute(`checked`, true);
     this._pointsModel.setFilter(FilterType.EVERYTHING);
-
-    // document.querySelector(`#filter-everything`).setAttribute(`checked`, true);
     this._creatingPoint = new PointController(this._container.getElement(), this._onDataChange, this._onViewChange);
     this._creatingPoint.render(EmptyPoint, PointControllerMode.ADD);
   }

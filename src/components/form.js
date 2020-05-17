@@ -243,7 +243,7 @@ export default class EventFormComponent extends AbstractSmartComponent {
       type: this._card.type,
       pictures: this._card.pictures,
       course: this._card.course,
-      description: this._card.descriptions,
+      description: this._card.description,
       offers: offersChecked,
       city: formData.get(`event-destination`),
       startDate: flatpickr.parseDate(formData.get(`event-start-time`), `d/m/y H:i`),
