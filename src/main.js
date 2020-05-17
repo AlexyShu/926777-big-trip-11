@@ -7,8 +7,8 @@ import TripInfoComponent from './components/trip-info.js';
 import StatisticsComponent from './components/statistics.js';
 import PointsModel from "./models/points-model.js";
 import {generateEvents} from './mocks/event.js';
-import {render, RenderPosition} from './utils/render.js';
-import {EVENTS_COUNT} from './utils/common.js';
+import {render, RenderPosition, remove} from './utils/render.js';
+import {EVENTS_COUNT} from './const.js';
 
 
 export const cards = generateEvents(EVENTS_COUNT);
@@ -43,17 +43,19 @@ addEventButton.setClickButtonHandler(() => {
 });
 
 const tripEventsSection = document.querySelector(`.trip-events`);
-const statistics = new StatisticsComponent();
+const statistics = new StatisticsComponent(pointsModel);
 render(tripEventsSection, statistics, RenderPosition.AFTEREND);
 statistics.hide();
 
 menu.setStatisticsButtonClickHandler(() => {
+  statistics._renderCharts();
   menu.getActiveStatistics();
   tripController.hide();
   statistics.show();
 });
 
 menu.setTableButtonClickHandler(() => {
+  statistics._resetCharts();
   menu.getActiveTable();
   tripController.show();
   statistics.hide();
