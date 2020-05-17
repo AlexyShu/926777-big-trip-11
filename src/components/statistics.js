@@ -70,8 +70,8 @@ const generateChartsData = (events) => {
 
 const renderChart = (ctx, data, label, legend, isLabelPositonLeft = false) => {
   return new Chart(ctx, {
-    type: `horizontalBar`,
     plugins: [ChartDataLabels],
+    type: `horizontalBar`,
     data: {
       labels: data.map((item) => item[0].toUpperCase()),
       datasets: [
@@ -101,23 +101,29 @@ const renderChart = (ctx, data, label, legend, isLabelPositonLeft = false) => {
         titleAlign: `left`
       },
       scales: {
-        xAxes: [
-          {
-            gridLines: {
-              display: false
-            },
-            ticks: {
-              beginAtZero: true
-            }
-          }
-        ],
-        yAxes: [
-          {
-            gridLines: {
-              display: false
-            }
-          }
-        ]
+        xAxes: [{
+          ticks: {
+            display: false,
+            beginAtZero: true,
+          },
+          gridLines: {
+            display: false,
+            drawBorder: false
+          },
+          minBarLength: 50
+        }],
+        yAxes: [{
+          ticks: {
+            fontColor: `#000000`,
+            padding: 5,
+            fontSize: 13,
+          },
+          gridLines: {
+            display: false,
+            drawBorder: false
+          },
+          barThickness: 44,
+        }]
       },
       plugins: {
         datalabels: {

@@ -157,6 +157,7 @@ export default class TripController {
       return;
     }
     this._onViewChange();
+    // this._eventsSort.getSortType();
     this.getEventsSort(SortType.EVENT);
     document.querySelector(`#sort-event`).setAttribute(`checked`, true);
     this._pointsModel.setFilter(FilterType.EVERYTHING);
