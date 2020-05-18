@@ -1,7 +1,9 @@
-import AbstractComponent from "./abstract-component.js";
+import AbstractSmartComponent from "./abstract-smart-component.js";
+import {types} from "../mocks/event.js";
 import moment from "moment";
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+
 
 const TitleName = {
   MONEY: `MONEY`,
@@ -15,16 +17,58 @@ const LabelPrefix = {
   HOURS: `h`
 };
 
+// const EventEmoji = [
+//   {
+//     name: `taxi`,
+//     icon: `🚕`
+//   },
+//   {
+//     name: `bus`,
+//     icon: `🚌`
+//   },
+//   {
+//     name: `train`,
+//     icon: `🚂`
+//   },
+//   {
+//     name: `ship`,
+//     icon: `🚢`
+//   },
+//   {
+//     name: `transport`,
+//     icon: `🚊`
+//   },
+//   {
+//     name: `drive`,
+//     icon: `🚗`
+//   },
+//   {
+//     name: `flight`,
+//     icon: `✈`
+//   },
+//   {
+//     name: `check-in`,
+//     icon: `🏨`
+//   },
+//   {
+//     name: `sightseeing`,
+//     icon: `🏛`
+//   },
+//   {
+//     name: `restaurant`,
+//     icon: `🍴`
+//   }
+// ];
+
+
 const generateChartsData = (events) => {
   const moneyStatistics = {};
-  const transportStatistics = {
-    taxi: 0,
-    bus: 0,
-    train: 0,
-    ship: 0,
-    transport: 0,
-    drive: 0
-  };
+
+  const transportStatistics = {};
+  for (let i = 0; i < types.TRANSFER.length; i++) {
+    transportStatistics[types.TRANSFER[i]] = 0;
+  }
+
   const timeStatictics = {};
 
   events.forEach((event) => {
@@ -48,18 +92,18 @@ const generateChartsData = (events) => {
   const moneyData = Object.entries(moneyStatistics).sort((a, b) => b[1] - a[1]);
 
   const transportData = Object.entries(transportStatistics)
-    .sort((a, b) => b[1] - a[1])
-    .filter((item) => item[1] !== 0);
+    .filter((item) => item[1] !== 0)
+    .sort((a, b) => b[1] - a[1]);
 
   const timeData = Object.entries(timeStatictics)
-    .sort((a, b) => b[1] - a[1])
     .map((item) => {
       return [
         item[0],
         Math.round(moment.duration(item[1], `milliseconds`).asHours())
       ];
     })
-    .filter((item) => item[1] !== 0);
+    .filter((item) => item[1] !== 0)
+    .sort((a, b) => b[1] - a[1]);
 
   return {
     moneyData,
@@ -76,42 +120,35 @@ const renderChart = (ctx, data, label, legend, isLabelPositonLeft = false) => {
       labels: data.map((item) => item[0].toUpperCase()),
       datasets: [
         {
-          label: legend.toUpperCase(), // название заголовка
           data: data.map((item) => item[1]), // данные
           backgroundColor: `#ffffff`,
           borderColor: `#ffffff`,
-          borderWidth: 1,
-          barThickness: 30,
-          barPercentage: 1.0
+          anchor: `start`
         }
       ]
     },
     options: {
-      responsive: false,
-      aspectRatio: 2.2,
-      legend: {
-        position: `left`,
-        labels: {
-          fontSize: 16,
-          fontStyle: `bold`
+      plugins: {
+        datalabels: {
+          font: {
+            size: 13
+          },
+          color: `#000000`,
+          anchor: `end`,
+          align: `left`,
+          formatter(value) {
+            return isLabelPositonLeft ? `${label}${value}` : `${value}${label}`;
+          }
         }
       },
-      tooltips: {
-        mode: `nearest`,
-        titleAlign: `left`
+      title: {
+        display: true,
+        text: legend.toUpperCase(),
+        fontColor: `#000000`,
+        fontSize: 23,
+        position: `left`
       },
       scales: {
-        xAxes: [{
-          ticks: {
-            display: false,
-            beginAtZero: true,
-          },
-          gridLines: {
-            display: false,
-            drawBorder: false
-          },
-          minBarLength: 50
-        }],
         yAxes: [{
           ticks: {
             fontColor: `#000000`,
@@ -123,24 +160,24 @@ const renderChart = (ctx, data, label, legend, isLabelPositonLeft = false) => {
             drawBorder: false
           },
           barThickness: 44,
-        }]
-      },
-      plugins: {
-        datalabels: {
-          labels: {
-            title: {
-              font: {
-                weight: `bold`,
-                size: 16
-              }
-            }
+        }],
+        xAxes: [{
+          ticks: {
+            display: false,
+            beginAtZero: true,
           },
-          anchor: `end`,
-          align: `left`,
-          formatter(value) {
-            return isLabelPositonLeft ? `${label}${value}` : `${value}${label}`;
-          }
-        }
+          gridLines: {
+            display: false,
+            drawBorder: false
+          },
+          minBarLength: 50
+        }],
+      },
+      legend: {
+        display: false
+      },
+      tooltips: {
+        enabled: false,
       }
     }
   });
@@ -162,7 +199,7 @@ const createStatisticsTemplate = () => {
   );
 };
 
-export default class StatisticsComponent extends AbstractComponent {
+export default class StatisticsComponent extends AbstractSmartComponent {
   constructor(pointsModel) {
     super();
     this._pointsModel = pointsModel;
@@ -178,6 +215,8 @@ export default class StatisticsComponent extends AbstractComponent {
     return createStatisticsTemplate();
   }
 
+  recoveryListeners() {}
+
   _renderCharts() {
     const element = this.getElement();
 
@@ -188,7 +227,7 @@ export default class StatisticsComponent extends AbstractComponent {
     // this._resetCharts();
 
     const {moneyData, transportData, timeData} = generateChartsData(
-        this._pointsModel.getEvents()
+        this._pointsModel.getEventsAll()
     );
 
     this._moneyChart = renderChart(
@@ -232,6 +271,10 @@ export default class StatisticsComponent extends AbstractComponent {
       this._colorsChart.destroy();
       this._colorsChart = null;
     }
+  }
+
+  destroy() {
+    this._resetCharts();
   }
 
 

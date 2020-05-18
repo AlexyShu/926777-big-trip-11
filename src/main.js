@@ -48,15 +48,15 @@ render(tripEventsSection, statistics, RenderPosition.AFTEREND);
 statistics.hide();
 
 menu.setStatisticsButtonClickHandler(() => {
-  statistics._renderCharts();
-  menu.getActiveStatistics();
+  statistics.rerender();
+  menu.setActiveStatistics();
   tripController.hide();
   statistics.show();
 });
 
 menu.setTableButtonClickHandler(() => {
-  statistics._resetCharts();
-  menu.getActiveTable();
+  statistics.destroy();
+  menu.setActiveTable();
   tripController.show();
   statistics.hide();
 });

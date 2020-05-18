@@ -13,12 +13,12 @@ export default class SiteMenuComponent extends AbstractComponent {
     return createMenuTemplate();
   }
 
-  getActiveTable() {
+  setActiveTable() {
     this.getElement().querySelector(`.table`).classList.add(`trip-tabs__btn--active`);
     this.getElement().querySelector(`.statics`).classList.remove(`trip-tabs__btn--active`);
   }
 
-  getActiveStatistics() {
+  setActiveStatistics() {
     this.getElement().querySelector(`.table`).classList.remove(`trip-tabs__btn--active`);
     this.getElement().querySelector(`.statics`).classList.add(`trip-tabs__btn--active`);
   }
