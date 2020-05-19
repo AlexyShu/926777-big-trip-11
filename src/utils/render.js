@@ -1,5 +1,6 @@
 export const RenderPosition = {
   AFTEREND: `afterend`,
+  AFTERBEGIN: `afterbegin`,
   BEFOREEND: `beforeend`,
   BEFOREBEGIN: `beforebegin`
 };
@@ -14,6 +15,9 @@ export const render = (container, component, place) => {
       break;
     case RenderPosition.BEFOREBEGIN:
       container.before(component.getElement());
+      break;
+    case RenderPosition.AFTERBEGIN:
+      container.prepend(component.getElement());
       break;
   }
 };

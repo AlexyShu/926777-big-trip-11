@@ -1,11 +1,5 @@
 import moment from "moment";
 
-export const KeyCode = {
-  ESC: 27
-};
-
-export const EVENTS_COUNT = 10;
-
 // функция возвращающая случайное целое число
 export const getRandomIntegerNumber = (min, max) => {
   return min + Math.floor(max * Math.random());
@@ -18,11 +12,11 @@ export const getRandomArrayItem = (array) => {
 };
 
 export const timeFormat = (date) => {
-  return moment(date).format(`hh:mm`);
+  return moment(date).format(`HH:mm`);
 };
 
 export const dateFormat = (date) => {
-  return moment(date).format(`YYYY/MM/DD hh:mm`);
+  return moment(date).format(`YYYY/MM/DD HH:mm`);
 };
 
 // export const parseDateWithoutTime = (dateString) => moment(dateString, `YYYY MMM DD`).valueOf();
