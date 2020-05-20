@@ -227,7 +227,7 @@ export default class StatisticsComponent extends AbstractSmartComponent {
     // this._resetCharts();
 
     const {moneyData, transportData, timeData} = generateChartsData(
-        this._pointsModel.getEventsAll()
+        this._pointsModel.getPointsAll()
     );
 
     this._moneyChart = renderChart(

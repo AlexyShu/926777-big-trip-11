@@ -13,11 +13,13 @@ import {render, RenderPosition} from './utils/render.js';
 
 // export const cards = generateEvents(EVENTS_COUNT);
 
+const AUTHORIZATION = `Basic kukurukublablabla`;
+
 const siteMenuElement = document.querySelector(`.trip-main__trip-controls h2`);
 const siteFilterElement = document.querySelector(`.trip-main__trip-controls`);
 const tripEventsSection = document.querySelector(`.trip-events`);
 
-const api = new API();
+const api = new API(AUTHORIZATION);
 const pointsModel = new PointsModel();
 const menu = new SiteMenuComponent();
 const filterController = new FlterController(siteFilterElement, pointsModel);
@@ -33,9 +35,9 @@ filterController.render();
 render(siteFilterElement, addEventButton, RenderPosition.AFTEREND);
 render(tripEventsSection, statistics, RenderPosition.AFTEREND);
 
-if (cards.length !== 0) {
-  render(siteFilterElement, new TripInfoComponent(cards), RenderPosition.BEFOREBEGIN);
-}
+// if (cards.length !== 0) {
+//   render(siteFilterElement, new TripInfoComponent(cards), RenderPosition.BEFOREBEGIN);
+// }
 
 // tripController.render();
 

@@ -38,7 +38,7 @@ export default class TripController {
   }
 
   render(isGroupOnDays = true) {
-    const events = this._pointsModel.getEvents();
+    const events = this._pointsModel.getPoints();
     const siteTripEventElement = document.querySelector(`.trip-events`);
     if (!events.length) {
       render(siteTripEventElement, this._noEventComponent, RenderPosition.BEFOREEND);
@@ -83,7 +83,7 @@ export default class TripController {
       this._container.getElement().innerHTML = ``;
       sortDayItem.innerHTML = ``;
     };
-    const events = this._pointsModel.getEvents();
+    const events = this._pointsModel.getPoints();
     let sortedItems = [];
     switch (sortType) {
       case SortType.EVENT:
@@ -111,7 +111,7 @@ export default class TripController {
       if (newData === null) {
         pointController.destroy();
       } else {
-        this._pointsModel.addEvent(newData);
+        this._pointsModel.addPoint(newData);
         remove(this._container);
         const form = document.querySelector(`.trip-events__item`);
         form.remove();
@@ -121,10 +121,10 @@ export default class TripController {
     }
     // удаление
     if (newData === null) {
-      this._pointsModel.removeEvent(oldData.id);
+      this._pointsModel.removePoint(oldData.id);
     } else {
       // обнавление
-      const isSuccess = this._pointsModel.updateEvent(oldData.id, newData);
+      const isSuccess = this._pointsModel.updatePoint(oldData.id, newData);
       if (isSuccess) {
         pointController.render(newData, PointControllerMode.DEFAULT);
       }
