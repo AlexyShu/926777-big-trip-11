@@ -10,16 +10,16 @@ export default class Points {
   }
 
   // метод для получения карточек
-  getEvents() {
+  getPoints() {
     return getPointsByFilter(this._events, this._activeFilterType);
   }
   // метод для получения карточек
-  getEventsAll() {
+  getPointsAll() {
     return this._events;
   }
 
   // метод для заполнения карточек
-  setEvents(events) {
+  setPoints(events) {
     this._events = Array.from(events);
     this._callHandlers(this._dataChangeHandlers);
   }
@@ -45,7 +45,7 @@ export default class Points {
   }
 
   // метод для обновления одной карточки
-  updateEvent(id, event) {
+  updatePoint(id, event) {
     const index = this._events.findIndex((it) => it.id === id);
     if (index === -1) {
       return false;
@@ -57,7 +57,7 @@ export default class Points {
 
 
   // из массива удали
-  removeEvent(id) {
+  removePoint(id) {
     const index = this._events.findIndex((it) => it.id === id);
     if (index === -1) {
       return false;
@@ -68,7 +68,7 @@ export default class Points {
   }
 
   // в массив добавь
-  addEvent(event) {
+  addPoint(event) {
     this._events = [].concat(event, this._events);
     this._callHandlers(this._dataChangeHandlers);
   }

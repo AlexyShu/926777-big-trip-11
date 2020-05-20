@@ -1,50 +1,50 @@
+import AddEventButton from './components/add-button.js';
+import FlterController from './controllers/filter-controller.js';
 import SiteMenuComponent from './components/menu.js';
 import TripController from './controllers/trip-controller.js';
-import FlterController from './controllers/filter-controller.js';
 import TripDaysListComponent from './components/days-list.js';
-import AddEventButton from './components/add-button.js';
 import TripInfoComponent from './components/trip-info.js';
 import StatisticsComponent from './components/statistics.js';
+import API from "./api.js";
 import PointsModel from "./models/points-model.js";
-import {generateEvents} from './mocks/event.js';
+// import {generateEvents} from './mocks/event.js';
 import {render, RenderPosition} from './utils/render.js';
-import {EVENTS_COUNT} from './const.js';
+// import {EVENTS_COUNT} from './const.js';
 
-
-export const cards = generateEvents(EVENTS_COUNT);
+// export const cards = generateEvents(EVENTS_COUNT);
 
 const siteMenuElement = document.querySelector(`.trip-main__trip-controls h2`);
 const siteFilterElement = document.querySelector(`.trip-main__trip-controls`);
+const tripEventsSection = document.querySelector(`.trip-events`);
 
+const api = new API();
 const pointsModel = new PointsModel();
-pointsModel.setEvents(cards);
-
 const menu = new SiteMenuComponent();
-render(siteMenuElement, menu, RenderPosition.AFTEREND);
 const filterController = new FlterController(siteFilterElement, pointsModel);
-filterController.render();
-
 const addEventButton = new AddEventButton();
+const tripDaysList = new TripDaysListComponent();
+const tripController = new TripController(tripDaysList, pointsModel);
+const statistics = new StatisticsComponent(pointsModel);
+
+// pointsModel.setEvents(cards);
+
+render(siteMenuElement, menu, RenderPosition.AFTEREND);
+filterController.render();
 render(siteFilterElement, addEventButton, RenderPosition.AFTEREND);
+render(tripEventsSection, statistics, RenderPosition.AFTEREND);
 
 if (cards.length !== 0) {
   render(siteFilterElement, new TripInfoComponent(cards), RenderPosition.BEFOREBEGIN);
 }
 
-const tripDaysList = new TripDaysListComponent();
-const tripController = new TripController(tripDaysList, pointsModel);
-tripController.render();
+// tripController.render();
 
 addEventButton.setClickButtonHandler(() => {
   tripController.createPoint();
-
   filterController.changeByDefaultFilter();
   filterController.render();
 });
 
-const tripEventsSection = document.querySelector(`.trip-events`);
-const statistics = new StatisticsComponent(pointsModel);
-render(tripEventsSection, statistics, RenderPosition.AFTEREND);
 statistics.hide();
 
 menu.setStatisticsButtonClickHandler(() => {
@@ -60,5 +60,11 @@ menu.setTableButtonClickHandler(() => {
   tripController.show();
   statistics.hide();
 });
+
+api.getPoints()
+  .then((points) => {
+    pointsModel.setPoints(points);
+    tripController.render();
+  });
 
 
