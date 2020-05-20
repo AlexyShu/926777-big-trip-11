@@ -9,8 +9,9 @@ import PointController from './point-controller.js';
 import {FilterType} from '../const.js';
 
 export default class TripController {
-  constructor(container, pointsModel) {
+  constructor(container, pointsModel, api) {
     this._container = container;
+    this._api = api;
     this._eventsSort = new EventSortComponent();
     this._noEventComponent = new NoEventComponent();
 
@@ -124,10 +125,14 @@ export default class TripController {
       this._pointsModel.removePoint(oldData.id);
     } else {
       // обнавление
-      const isSuccess = this._pointsModel.updatePoint(oldData.id, newData);
-      if (isSuccess) {
-        pointController.render(newData, PointControllerMode.DEFAULT);
-      }
+      this._api.updatePoint(oldData.id, newData)
+        .then((pointModel) => {
+          const isSuccess = this._pointsModel.updatePoint(oldData.id, pointModel);
+          if (isSuccess) {
+            pointController.render(pointModel, PointControllerMode.DEFAULT);
+            this._updateEvents();
+          }
+        });
     }
   }
 

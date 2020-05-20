@@ -25,7 +25,7 @@ const menu = new SiteMenuComponent();
 const filterController = new FlterController(siteFilterElement, pointsModel);
 const addEventButton = new AddEventButton();
 const tripDaysList = new TripDaysListComponent();
-const tripController = new TripController(tripDaysList, pointsModel);
+const tripController = new TripController(tripDaysList, pointsModel, api);
 const statistics = new StatisticsComponent(pointsModel);
 
 // pointsModel.setEvents(cards);
