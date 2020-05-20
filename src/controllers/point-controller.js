@@ -7,8 +7,9 @@ import {KeyCode} from '../const.js';
 export const EmptyEvent = {};
 
 export default class PointController {
-  constructor(container, onDataChange, onViewChange) {
+  constructor(container, onDataChange, onViewChange, store) {
     this._container = container;
+    this._store = store;
     this._onDataChange = onDataChange;
     this._onViewChange = onViewChange;
     this._mode = Mode.DEFAULT;
@@ -26,7 +27,7 @@ export default class PointController {
     const oldEventForm = this._eventForm;
 
     this._eventItem = new CardComponent(event);
-    this._eventForm = new EventFormComponent(event);
+    this._eventForm = new EventFormComponent(event, this._store);
 
     this._eventItem.setRollupButtonHandler(() => {
       this._replaceEventToForm();

@@ -12,3 +12,21 @@ export const KeyCode = {
   ESC: 27
 };
 
+export const TripTypes = {
+  TRANSFER: [`bus`, `drive`, `flight`, `ship`, `taxi`, `train`, `transport`],
+  ACTIVITY: [`check-in`, `restaurant`, `sightseeing`]
+};
+
+export const Months = [
+  `Jan`,
+  `Feb`,
+  `Mar`,
+  `Apr`,
+  `May`,
+  `Jun`,
+  `Jul`,
+  `Aug`,
+  `Sep`,
+  `Oct`,
+  `Nov`,
+  `Dec`];

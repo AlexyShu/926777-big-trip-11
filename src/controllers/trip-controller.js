@@ -9,9 +9,10 @@ import PointController from './point-controller.js';
 import {FilterType} from '../const.js';
 
 export default class TripController {
-  constructor(container, pointsModel, api) {
+  constructor(container, pointsModel, api, store) {
     this._container = container;
     this._api = api;
+    this._store = store;
     this._eventsSort = new EventSortComponent();
     this._noEventComponent = new NoEventComponent();
 
@@ -32,7 +33,7 @@ export default class TripController {
     const eventList = new EventListComponent();
     render(dayComponent.getElement(), eventList, RenderPosition.BEFOREEND);
     events.forEach((event) => {
-      const pointController = new PointController(eventList.getElement(), this._onDataChange, this._onViewChange);
+      const pointController = new PointController(eventList.getElement(), this._onDataChange, this._onViewChange, this._store);
       this._pointControllers.push(pointController);
       pointController.render(event, PointControllerMode.DEFAULT);
     });
@@ -68,13 +69,6 @@ export default class TripController {
         });
       }
 
-      const tripTotalPrice = document.querySelector(`.trip-info__cost-value`);
-
-      tripTotalPrice.textContent = events.reduce((totalPrice, it) => {
-        return totalPrice + parseInt(it.price, 10) + it.offers.reduce((totalOfferPrice, offer) => {
-          return totalOfferPrice + offer.price;
-        }, 0);
-      }, 0);
     }
   }
 
