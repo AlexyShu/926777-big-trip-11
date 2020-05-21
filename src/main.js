@@ -5,10 +5,11 @@ import SiteMenuComponent from './components/menu.js';
 import TripController from './controllers/trip-controller.js';
 import TripDaysListComponent from './components/days-list.js';
 import StatisticsComponent from './components/statistics.js';
+import LoadingListComponent from './components/loading-list.js';
 import API from "./api.js";
 import Store from './store.js';
 import PointsModel from "./models/points-model.js";
-import {render, RenderPosition} from './utils/render.js';
+import {render, RenderPosition, remove} from './utils/render.js';
 
 const AUTHORIZATION = `Basic kukurukublablabla`;
 const END_POINT = `https://11.ecmascript.pages.academy/big-trip`;
@@ -27,7 +28,9 @@ const tripDaysList = new TripDaysListComponent();
 const tripController = new TripController(tripDaysList, pointsModel, api, store);
 const statistics = new StatisticsComponent(pointsModel);
 const infoController = new InfoController(siteFilterElement, pointsModel);
+const loadingList = new LoadingListComponent();
 
+render(document.querySelector(`.trip-events`), loadingList, RenderPosition.AFTERBEGIN);
 render(siteMenuElement, menu, RenderPosition.AFTEREND);
 filterController.render();
 render(siteFilterElement, addEventButton, RenderPosition.AFTEREND);
@@ -60,6 +63,7 @@ api.getPoints()
     pointsModel.setPoints(points);
     tripController.render();
     infoController.render();
+    remove(loadingList);
   });
 
 api.getDestinations()
