@@ -36,7 +36,7 @@ const castInterval = (timeValue, unitOfTime) => timeValue < 10 ? `0${timeValue}$
 export const makeGroupedEvents = (events) => {
   const groupedEvents = new Map();
   events.forEach((event) => {
-    const startInMilliseconds = new Date(event.startDate).setHours(1, 0, 0, 0);
+    const startInMilliseconds = new Date(event.startEventTime).setHours(1, 0, 0, 0);
     if (groupedEvents.has(startInMilliseconds)) {
       groupedEvents.get(startInMilliseconds).push(event);
     } else {

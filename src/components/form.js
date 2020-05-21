@@ -229,35 +229,36 @@ export default class EventFormComponent extends AbstractSmartComponent {
     const eventInput = element.querySelector(`.event__input--destination`);
     eventInput.addEventListener(`change`, (evt) => {
       this._destination.name = evt.target.value;
-      // this._destination.description = this._destination.description.get(evt.target.value);
+      // this._destination.description = this._card.destination.description;
       this.rerender();
     });
   }
 
   getData() {
     const form = this.getElement();
+    return new FormData(form);
 
-    const checkboxes = document.querySelectorAll(`.event__offer-checkbox`);
-    const offersChecked = [];
-    checkboxes.forEach((element, index) => {
-      if (element.checked) {
-        offersChecked.push(this._card.offers[index]);
-      }
-    });
+    // const checkboxes = document.querySelectorAll(`.event__offer-checkbox`);
+    // const offersChecked = [];
+    // checkboxes.forEach((element, index) => {
+    //   if (element.checked) {
+    //     offersChecked.push(this._card.offers[index]);
+    //   }
+    // });
 
-    const formData = new FormData(form);
+    // const formData = new FormData(form);
 
-    return {
-      type: this._card.type,
-      pictures: this._card.pictures,
-      course: this._card.course,
-      description: this._card.description,
-      offers: offersChecked,
-      city: formData.get(`event-destination`),
-      startDate: flatpickr.parseDate(formData.get(`event-start-time`), `d/m/y H:i`),
-      endDate: flatpickr.parseDate(formData.get(`event-end-time`), `d/m/y H:i`),
-      price: formData.get(`event-price`),
-      isFavorite: false
-    };
+    // return {
+    //   type: this._card.type,
+    //   pictures: this._card.pictures,
+    //   course: this._card.course,
+    //   description: this._card.description,
+    //   offers: offersChecked,
+    //   city: formData.get(`event-destination`),
+    //   startDate: flatpickr.parseDate(formData.get(`event-start-time`), `d/m/y H:i`),
+    //   endDate: flatpickr.parseDate(formData.get(`event-end-time`), `d/m/y H:i`),
+    //   price: formData.get(`event-price`),
+    //   isFavorite: false
+    // };
   }
 }

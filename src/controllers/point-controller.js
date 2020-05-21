@@ -1,9 +1,10 @@
 import EventFormComponent from '../components/form.js';
 import CardComponent from '../components/event.js';
+import PointModel from '../models/point-model';
 import {replace, render, remove, RenderPosition} from '../utils/render.js';
 import {KeyCode, Mode} from '../const.js';
+import flatpickr from "flatpickr";
 
-export const EmptyEvent = {};
 
 export default class PointController {
   constructor(container, onDataChange, onViewChange, store) {
@@ -28,6 +29,29 @@ export default class PointController {
     this._eventItem = new CardComponent(event);
     this._eventForm = new EventFormComponent(event, this._store);
 
+    const parseFormData = (formData) => {
+      const checkboxes = document.querySelectorAll(`.event__offer-checkbox`);
+      const offersChecked = [];
+      checkboxes.forEach((element, index) => {
+        if (element.checked) {
+          offersChecked.push(event.offers[index]);
+        }
+      });
+      return {
+        type: formData.get(`event-type`),
+        price: formData.get(`event-price`),
+        destination: {
+          description: event.destination.description,
+          name: formData.get(`event-destination`),
+          pictures: event.destination.pictures
+        },
+        offers: offersChecked,
+        startEventTime: flatpickr.parseDate(formData.get(`event-start-time`), `d/m/y H:i`),
+        endEventTime: flatpickr.parseDate(formData.get(`event-end-time`), `d/m/y H:i`),
+        isFavorite: false
+      };
+    };
+
     this._eventItem.setRollupButtonHandler(() => {
       this._replaceEventToForm();
       document.addEventListener(`keydown`, this._onEscPress);
@@ -39,8 +63,9 @@ export default class PointController {
     });
     this._eventForm.setSubmitFormHandler((evt) => {
       evt.preventDefault();
-      const data = this._eventForm.getData();
-      // console.log(data)
+      // const data = this._eventForm.getData();
+      const formData = this._eventForm.getData();
+      const data = parseFormData(formData);
       this._onDataChange(this, event, data);
     });
 
@@ -50,9 +75,12 @@ export default class PointController {
           this._replaceFormToEvent();
         });
         this._eventForm.setFavotiteButtonClickHandler(() => {
-          this._onDataChange(this, event, Object.assign({}, event, {
-            isFavorite: !event.isFavorite,
-          }));
+          // this._onDataChange(this, event, Object.assign({}, event, {
+          //   isFavorite: !event.isFavorite,
+          // }));
+          const newPoint = PointModel.clone(event);
+          newPoint.isFavorite = !newPoint.isFavorite;
+          this._onDataChange(this, event, newPoint);
         });
         if (oldEventItem && oldEventForm) {
           replace(this._eventItem, oldEventItem);

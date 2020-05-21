@@ -13,16 +13,16 @@ export default class Point {
   }
 
   toRAW() {
-    // return {
-    //   "id": this.id,
-    //   "type": this.eventType,
-    //   "destination": this.destination,
-    //   "base_price": this.price,
-    //   "date_from": this.startEventTime.toJSON(),
-    //   "date_to": this.endEventTime.toJSON(),
-    //   "offers": this.offers,
-    //   "is_favorite": this.isFavorite,
-    // };
+    return {
+      "id": this.id,
+      "type": this.eventType,
+      "destination": this.destination,
+      "base_price": this.price,
+      "date_from": this.startEventTime.toJSON(),
+      "date_to": this.endEventTime.toJSON(),
+      "offers": this.offers,
+      "is_favorite": this.isFavorite,
+    };
   }
 
   static parsePoint(data) {

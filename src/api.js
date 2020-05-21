@@ -29,7 +29,7 @@ export default class API {
 
   getDestinations() {
     return this._load({url: `destinations`})
-    .then((response) => response.json())
+    .then((response) => response.json());
   }
 
   getOffers() {
@@ -39,6 +39,7 @@ export default class API {
 
   // метод обнавления точки маршрута
   updatePoint(id, data) {
+    console.log(data)
     return this._load({
       url: `points/${id}`,
       method: Method.PUT,
