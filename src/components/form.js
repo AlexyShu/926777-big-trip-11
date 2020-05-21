@@ -1,9 +1,8 @@
-import {doFirstLetterUppercase, getRandomArrayItem, Mode} from '../utils/common.js';
+import {doFirstLetterUppercase, Mode} from '../utils/common.js';
 import {TripTypes} from '../const.js';
-// import {cities, types, descriptions, createOffers} from '../mocks/event.js';
 import AbstractSmartComponent from "./abstract-smart-component.js";
 import flatpickr from "flatpickr";
-import {Store} from '../store.js';
+
 
 import "flatpickr/dist/flatpickr.min.css";
 
@@ -11,9 +10,11 @@ const createPicturesTemplate = (pics) => {
   return pics.map(({src, description}) => `<img class="event__photo" src="${src}" alt="${description}"></img>`).join(`\n`);
 };
 
-const createOffersTemplate = (offers) => {
+const createOffersTemplate = (offers, type) => {
   return (`<div class="event__available-offers">
-  ${offers.map(({title, price, type, isChecked, id}) => {
+  ${offers.map(({title, price}) => {
+      const id = Math.random();
+      const isChecked = true;
       return `<div class="event__offer-selector">
       <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-${id}" type="checkbox" name="event-offer-${type}" ${isChecked ? `checked` : ``}>
       <label class="event__offer-label" for="event-offer-${type}-${id}">
@@ -38,16 +39,15 @@ const createCitySelectTemplate = (places) => {
 
 
 const createFormTemplate = (event, store) => {
-  // const {price, isFavorite, type, startDate, endDate} = event;
-  // const {name, description, pictures} = event.destination;
-  // const offers = store.getOffers();
+  const {eventType, startEventTime, endEventTime, price, isFavorite, offers} = event;
+  const {name, description} = event.destination;
   const picturesTemplate = createPicturesTemplate(event.destination.pictures);
   return (`<form class="trip-events__item  event  event--edit" action="#" method="post">
       <header class="event__header">
            <div class="event__type-wrapper">
              <label class="event__type  event__type-btn" for="event-type-toggle-1">
                <span class="visually-hidden">Choose event type</span>
-               <img class="event__type-icon" width="17" height="17" src="img/icons/${event.eventType}.png" alt="Event type icon">
+               <img class="event__type-icon" width="17" height="17" src="img/icons/${eventType}.png" alt="Event type icon">
              </label>
              <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
              <div class="event__type-list">
@@ -57,7 +57,7 @@ const createFormTemplate = (event, store) => {
                   <legend class="visually-hidden">${TripTypes[group]}</legend>
                 ${TripTypes[group].map((el) => {
           return (`<div class="event__type-item">
-                      <input id="event-type-${el}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${el}" ${event.eventType === el && `checked`}>
+                      <input id="event-type-${el}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${el}" ${eventType === el && `checked`}>
                       <label class="event__type-label  event__type-label--${el}" for="event-type-${el}-1">${doFirstLetterUppercase(el)}</label>
                     </div>`
           );
@@ -69,32 +69,32 @@ const createFormTemplate = (event, store) => {
         </div>
         <div class="event__field-group  event__field-group--destination">
            <label class="event__label  event__type-output" for="event-destination-1">
-           ${event.eventType}
+           ${eventType}
            </label>
-           <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${event.destination.name}" list="destination-list-1">
+           <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${name}" list="destination-list-1">
            ${createCitySelectTemplate(store.getDestinationNames())}
         </div>
         <div class="event__field-group  event__field-group--time">
            <label class="visually-hidden" for="event-start-time-1">
            From
            </label>
-           <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${event.startEventTime}">
+           <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startEventTime}">
            &mdash;
            <label class="visually-hidden" for="event-end-time-1">
            To
            </label>
-           <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${event.endEventTime}">
+           <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${endEventTime}">
         </div>
         <div class="event__field-group  event__field-group--price">
            <label class="event__label" for="event-price-1">
            <span class="visually-hidden">Price</span>
            &euro;
            </label>
-           <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${event.price}">
+           <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price}">
         </div>
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
         <button class="event__reset-btn" type="reset">Delete</button>
-        <input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${event.isFavorite ? `checked` : ``}>
+        <input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite ? `checked` : ``}>
         <label class="event__favorite-btn" for="event-favorite-1">
           <span class="visually-hidden">Add to favorite</span>
           <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
@@ -108,11 +108,11 @@ const createFormTemplate = (event, store) => {
       <section class="event__details">
         <section class="event__section  event__section--offers">
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-          ${createOffersTemplate(event.offers)}
+          ${createOffersTemplate(offers, TripTypes)}
         </section>
         <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-          <p class="event__destination-description">${event.destination.description}</p>
+          <p class="event__destination-description">${description}</p>
           <div class="event__photos-container">
              <div class="event__photos-tape">
              ${picturesTemplate}
@@ -129,7 +129,6 @@ export default class EventFormComponent extends AbstractSmartComponent {
   constructor(card, store) {
     super();
     this._card = card;
-    // console.log(this._card)
     this._store = store;
     this._flatpickrStartDate = null;
     this._flatpickrEndDate = null;
@@ -137,7 +136,8 @@ export default class EventFormComponent extends AbstractSmartComponent {
     this._resetHandler = null;
     this._submitHandler = null;
     this._mode = Mode.DEFAULT;
-    this._type = card.type;
+    this._type = card.TripTypes;
+    this._destination = card.destination;
 
     this._applyFlatpickr();
     this.addListeners();
@@ -220,16 +220,16 @@ export default class EventFormComponent extends AbstractSmartComponent {
 
     element.querySelectorAll(`.event__type-input`).forEach((it) => {
       it.addEventListener(`change`, (evt) => {
-        this._card.type = evt.target.value;
-        this._card.offers = createOffers(this._card.type);
+        this._card.eventType = evt.target.value;
+        // this._card.offers = this._card.offers.get(evt.target.value);
         this.rerender();
       });
     });
 
     const eventInput = element.querySelector(`.event__input--destination`);
     eventInput.addEventListener(`change`, (evt) => {
-      this._card.name = evt.target.value;
-      this._card.description = getRandomArrayItem(descriptions);
+      this._destination.name = evt.target.value;
+      // this._destination.description = this._destination.description.get(evt.target.value);
       this.rerender();
     });
   }

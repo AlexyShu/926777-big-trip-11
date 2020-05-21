@@ -15,26 +15,27 @@ const createOffersTemplate = (offers) => {
 };
 
 const createCardTemplate = (event) => {
-  // const {type, city, price, startDate, endDate, offers, course} = event;
+  const {eventType, startEventTime, endEventTime, price, offers} = event;
+  const {name} = event.destination;
   return (`<li class="trip-events__item">
       <div class="event">
         <div class="event__type">
-          <img class="event__type-icon" width="42" height="42" src="img/icons/${event.eventType}.png" alt="Event type icon">
+          <img class="event__type-icon" width="42" height="42" src="img/icons/${eventType}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${event.eventType} ${event.destination.name}</h3>
+        <h3 class="event__title">${eventType} ${name}</h3>
         <div class="event__schedule">
           <p class="event__time">
-          <time class="event__start-time" datetime="${dateFormat(event.startEventTime)}">${timeFormat(event.startEventTime)}</time>
+          <time class="event__start-time" datetime="${dateFormat(startEventTime)}">${timeFormat(startEventTime)}</time>
           &mdash;
-          <time class="event__end-time" datetime="${dateFormat(event.endEventTime)}">${timeFormat(event.endEventTime)}</time>
+          <time class="event__end-time" datetime="${dateFormat(endEventTime)}">${timeFormat(endEventTime)}</time>
         </p>
-        <p class="event__duration">${calculateTimeInterval(event.startEventTime, event.endEventTime)}</p>
+        <p class="event__duration">${calculateTimeInterval(startEventTime, endEventTime)}</p>
         </div>
         <p class="event__price">
-          &euro;&nbsp;<span class="event__price-value"> ${event.price} </span>
+          &euro;&nbsp;<span class="event__price-value"> ${price} </span>
         </p>
         <h4 class="visually-hidden">Offers:</h4>
-        ${createOffersTemplate(event.offers)}
+        ${createOffersTemplate(offers)}
         <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>
         </button>
