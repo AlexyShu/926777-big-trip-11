@@ -1,12 +1,4 @@
-export const FilterType = {
-  EVERYTHING: `everything`,
-  FUTURE: `future`,
-  PAST: `past`
-};
-
 export const HIDDEN_CLASS = `visually-hidden`;
-
-export const EVENTS_COUNT = 10;
 
 export const KeyCode = {
   ESC: 27
@@ -35,5 +27,31 @@ export const SortType = {
   EVENT: `event`,
   TIME: `time`,
   PRICE: `price`,
+};
+
+export const FilterType = {
+  EVERYTHING: `everything`,
+  FUTURE: `future`,
+  PAST: `past`
+};
+
+export const Mode = {
+  DEFAULT: `default`,
+  EDIT: `edit`,
+  ADD: `add`
+};
+
+export const EmptyPoint = {
+  id: 0,
+  type: `flight`,
+  description: ``,
+  city: ``,
+  course: `to`,
+  pictures: [],
+  offers: [],
+  startDate: Date.now(),
+  endDate: Date.now(),
+  price: 0,
+  isFavorite: false
 };
 

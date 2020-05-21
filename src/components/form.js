@@ -1,5 +1,5 @@
-import {doFirstLetterUppercase, Mode} from '../utils/common.js';
-import {TripTypes} from '../const.js';
+import {doFirstLetterUppercase} from '../utils/common.js';
+import {TripTypes, Mode} from '../const.js';
 import AbstractSmartComponent from "./abstract-smart-component.js";
 import flatpickr from "flatpickr";
 

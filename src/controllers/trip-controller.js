@@ -3,9 +3,9 @@ import EventSortComponent from '../components/event-sort.js';
 import TripDayComponent from '../components/day-number.js';
 import EventListComponent from '../components/events-list.js';
 import {render, RenderPosition, remove} from '../utils/render.js';
-import {Mode as PointControllerMode, makeGroupedEvents, EmptyPoint} from '../utils/common.js';
+import {makeGroupedEvents} from '../utils/common.js';
 import PointController from './point-controller.js';
-import {FilterType, SortType} from '../const.js';
+import {FilterType, SortType, EmptyPoint, Mode as PointControllerMode} from '../const.js';
 
 export default class TripController {
   constructor(container, pointsModel, api, store) {

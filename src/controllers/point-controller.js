@@ -1,8 +1,7 @@
 import EventFormComponent from '../components/form.js';
 import CardComponent from '../components/event.js';
 import {replace, render, remove, RenderPosition} from '../utils/render.js';
-import {Mode} from '../utils/common.js';
-import {KeyCode} from '../const.js';
+import {KeyCode, Mode} from '../const.js';
 
 export const EmptyEvent = {};
 

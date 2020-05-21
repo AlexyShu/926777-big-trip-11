@@ -9,9 +9,6 @@ import API from "./api.js";
 import Store from './store.js';
 import PointsModel from "./models/points-model.js";
 import {render, RenderPosition} from './utils/render.js';
-// import {EVENTS_COUNT} from './const.js';
-
-// export const cards = generateEvents(EVENTS_COUNT);
 
 const AUTHORIZATION = `Basic kukurukublablabla`;
 const END_POINT = `https://11.ecmascript.pages.academy/big-trip`;
@@ -31,16 +28,10 @@ const tripController = new TripController(tripDaysList, pointsModel, api, store)
 const statistics = new StatisticsComponent(pointsModel);
 const infoController = new InfoController(siteFilterElement, pointsModel);
 
-
-// pointsModel.setEvents(cards);
-
 render(siteMenuElement, menu, RenderPosition.AFTEREND);
 filterController.render();
 render(siteFilterElement, addEventButton, RenderPosition.AFTEREND);
 render(tripEventsSection, statistics, RenderPosition.AFTEREND);
-
-
-// tripController.render();
 
 addEventButton.setClickButtonHandler(() => {
   tripController.createPoint();
