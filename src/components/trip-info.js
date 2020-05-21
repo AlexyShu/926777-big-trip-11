@@ -1,4 +1,3 @@
-// import {cities} from '../mocks/event.js';
 import AbstractComponent from "./abstract-component.js";
 import {Months} from "../const.js";
 

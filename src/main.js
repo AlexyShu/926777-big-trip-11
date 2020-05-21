@@ -8,7 +8,6 @@ import StatisticsComponent from './components/statistics.js';
 import API from "./api.js";
 import Store from './store.js';
 import PointsModel from "./models/points-model.js";
-// import {generateEvents} from './mocks/event.js';
 import {render, RenderPosition} from './utils/render.js';
 // import {EVENTS_COUNT} from './const.js';
 
