@@ -6,6 +6,7 @@ import TripController from './controllers/trip-controller.js';
 import TripDaysListComponent from './components/days-list.js';
 import StatisticsComponent from './components/statistics.js';
 import LoadingListComponent from './components/loading-list.js';
+import LoadErrorListComponent from './components/loading-error-list.js';
 import API from "./api.js";
 import Store from './store.js';
 import PointsModel from "./models/points-model.js";
@@ -64,6 +65,10 @@ api.getPoints()
     tripController.render();
     infoController.render();
     remove(loadingList);
+  })
+  .catch(() => {
+    remove(loadingList);
+    render(document.querySelector(`.trip-events`), new LoadErrorListComponent(), RenderPosition.AFTERBEGIN);
   });
 
 api.getDestinations()
