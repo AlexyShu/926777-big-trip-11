@@ -60,19 +60,15 @@ menu.setTableButtonClickHandler(() => {
 });
 
 api.getPoints()
-  .then((points) => {
-    pointsModel.setPoints(points);
-    tripController.render();
-    infoController.render();
-    remove(loadingList);
-  })
+  .then((points) => pointsModel.setPoints(points))
+  .then(() => api.getDestinations())
+  .then((destinations) => store.setDestinations(destinations))
+  .then(() => api.getOffers())
+  .then((offers) => store.setOffers(offers))
+  .then(() => tripController.render())
+  .then(() => infoController.render())
+  .then(() => remove(loadingList))
   .catch(() => {
     remove(loadingList);
     render(document.querySelector(`.trip-events`), new LoadErrorListComponent(), RenderPosition.AFTERBEGIN);
   });
-
-api.getDestinations()
-  .then((data) => store.setDestinations(data));
-
-api.getOffers()
-  .then((data) => store.setOffers(data));

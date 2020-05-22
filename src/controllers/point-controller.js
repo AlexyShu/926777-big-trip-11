@@ -68,7 +68,7 @@ export default class PointController {
       // const data = this._eventForm.getData();
       const formData = this._eventForm.getData();
       const data = parseFormData(formData);
-      console.log(data)
+      // console.log(data)
       this._onDataChange(this, event, data);
     });
 

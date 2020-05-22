@@ -137,8 +137,9 @@ export default class EventFormComponent extends AbstractSmartComponent {
     this._submitHandler = null;
     this._mode = Mode.DEFAULT;
     this._type = card.TripTypes;
+
     this._destination = card.destination;
-    // this.destinations = store.getDestinations();
+    this._destinations = store.getDestinations();
     // console.log(this.destinations)
     // this.offers = store.getOffers();
     // console.log(this.offers)

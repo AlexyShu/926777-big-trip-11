@@ -6,7 +6,6 @@ export default class Store {
 
   setDestinations(data) {
     this._destinations = data;
-    // console.log(this._destinations)
   }
 
   setOffers(data) {
