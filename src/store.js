@@ -4,6 +4,16 @@ export default class Store {
     this._offers = [];
   }
 
+  setDestinations(data) {
+    this._destinations = data;
+    // console.log(this._destinations)
+  }
+
+  setOffers(data) {
+    this._offers = data;
+    // console.log(this._offers)
+  }
+
   getDestinations() {
     return this._destinations;
   }
@@ -16,11 +26,4 @@ export default class Store {
     return new Map(this._offers.map((el) => [el.type, el.offers]));
   }
 
-  setDestinations(data) {
-    this._destinations = data;
-  }
-
-  setOffers(data) {
-    this._offers = data;
-  }
 }

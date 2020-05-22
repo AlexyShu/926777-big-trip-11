@@ -39,7 +39,6 @@ export default class API {
 
   // метод обнавления точки маршрута
   updatePoint(id, data) {
-    console.log(data)
     return this._load({
       url: `points/${id}`,
       method: Method.PUT,

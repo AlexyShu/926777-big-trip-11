@@ -138,6 +138,10 @@ export default class EventFormComponent extends AbstractSmartComponent {
     this._mode = Mode.DEFAULT;
     this._type = card.TripTypes;
     this._destination = card.destination;
+    // this.destinations = store.getDestinations();
+    // console.log(this.destinations)
+    // this.offers = store.getOffers();
+    // console.log(this.offers)
 
     this._applyFlatpickr();
     this.addListeners();
@@ -217,19 +221,29 @@ export default class EventFormComponent extends AbstractSmartComponent {
 
   addListeners() {
     const element = this.getElement();
-
     element.querySelectorAll(`.event__type-input`).forEach((it) => {
       it.addEventListener(`change`, (evt) => {
         this._card.eventType = evt.target.value;
-        // this._card.offers = this._card.offers.get(evt.target.value);
+        // this._card.offers = this._offers.get(evt.target.value);
         this.rerender();
       });
     });
 
     const eventInput = element.querySelector(`.event__input--destination`);
+    // if (eventInput.value === ``) {
+    //   eventInput.setCustomValidity(`Please select a valid value from list.`);
+    // }
     eventInput.addEventListener(`change`, (evt) => {
       this._destination.name = evt.target.value;
-      // this._destination.description = this._card.destination.description;
+      // this._destination.destination = this._destinations.find((el) => {
+      //   if (el.name === this._destination.name) {
+      //     return el.destination;
+      //   } else {
+      //     return ` `;
+      //   }
+      // });
+
+
       this.rerender();
     });
   }
