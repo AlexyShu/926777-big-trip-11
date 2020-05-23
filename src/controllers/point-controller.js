@@ -47,7 +47,7 @@ export default class PointController {
         "type": formData.get(`event-type`),
         "date_from": flatpickr.parseDate(formData.get(`event-start-time`), `d/m/y H:i`),
         "date_to": flatpickr.parseDate(formData.get(`event-end-time`), `d/m/y H:i`),
-        "base_price": formData.get(`event-price`),
+        "base_price": parseInt(formData.get(`event-price`), 10),
         "offers": offersChecked,
         "is_favorite": false
       });
@@ -68,7 +68,6 @@ export default class PointController {
       // const data = this._eventForm.getData();
       const formData = this._eventForm.getData();
       const data = parseFormData(formData);
-      // console.log(data)
       this._onDataChange(this, event, data);
     });
 
