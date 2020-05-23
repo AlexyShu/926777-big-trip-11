@@ -22,7 +22,7 @@ export default class Store {
   }
 
   getOffers() {
-    return new Map(this._offers.map((el) => [el.type, el.offers]));
+    return this._offers;
   }
 
 }

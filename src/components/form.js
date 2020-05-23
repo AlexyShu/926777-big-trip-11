@@ -137,12 +137,9 @@ export default class EventFormComponent extends AbstractSmartComponent {
     this._submitHandler = null;
     this._mode = Mode.DEFAULT;
     this._type = card.TripTypes;
-
     this._destination = card.destination;
     this._destinations = store.getDestinations();
-    // console.log(this.destinations)
-    // this.offers = store.getOffers();
-    // console.log(this.offers)
+    this._offers = store.getOffers();
 
     this._applyFlatpickr();
     this.addListeners();
@@ -225,26 +222,21 @@ export default class EventFormComponent extends AbstractSmartComponent {
     element.querySelectorAll(`.event__type-input`).forEach((it) => {
       it.addEventListener(`change`, (evt) => {
         this._card.eventType = evt.target.value;
-        // this._card.offers = this._offers.get(evt.target.value);
+        const cardType = this._offers.find((el) => el.type === this._card.eventType);
+        this._card.offers = cardType ? cardType.offers : ``;
         this.rerender();
       });
     });
 
     const eventInput = element.querySelector(`.event__input--destination`);
-    // if (eventInput.value === ``) {
-    //   eventInput.setCustomValidity(`Please select a valid value from list.`);
-    // }
+    if (eventInput.value === ``) {
+      eventInput.setCustomValidity(`Please select a valid value from list.`);
+    }
     eventInput.addEventListener(`change`, (evt) => {
       this._destination.name = evt.target.value;
-      // this._destination.destination = this._destinations.find((el) => {
-      //   if (el.name === this._destination.name) {
-      //     return el.destination;
-      //   } else {
-      //     return ` `;
-      //   }
-      // });
-
-
+      const town = this._destinations.find((el) => el.name === this._destination.name);
+      this._destination.description = town ? town.description : ``;
+      this._destination.pictures = town ? town.pictures : ``;
       this.rerender();
     });
   }
