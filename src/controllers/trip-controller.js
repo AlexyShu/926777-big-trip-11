@@ -105,17 +105,28 @@ export default class TripController {
       if (newData === null) {
         pointController.destroy();
       } else {
-        this._pointsModel.addPoint(newData);
-        remove(this._container);
-        const form = document.querySelector(`.trip-events__item`);
-        form.remove();
-        this.render();
-        // pointController.render(newData, PointControllerMode.ADD);
+        // this._pointsModel.addPoint(newData);
+        // remove(this._container);
+        // const form = document.querySelector(`.trip-events__item`);
+        // form.remove();
+        // this.render();
+        this._api.createPoint(newData)
+          .then((pointModel) => {
+            this._pointsModel.addPoint(pointModel);
+            remove(this._container);
+            const form = document.querySelector(`.trip-events__item`);
+            form.remove();
+            this.render();
+          });
+        // pointController.render(pointModel, PointControllerMode.DEFAULT);
       }
     }
     // удаление
-    if (newData === null) {
-      this._pointsModel.removePoint(oldData.id);
+    else if (newData === null) {
+      this._api.deletePoint(oldData.id)
+        .then(() => {
+          this._pointsModel.removePoint(oldData.id);
+        });
     } else {
       // обнавление
       this._api.updatePoint(oldData.id, newData)
