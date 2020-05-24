@@ -72,20 +72,20 @@ const generateChartsData = (events) => {
   const timeStatictics = {};
 
   events.forEach((event) => {
-    if (event.type in moneyStatistics) {
-      moneyStatistics[event.type] += Number(event.price);
+    if (event.eventType in moneyStatistics) {
+      moneyStatistics[event.eventType] += Number(event.price);
     } else {
-      moneyStatistics[event.type] = Number(event.price);
+      moneyStatistics[event.eventType] = Number(event.price);
     }
 
-    if (event.type in transportStatistics) {
-      transportStatistics[event.type] += 1;
+    if (event.eventType in transportStatistics) {
+      transportStatistics[event.eventType] += 1;
     }
 
-    if (event.type in timeStatictics) {
-      timeStatictics[event.type] += event.endDate - event.startDate;
+    if (event.eventType in timeStatictics) {
+      timeStatictics[event.eventType] += event.endEventTime - event.startEventTime;
     } else {
-      timeStatictics[event.type] = event.endDate - event.startDate;
+      timeStatictics[event.eventType] = event.endEventTime - event.startEventTime;
     }
   });
 

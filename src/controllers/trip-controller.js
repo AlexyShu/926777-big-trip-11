@@ -87,7 +87,7 @@ export default class TripController {
         break;
       case SortType.TIME:
         sortByNotDefult();
-        sortedItems = events.slice().sort((a, b) => (b.endDate - b.startDate) - (a.endDate - a.startDate));
+        sortedItems = events.slice().sort((a, b) => (b.endEventTime - b.startEventTime) - (a.endEventTime - a.startEventTime));
         this.renderDay(sortedItems);
         break;
       case SortType.PRICE:
