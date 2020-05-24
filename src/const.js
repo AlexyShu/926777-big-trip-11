@@ -43,14 +43,15 @@ export const Mode = {
 
 export const EmptyPoint = {
   id: 0,
-  type: `flight`,
-  description: ``,
-  city: ``,
-  course: `to`,
-  pictures: [],
+  eventType: `flight`,
+  destination: {
+    name: ``,
+    description: ``,
+    pictures: []
+  },
   offers: [],
-  startDate: Date.now(),
-  endDate: Date.now(),
+  startEventTime: new Date(),
+  endEventTime: new Date(),
   price: 0,
   isFavorite: false
 };

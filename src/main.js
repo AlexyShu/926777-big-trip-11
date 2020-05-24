@@ -65,9 +65,11 @@ api.getPoints()
   .then((destinations) => store.setDestinations(destinations))
   .then(() => api.getOffers())
   .then((offers) => store.setOffers(offers))
-  .then(() => tripController.render())
-  .then(() => infoController.render())
-  .then(() => remove(loadingList))
+  .then(() => {
+    tripController.render();
+    infoController.render();
+    remove(loadingList);
+  })
   .catch(() => {
     remove(loadingList);
     render(document.querySelector(`.trip-events`), new LoadErrorListComponent(), RenderPosition.AFTERBEGIN);

@@ -1,4 +1,4 @@
-import {doFirstLetterUppercase} from '../utils/common.js';
+import {doFirstLetterUppercase, dateFormat} from '../utils/common.js';
 import {TripTypes, Mode} from '../const.js';
 import AbstractSmartComponent from "./abstract-smart-component.js";
 import flatpickr from "flatpickr";
@@ -39,9 +39,10 @@ const createCitySelectTemplate = (places) => {
 
 
 const createFormTemplate = (event, store) => {
-  const {eventType, startEventTime, endEventTime, price, isFavorite, offers} = event;
+  const {eventType, startEventTime, endEventTime, price, isFavorite} = event;
   const {name, description} = event.destination;
   const picturesTemplate = createPicturesTemplate(event.destination.pictures);
+  const eventOffers = store.getOffers().find((el) => el.type === event.eventType);
   return (`<form class="trip-events__item  event  event--edit" action="#" method="post">
       <header class="event__header">
            <div class="event__type-wrapper">
@@ -78,12 +79,12 @@ const createFormTemplate = (event, store) => {
            <label class="visually-hidden" for="event-start-time-1">
            From
            </label>
-           <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startEventTime}">
+           <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dateFormat(startEventTime)}">
            &mdash;
            <label class="visually-hidden" for="event-end-time-1">
            To
            </label>
-           <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${endEventTime}">
+           <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dateFormat(endEventTime)}">
         </div>
         <div class="event__field-group  event__field-group--price">
            <label class="event__label" for="event-price-1">
@@ -108,7 +109,7 @@ const createFormTemplate = (event, store) => {
       <section class="event__details">
         <section class="event__section  event__section--offers">
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-          ${createOffersTemplate(offers, TripTypes)}
+          ${createOffersTemplate(eventOffers.offers, eventOffers.type)}
         </section>
         <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
@@ -171,8 +172,8 @@ export default class EventFormComponent extends AbstractSmartComponent {
   _applyFlatpickr() {
     this._deleteFlatpickrs();
 
-    this._flatpickrStartDate = this._setFlatpickr(this.getElement().querySelector(`#event-start-time-1`), this._card.startDate);
-    this._flatpickrEndDate = this._setFlatpickr(this.getElement().querySelector(`#event-end-time-1`), this._card.endDate, this._card.startDate);
+    this._flatpickrStartDate = this._setFlatpickr(this.getElement().querySelector(`#event-start-time-1`), this._card.startEventTime);
+    this._flatpickrEndDate = this._setFlatpickr(this.getElement().querySelector(`#event-end-time-1`), this._card.endEventTime, this._card.startEventTime);
   }
 
   _setFlatpickr(input, defaultTime, dateMin = `today`) {

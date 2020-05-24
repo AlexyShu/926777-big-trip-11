@@ -30,11 +30,12 @@ export default class PointController {
     this._eventForm = new EventFormComponent(event, this._store);
 
     const parseFormData = (formData) => {
+      const eventOffers = this._store.getOffers().find((el) => el.type === event.eventType);
       const checkboxes = document.querySelectorAll(`.event__offer-checkbox`);
       const offersChecked = [];
       checkboxes.forEach((element, index) => {
         if (element.checked) {
-          offersChecked.push(event.offers[index]);
+          offersChecked.push(eventOffers.offers[index]);
         }
       });
       return new PointModel({
@@ -67,7 +68,8 @@ export default class PointController {
       evt.preventDefault();
       // const data = this._eventForm.getData();
       const formData = this._eventForm.getData();
-      const data = parseFormData(formData);
+      const data = parseFormData(formData, event);
+      console.log(data)
       this._onDataChange(this, event, data);
     });
 
