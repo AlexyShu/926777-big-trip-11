@@ -1,21 +1,24 @@
-import {doFirstLetterUppercase, getRandomArrayItem, Mode} from '../utils/common.js';
-import {cities, types, descriptions, createOffers} from '../mocks/event.js';
+import {doFirstLetterUppercase, dateFormat} from '../utils/common.js';
+import {TripTypes, Mode} from '../const.js';
 import AbstractSmartComponent from "./abstract-smart-component.js";
 import flatpickr from "flatpickr";
+
 
 import "flatpickr/dist/flatpickr.min.css";
 
 const createPicturesTemplate = (pics) => {
-  return pics.map((picture) => `<img class="event__photo" src="${picture}" alt="Event photo"></img>`).join(`\n`);
+  return pics.map(({src, description}) => `<img class="event__photo" src="${src}" alt="${description}"></img>`).join(`\n`);
 };
 
-const createOffersTemplate = (offers) => {
+const createOffersTemplate = (offers, type) => {
   return (`<div class="event__available-offers">
-  ${offers.map(({name, price, type, isChecked, id}) => {
+  ${offers.map(({title, price}) => {
+      const id = Math.random();
+      const isChecked = true;
       return `<div class="event__offer-selector">
       <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-${id}" type="checkbox" name="event-offer-${type}" ${isChecked ? `checked` : ``}>
       <label class="event__offer-label" for="event-offer-${type}-${id}">
-      <span class="event__offer-title"> ${name} </span>
+      <span class="event__offer-title"> ${title} </span>
       &plus;
      &euro;&nbsp;<span class="event__offer-price">${price}</span>
      </label>
@@ -34,24 +37,28 @@ const createCitySelectTemplate = (places) => {
   );
 };
 
-const createFormTemplate = (event) => {
-  const {type, description, city, startDate, endDate, price, offers, course, isFavorite} = event;
-  const picturesTemplate = createPicturesTemplate(event.pictures);
+
+const createFormTemplate = (event, store) => {
+  const {eventType, startEventTime, endEventTime, price, isFavorite} = event;
+  const {name, description} = event.destination;
+  const picturesTemplate = createPicturesTemplate(event.destination.pictures);
+  const eventOffers = store.getOffers().find((el) => el.type === event.eventType);
   return (`<form class="trip-events__item  event  event--edit" action="#" method="post">
       <header class="event__header">
            <div class="event__type-wrapper">
              <label class="event__type  event__type-btn" for="event-type-toggle-1">
                <span class="visually-hidden">Choose event type</span>
-               <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
+               <img class="event__type-icon" width="17" height="17" src="img/icons/${eventType}.png" alt="Event type icon">
              </label>
              <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
              <div class="event__type-list">
-             ${Object.keys(types).map((group) => {
+
+             ${Object.keys(TripTypes).map((group) => {
       return (`<fieldset class="event__type-group">
-                  <legend class="visually-hidden">${types[group]}</legend>
-                ${types[group].map((el) => {
+                  <legend class="visually-hidden">${TripTypes[group]}</legend>
+                ${TripTypes[group].map((el) => {
           return (`<div class="event__type-item">
-                      <input id="event-type-${el}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${el}" ${type === el && `checked`}>
+                      <input id="event-type-${el}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${el}" ${eventType === el && `checked`}>
                       <label class="event__type-label  event__type-label--${el}" for="event-type-${el}-1">${doFirstLetterUppercase(el)}</label>
                     </div>`
           );
@@ -63,21 +70,21 @@ const createFormTemplate = (event) => {
         </div>
         <div class="event__field-group  event__field-group--destination">
            <label class="event__label  event__type-output" for="event-destination-1">
-           ${type} ${course}
+           ${eventType}
            </label>
-           <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${city}" list="destination-list-1">
-           ${createCitySelectTemplate(cities)}
+           <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${name}" list="destination-list-1">
+           ${createCitySelectTemplate(store.getDestinationNames())}
         </div>
         <div class="event__field-group  event__field-group--time">
            <label class="visually-hidden" for="event-start-time-1">
            From
            </label>
-           <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startDate}">
+           <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dateFormat(startEventTime)}">
            &mdash;
            <label class="visually-hidden" for="event-end-time-1">
            To
            </label>
-           <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${endDate}">
+           <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dateFormat(endEventTime)}">
         </div>
         <div class="event__field-group  event__field-group--price">
            <label class="event__label" for="event-price-1">
@@ -102,7 +109,7 @@ const createFormTemplate = (event) => {
       <section class="event__details">
         <section class="event__section  event__section--offers">
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-          ${createOffersTemplate(offers)}
+          ${createOffersTemplate(eventOffers.offers, eventOffers.type)}
         </section>
         <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
@@ -120,23 +127,27 @@ const createFormTemplate = (event) => {
 
 
 export default class EventFormComponent extends AbstractSmartComponent {
-  constructor(card) {
+  constructor(card, store) {
     super();
     this._card = card;
+    this._store = store;
     this._flatpickrStartDate = null;
     this._flatpickrEndDate = null;
     this._rollupHandler = null;
     this._resetHandler = null;
     this._submitHandler = null;
     this._mode = Mode.DEFAULT;
-    this._type = card.type;
+    this._type = card.TripTypes;
+    this._destination = card.destination;
+    this._destinations = store.getDestinations();
+    this._offers = store.getOffers();
 
     this._applyFlatpickr();
     this.addListeners();
   }
 
   getTemplate() {
-    return createFormTemplate(this._card);
+    return createFormTemplate(this._card, this._store);
   }
 
   removeElement() {
@@ -161,8 +172,8 @@ export default class EventFormComponent extends AbstractSmartComponent {
   _applyFlatpickr() {
     this._deleteFlatpickrs();
 
-    this._flatpickrStartDate = this._setFlatpickr(this.getElement().querySelector(`#event-start-time-1`), this._card.startDate);
-    this._flatpickrEndDate = this._setFlatpickr(this.getElement().querySelector(`#event-end-time-1`), this._card.endDate, this._card.startDate);
+    this._flatpickrStartDate = this._setFlatpickr(this.getElement().querySelector(`#event-start-time-1`), this._card.startEventTime);
+    this._flatpickrEndDate = this._setFlatpickr(this.getElement().querySelector(`#event-end-time-1`), this._card.endEventTime, this._card.startEventTime);
   }
 
   _setFlatpickr(input, defaultTime, dateMin = `today`) {
@@ -209,47 +220,30 @@ export default class EventFormComponent extends AbstractSmartComponent {
 
   addListeners() {
     const element = this.getElement();
-
     element.querySelectorAll(`.event__type-input`).forEach((it) => {
       it.addEventListener(`change`, (evt) => {
-        this._card.type = evt.target.value;
-        this._card.offers = createOffers(this._card.type);
+        this._card.eventType = evt.target.value;
+        const cardType = this._offers.find((el) => el.type === this._card.eventType);
+        this._card.offers = cardType ? cardType.offers : ``;
         this.rerender();
       });
     });
 
     const eventInput = element.querySelector(`.event__input--destination`);
+    if (eventInput.value === ``) {
+      eventInput.setCustomValidity(`Please select a valid value from list.`);
+    }
     eventInput.addEventListener(`change`, (evt) => {
-      this._card.city = evt.target.value;
-      this._card.description = getRandomArrayItem(descriptions);
+      this._destination.name = evt.target.value;
+      const town = this._destinations.find((el) => el.name === this._destination.name);
+      this._destination.description = town ? town.description : ``;
+      this._destination.pictures = town ? town.pictures : ``;
       this.rerender();
     });
   }
 
   getData() {
     const form = this.getElement();
-
-    const checkboxes = document.querySelectorAll(`.event__offer-checkbox`);
-    const offersChecked = [];
-    checkboxes.forEach((element, index) => {
-      if (element.checked) {
-        offersChecked.push(this._card.offers[index]);
-      }
-    });
-
-    const formData = new FormData(form);
-
-    return {
-      type: this._card.type,
-      pictures: this._card.pictures,
-      course: this._card.course,
-      description: this._card.description,
-      offers: offersChecked,
-      city: formData.get(`event-destination`),
-      startDate: flatpickr.parseDate(formData.get(`event-start-time`), `d/m/y H:i`),
-      endDate: flatpickr.parseDate(formData.get(`event-end-time`), `d/m/y H:i`),
-      price: formData.get(`event-price`),
-      isFavorite: false
-    };
+    return new FormData(form);
   }
 }

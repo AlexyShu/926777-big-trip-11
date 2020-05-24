@@ -1,50 +1,48 @@
+import AddEventButton from './components/add-button.js';
+import FlterController from './controllers/filter-controller.js';
+import InfoController from './controllers/info-controller.js';
 import SiteMenuComponent from './components/menu.js';
 import TripController from './controllers/trip-controller.js';
-import FlterController from './controllers/filter-controller.js';
 import TripDaysListComponent from './components/days-list.js';
-import AddEventButton from './components/add-button.js';
-import TripInfoComponent from './components/trip-info.js';
 import StatisticsComponent from './components/statistics.js';
+import LoadingListComponent from './components/loading-list.js';
+import LoadErrorListComponent from './components/loading-error-list.js';
+import API from "./api.js";
+import Store from './store.js';
 import PointsModel from "./models/points-model.js";
-import {generateEvents} from './mocks/event.js';
-import {render, RenderPosition} from './utils/render.js';
-import {EVENTS_COUNT} from './const.js';
+import {render, RenderPosition, remove} from './utils/render.js';
 
-
-export const cards = generateEvents(EVENTS_COUNT);
+const AUTHORIZATION = `Basic kukurukublablabla`;
+const END_POINT = `https://11.ecmascript.pages.academy/big-trip`;
 
 const siteMenuElement = document.querySelector(`.trip-main__trip-controls h2`);
 const siteFilterElement = document.querySelector(`.trip-main__trip-controls`);
+const tripEventsSection = document.querySelector(`.trip-events`);
 
+const api = new API(END_POINT, AUTHORIZATION);
+const store = new Store();
 const pointsModel = new PointsModel();
-pointsModel.setEvents(cards);
-
 const menu = new SiteMenuComponent();
-render(siteMenuElement, menu, RenderPosition.AFTEREND);
 const filterController = new FlterController(siteFilterElement, pointsModel);
-filterController.render();
-
 const addEventButton = new AddEventButton();
-render(siteFilterElement, addEventButton, RenderPosition.AFTEREND);
-
-if (cards.length !== 0) {
-  render(siteFilterElement, new TripInfoComponent(cards), RenderPosition.BEFOREBEGIN);
-}
-
 const tripDaysList = new TripDaysListComponent();
-const tripController = new TripController(tripDaysList, pointsModel);
-tripController.render();
+const tripController = new TripController(tripDaysList, pointsModel, api, store);
+const statistics = new StatisticsComponent(pointsModel);
+const infoController = new InfoController(siteFilterElement, pointsModel);
+const loadingList = new LoadingListComponent();
+
+render(document.querySelector(`.trip-events`), loadingList, RenderPosition.AFTERBEGIN);
+render(siteMenuElement, menu, RenderPosition.AFTEREND);
+filterController.render();
+render(siteFilterElement, addEventButton, RenderPosition.AFTEREND);
+render(tripEventsSection, statistics, RenderPosition.AFTEREND);
 
 addEventButton.setClickButtonHandler(() => {
   tripController.createPoint();
-
   filterController.changeByDefaultFilter();
   filterController.render();
 });
 
-const tripEventsSection = document.querySelector(`.trip-events`);
-const statistics = new StatisticsComponent(pointsModel);
-render(tripEventsSection, statistics, RenderPosition.AFTEREND);
 statistics.hide();
 
 menu.setStatisticsButtonClickHandler(() => {
@@ -61,4 +59,18 @@ menu.setTableButtonClickHandler(() => {
   statistics.hide();
 });
 
-
+api.getPoints()
+  .then((points) => pointsModel.setPoints(points))
+  .then(() => api.getDestinations())
+  .then((destinations) => store.setDestinations(destinations))
+  .then(() => api.getOffers())
+  .then((offers) => store.setOffers(offers))
+  .then(() => {
+    tripController.render();
+    infoController.render();
+    remove(loadingList);
+  })
+  .catch(() => {
+    remove(loadingList);
+    render(document.querySelector(`.trip-events`), new LoadErrorListComponent(), RenderPosition.AFTERBEGIN);
+  });

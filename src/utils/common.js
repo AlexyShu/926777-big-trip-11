@@ -1,15 +1,15 @@
 import moment from "moment";
 
 // функция возвращающая случайное целое число
-export const getRandomIntegerNumber = (min, max) => {
-  return min + Math.floor(max * Math.random());
-};
+// export const getRandomIntegerNumber = (min, max) => {
+//   return min + Math.floor(max * Math.random());
+// };
 
 // функциявозвращает случайный эелемент массива
-export const getRandomArrayItem = (array) => {
-  const randomIndex = getRandomIntegerNumber(0, array.length);
-  return array[randomIndex];
-};
+// export const getRandomArrayItem = (array) => {
+//   const randomIndex = getRandomIntegerNumber(0, array.length);
+//   return array[randomIndex];
+// };
 
 export const timeFormat = (date) => {
   return moment(date).format(`HH:mm`);
@@ -36,7 +36,7 @@ const castInterval = (timeValue, unitOfTime) => timeValue < 10 ? `0${timeValue}$
 export const makeGroupedEvents = (events) => {
   const groupedEvents = new Map();
   events.forEach((event) => {
-    const startInMilliseconds = new Date(event.startDate).setHours(1, 0, 0, 0);
+    const startInMilliseconds = new Date(event.startEventTime).setHours(1, 0, 0, 0);
     if (groupedEvents.has(startInMilliseconds)) {
       groupedEvents.get(startInMilliseconds).push(event);
     } else {
@@ -50,23 +50,4 @@ export const doFirstLetterUppercase = (string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
 };
 
-export const Mode = {
-  DEFAULT: `default`,
-  EDIT: `edit`,
-  ADD: `add`
-};
-
-export const EmptyPoint = {
-  id: 0,
-  type: `flight`,
-  description: ``,
-  city: ``,
-  course: `to`,
-  pictures: [],
-  offers: [],
-  startDate: Date.now(),
-  endDate: Date.now(),
-  price: 0,
-  isFavorite: false
-};
 

@@ -2,15 +2,16 @@ import NoEventComponent from '../components/no-event.js';
 import EventSortComponent from '../components/event-sort.js';
 import TripDayComponent from '../components/day-number.js';
 import EventListComponent from '../components/events-list.js';
-import {SortType} from '../mocks/event-sort.js';
 import {render, RenderPosition, remove} from '../utils/render.js';
-import {Mode as PointControllerMode, makeGroupedEvents, EmptyPoint} from '../utils/common.js';
+import {makeGroupedEvents} from '../utils/common.js';
 import PointController from './point-controller.js';
-import {FilterType} from '../const.js';
+import {FilterType, SortType, EmptyPoint, Mode as PointControllerMode} from '../const.js';
 
 export default class TripController {
-  constructor(container, pointsModel) {
+  constructor(container, pointsModel, api, store) {
     this._container = container;
+    this._api = api;
+    this._store = store;
     this._eventsSort = new EventSortComponent();
     this._noEventComponent = new NoEventComponent();
 
@@ -31,14 +32,14 @@ export default class TripController {
     const eventList = new EventListComponent();
     render(dayComponent.getElement(), eventList, RenderPosition.BEFOREEND);
     events.forEach((event) => {
-      const pointController = new PointController(eventList.getElement(), this._onDataChange, this._onViewChange);
+      const pointController = new PointController(eventList.getElement(), this._onDataChange, this._onViewChange, this._store);
       this._pointControllers.push(pointController);
       pointController.render(event, PointControllerMode.DEFAULT);
     });
   }
 
   render(isGroupOnDays = true) {
-    const events = this._pointsModel.getEvents();
+    const events = this._pointsModel.getPoints();
     const siteTripEventElement = document.querySelector(`.trip-events`);
     if (!events.length) {
       render(siteTripEventElement, this._noEventComponent, RenderPosition.BEFOREEND);
@@ -67,13 +68,6 @@ export default class TripController {
         });
       }
 
-      const tripTotalPrice = document.querySelector(`.trip-info__cost-value`);
-
-      tripTotalPrice.textContent = events.reduce((totalPrice, it) => {
-        return totalPrice + parseInt(it.price, 10) + it.offers.reduce((totalOfferPrice, offer) => {
-          return totalOfferPrice + offer.price;
-        }, 0);
-      }, 0);
     }
   }
 
@@ -83,7 +77,7 @@ export default class TripController {
       this._container.getElement().innerHTML = ``;
       sortDayItem.innerHTML = ``;
     };
-    const events = this._pointsModel.getEvents();
+    const events = this._pointsModel.getPoints();
     let sortedItems = [];
     switch (sortType) {
       case SortType.EVENT:
@@ -111,7 +105,7 @@ export default class TripController {
       if (newData === null) {
         pointController.destroy();
       } else {
-        this._pointsModel.addEvent(newData);
+        this._pointsModel.addPoint(newData);
         remove(this._container);
         const form = document.querySelector(`.trip-events__item`);
         form.remove();
@@ -121,13 +115,17 @@ export default class TripController {
     }
     // удаление
     if (newData === null) {
-      this._pointsModel.removeEvent(oldData.id);
+      this._pointsModel.removePoint(oldData.id);
     } else {
       // обнавление
-      const isSuccess = this._pointsModel.updateEvent(oldData.id, newData);
-      if (isSuccess) {
-        pointController.render(newData, PointControllerMode.DEFAULT);
-      }
+      this._api.updatePoint(oldData.id, newData)
+        .then((pointModel) => {
+          const isSuccess = this._pointsModel.updatePoint(oldData.id, pointModel);
+          if (isSuccess) {
+            pointController.render(pointModel, PointControllerMode.DEFAULT);
+            this._updateEvents();
+          }
+        });
     }
   }
 
@@ -161,7 +159,7 @@ export default class TripController {
     this.getEventsSort(SortType.EVENT);
     document.querySelector(`#sort-event`).checked = true;
     this._pointsModel.setFilter(FilterType.EVERYTHING);
-    this._creatingPoint = new PointController(this._container.getElement(), this._onDataChange, this._onViewChange);
+    this._creatingPoint = new PointController(this._container.getElement(), this._onDataChange, this._onViewChange, this._store);
     this._creatingPoint.render(EmptyPoint, PointControllerMode.ADD);
   }
 

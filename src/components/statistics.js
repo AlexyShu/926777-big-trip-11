@@ -1,5 +1,5 @@
 import AbstractSmartComponent from "./abstract-smart-component.js";
-import {types} from "../mocks/event.js";
+import {TripTypes} from "../const.js";
 import moment from "moment";
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
@@ -65,8 +65,8 @@ const generateChartsData = (events) => {
   const moneyStatistics = {};
 
   const transportStatistics = {};
-  for (let i = 0; i < types.TRANSFER.length; i++) {
-    transportStatistics[types.TRANSFER[i]] = 0;
+  for (let i = 0; i < TripTypes.TRANSFER.length; i++) {
+    transportStatistics[TripTypes.TRANSFER[i]] = 0;
   }
 
   const timeStatictics = {};
@@ -227,7 +227,7 @@ export default class StatisticsComponent extends AbstractSmartComponent {
     // this._resetCharts();
 
     const {moneyData, transportData, timeData} = generateChartsData(
-        this._pointsModel.getEventsAll()
+        this._pointsModel.getPointsAll()
     );
 
     this._moneyChart = renderChart(
