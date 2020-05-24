@@ -2,7 +2,7 @@ import EventFormComponent from '../components/form.js';
 import CardComponent from '../components/event.js';
 import PointModel from '../models/point-model';
 import {replace, render, remove, RenderPosition} from '../utils/render.js';
-import {KeyCode, Mode} from '../const.js';
+import {KeyCode, Mode, SHAKE_ANIMATION_TIMEOUT} from '../const.js';
 import flatpickr from "flatpickr";
 
 
@@ -137,6 +137,15 @@ export default class PointController {
     remove(this._eventItem);
     remove(this._eventForm);
     document.removeEventListener(`keydown`, this._onEscPress);
+  }
+
+  shake() {
+    this._eventForm.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+    this._eventItem.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+    setTimeout(() => {
+      this._eventForm.getElement().style.animation = ``;
+      this._eventItem.getElement().style.animation = ``;
+    }, SHAKE_ANIMATION_TIMEOUT);
   }
 
 }

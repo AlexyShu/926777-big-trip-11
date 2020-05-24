@@ -117,15 +117,19 @@ export default class TripController {
             const form = document.querySelector(`.trip-events__item`);
             form.remove();
             this.render();
+          })
+          .catch(() => {
+            pointController.shake();
           });
         // pointController.render(pointModel, PointControllerMode.DEFAULT);
       }
-    }
-    // удаление
-    else if (newData === null) {
+    } else if (newData === null) { // удаление
       this._api.deletePoint(oldData.id)
         .then(() => {
           this._pointsModel.removePoint(oldData.id);
+        })
+        .catch(() => {
+          pointController.shake();
         });
     } else {
       // обнавление
@@ -136,6 +140,9 @@ export default class TripController {
             pointController.render(pointModel, PointControllerMode.DEFAULT);
             this._updateEvents();
           }
+        })
+        .catch(() => {
+          pointController.shake();
         });
     }
   }
