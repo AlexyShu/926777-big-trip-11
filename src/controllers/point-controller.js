@@ -66,10 +66,8 @@ export default class PointController {
     });
     this._eventForm.setSubmitFormHandler((evt) => {
       evt.preventDefault();
-      // const data = this._eventForm.getData();
       const formData = this._eventForm.getData();
       const data = parseFormData(formData, event);
-      console.log(data)
       this._onDataChange(this, event, data);
     });
 
@@ -79,9 +77,6 @@ export default class PointController {
           this._replaceFormToEvent();
         });
         this._eventForm.setFavotiteButtonClickHandler(() => {
-          // this._onDataChange(this, event, Object.assign({}, event, {
-          //   isFavorite: !event.isFavorite,
-          // }));
           const newPoint = PointModel.clone(event);
           newPoint.isFavorite = !newPoint.isFavorite;
           this._onDataChange(this, event, newPoint);
@@ -100,7 +95,6 @@ export default class PointController {
           remove(oldEventForm);
         } else {
           document.querySelector(`.trip-sort`).after(this._eventForm.getElement());
-          // render(this._container, this._eventForm, RenderPosition.BEFOREBEGIN);
         }
         break;
     }
