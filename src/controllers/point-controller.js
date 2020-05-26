@@ -59,16 +59,25 @@ export default class PointController {
       this._replaceEventToForm();
       document.addEventListener(`keydown`, this._onEscPress);
     });
+
     this._eventForm.setResetButtonHandler(() => {
+      this._eventForm.setData({
+        deleteButtonText: `Deleting...`,
+      });
       this._onDataChange(this, event, null);
-      remove(this._eventItem);
-      remove(this._eventForm);
+      this._eventForm.blockForm();
     });
+
     this._eventForm.setSubmitFormHandler((evt) => {
       evt.preventDefault();
+      this._eventForm.setData({
+        saveButtonText: `Saving...`
+      });
       const formData = this._eventForm.getData();
       const data = parseFormData(formData, event);
       this._onDataChange(this, event, data);
+      this._eventForm.blockForm();
+      this._eventForm.getElement().style.border = `none`;
     });
 
     switch (mode) {
@@ -139,12 +148,18 @@ export default class PointController {
     document.removeEventListener(`keydown`, this._onEscPress);
   }
 
-  shake() {
+  catchError() {
     this._eventForm.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
     this._eventItem.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
     setTimeout(() => {
       this._eventForm.getElement().style.animation = ``;
       this._eventItem.getElement().style.animation = ``;
+      this._eventForm.setData({
+        saveButtonText: `Save`,
+        deleteButtonText: `Delete`,
+      });
+      this._eventForm.getElement().style.border = `4px solid red`;
+      this._eventForm.unBlockForm();
     }, SHAKE_ANIMATION_TIMEOUT);
   }
 

@@ -1,9 +1,7 @@
 import {doFirstLetterUppercase, dateFormatforForm} from '../utils/common.js';
-import {TripTypes, Mode} from '../const.js';
+import {TripTypes, Mode, DefaultButtonsText} from '../const.js';
 import AbstractSmartComponent from "./abstract-smart-component.js";
 import flatpickr from "flatpickr";
-
-
 import "flatpickr/dist/flatpickr.min.css";
 
 const createPicturesTemplate = (pics) => {
@@ -38,7 +36,7 @@ const createCitySelectTemplate = (places) => {
 };
 
 
-const createFormTemplate = (event, store) => {
+const createFormTemplate = (event, store, externalData) => {
   const {eventType, startEventTime, endEventTime, price, isFavorite} = event;
   const {name, description} = event.destination;
   const picturesTemplate = createPicturesTemplate(event.destination.pictures);
@@ -93,8 +91,8 @@ const createFormTemplate = (event, store) => {
            </label>
            <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price}">
         </div>
-        <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-        <button class="event__reset-btn" type="reset">Delete</button>
+        <button class="event__save-btn  btn  btn--blue" type="submit">${externalData.saveButtonText}</button>
+        <button class="event__reset-btn" type="reset">${externalData.deleteButtonText}</button>
         <input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite ? `checked` : ``}>
         <label class="event__favorite-btn" for="event-favorite-1">
           <span class="visually-hidden">Add to favorite</span>
@@ -139,6 +137,7 @@ export default class EventFormComponent extends AbstractSmartComponent {
     this._mode = Mode.DEFAULT;
     this._type = card.TripTypes;
     this._destination = card.destination;
+    this._externalData = DefaultButtonsText;
     this._destinations = store.getDestinations();
     this._offers = store.getOffers();
 
@@ -147,7 +146,7 @@ export default class EventFormComponent extends AbstractSmartComponent {
   }
 
   getTemplate() {
-    return createFormTemplate(this._card, this._store);
+    return createFormTemplate(this._card, this._store, this._externalData);
   }
 
   removeElement() {
@@ -245,5 +244,22 @@ export default class EventFormComponent extends AbstractSmartComponent {
   getData() {
     const form = this.getElement();
     return new FormData(form);
+  }
+
+  setData(data) {
+    this._externalData = Object.assign({}, DefaultButtonsText, data);
+    this.rerender();
+  }
+
+  blockForm() {
+    const form = this.getElement();
+    form.querySelectorAll(`input`).forEach((input) => (input.disabled = true));
+    form.querySelectorAll(`button`).forEach((button) => (button.disabled = true));
+  }
+
+  unBlockForm() {
+    const form = this.getElement();
+    form.querySelectorAll(`input`).forEach((input) => (input.disabled = false));
+    form.querySelectorAll(`button`).forEach((button) => (button.disabled = false));
   }
 }
