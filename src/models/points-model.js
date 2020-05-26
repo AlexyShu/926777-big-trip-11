@@ -55,7 +55,6 @@ export default class Points {
     return true;
   }
 
-
   // из массива удали
   removePoint(id) {
     const index = this._events.findIndex((it) => it.id === id);

@@ -7,10 +7,11 @@ import TripDaysListComponent from './components/days-list.js';
 import StatisticsComponent from './components/statistics.js';
 import LoadingListComponent from './components/loading-list.js';
 import LoadErrorListComponent from './components/loading-error-list.js';
-import API from "./api.js";
+import API from './api.js';
 import Store from './store.js';
-import PointsModel from "./models/points-model.js";
+import PointsModel from './models/points-model.js';
 import {render, RenderPosition, remove} from './utils/render.js';
+import {DefaultButtonsText} from './const.js';
 
 const AUTHORIZATION = `Basic kukurukublablabla`;
 const END_POINT = `https://11.ecmascript.pages.academy/big-trip`;
@@ -39,8 +40,10 @@ render(tripEventsSection, statistics, RenderPosition.AFTEREND);
 
 addEventButton.setClickButtonHandler(() => {
   tripController.createPoint();
+  addEventButton.blockButton();
   filterController.changeByDefaultFilter();
   filterController.render();
+  document.querySelector(`.event__reset-btn`).textContent = DefaultButtonsText.canselButtonText;
 });
 
 statistics.hide();

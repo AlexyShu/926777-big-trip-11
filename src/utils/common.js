@@ -19,6 +19,10 @@ export const dateFormat = (date) => {
   return moment(date).format(`YYYY/MM/DD HH:mm`);
 };
 
+export const dateFormatforForm = (date) => {
+  return moment(date).format(`DD/MM/YY HH:mm`);
+};
+
 // export const parseDateWithoutTime = (dateString) => moment(dateString, `YYYY MMM DD`).valueOf();
 
 export const parseDate = (dateString) => moment(dateString, `DD/MM/YY HH:mm`).valueOf();
@@ -48,6 +52,16 @@ export const makeGroupedEvents = (events) => {
 
 export const doFirstLetterUppercase = (string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
+};
+
+export const chooseOfferCourse = (eventType) => {
+  let offerCourse;
+  if (eventType === `restaurant` || eventType === `sightseeing` || eventType === `check-in`) {
+    offerCourse = `in`;
+  } else {
+    offerCourse = `to`;
+  }
+  return offerCourse;
 };
 
 

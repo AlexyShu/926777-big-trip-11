@@ -9,7 +9,6 @@ export default class TripInfoComponent extends AbstractComponent {
   getTemplate() {
     const startRouteDate = new Date(this._cards[0].startEventTime);
     const endRouteDate = new Date(this._cards[this._cards.length - 1].startEventTime);
-
     return `<section class="trip-main__trip-info  trip-info">
     <div class="trip-info__main">
         <h1 class="trip-info__title">${this._cards[0].destination.name} &mdash; ... &mdash; ${this._cards[this._cards.length - 1].destination.name}</h1>

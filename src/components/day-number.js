@@ -25,6 +25,7 @@ export default class TripDayComponent extends AbstractComponent {
     this._cards = cards;
     this._dayCount = dayCount;
   }
+
   getTemplate() {
     return createTripDayItemTemplate(this._dayCount, this._cards[0].startEventTime);
   }

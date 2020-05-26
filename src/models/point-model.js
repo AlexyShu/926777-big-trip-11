@@ -6,8 +6,8 @@ export default class Point {
     this.eventType = data[`type`];
     this.destination = data[`destination`];
     this.price = data[`base_price`];
-    this.startEventTime = moment(data[`date_from`]);
-    this.endEventTime = moment(data[`date_to`]);
+    this.startEventTime = moment(data[`date_from`]).valueOf();
+    this.endEventTime = moment(data[`date_to`]).valueOf();
     this.offers = data[`offers`] || [];
     this.isFavorite = Boolean(data[`is_favorite`]);
   }
@@ -18,8 +18,8 @@ export default class Point {
       "type": this.eventType,
       "destination": this.destination,
       "base_price": this.price,
-      "date_from": this.startEventTime.toJSON(),
-      "date_to": this.endEventTime.toJSON(),
+      "date_from": moment(this.startEventTime).toISOString(),
+      "date_to": moment(this.endEventTime).toISOString(),
       "offers": this.offers,
       "is_favorite": this.isFavorite,
     };

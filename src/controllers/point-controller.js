@@ -2,7 +2,7 @@ import EventFormComponent from '../components/form.js';
 import CardComponent from '../components/event.js';
 import PointModel from '../models/point-model';
 import {replace, render, remove, RenderPosition} from '../utils/render.js';
-import {KeyCode, Mode} from '../const.js';
+import {KeyCode, Mode, SHAKE_ANIMATION_TIMEOUT} from '../const.js';
 import flatpickr from "flatpickr";
 
 
@@ -26,7 +26,7 @@ export default class PointController {
     const oldEventItem = this._eventItem;
     const oldEventForm = this._eventForm;
 
-    this._eventItem = new CardComponent(event);
+    this._eventItem = new CardComponent(event, this._store);
     this._eventForm = new EventFormComponent(event, this._store);
 
     const parseFormData = (formData) => {
@@ -35,7 +35,7 @@ export default class PointController {
       const offersChecked = [];
       checkboxes.forEach((element, index) => {
         if (element.checked) {
-          offersChecked.push(eventOffers.offers[index]);
+          offersChecked.push(eventOffers[index]);
         }
       });
       return new PointModel({
@@ -59,16 +59,27 @@ export default class PointController {
       this._replaceEventToForm();
       document.addEventListener(`keydown`, this._onEscPress);
     });
+
     this._eventForm.setResetButtonHandler(() => {
+      this._eventForm.setData({
+        deleteButtonText: `Deleting...`,
+      });
       this._onDataChange(this, event, null);
-      remove(this._eventItem);
-      remove(this._eventForm);
+      this._eventForm.blockForm();
+      const addButton = document.querySelector(`.trip-main__event-add-btn`);
+      addButton.disabled = false;
     });
+
     this._eventForm.setSubmitFormHandler((evt) => {
       evt.preventDefault();
+      this._eventForm.setData({
+        saveButtonText: `Saving...`
+      });
       const formData = this._eventForm.getData();
       const data = parseFormData(formData, event);
       this._onDataChange(this, event, data);
+      this._eventForm.blockForm();
+      this._eventForm.getElement().style.border = `none`;
     });
 
     switch (mode) {
@@ -137,6 +148,21 @@ export default class PointController {
     remove(this._eventItem);
     remove(this._eventForm);
     document.removeEventListener(`keydown`, this._onEscPress);
+  }
+
+  catchError() {
+    this._eventForm.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+    this._eventItem.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+    setTimeout(() => {
+      this._eventForm.getElement().style.animation = ``;
+      this._eventItem.getElement().style.animation = ``;
+      this._eventForm.setData({
+        saveButtonText: `Save`,
+        deleteButtonText: `Delete`,
+      });
+      this._eventForm.getElement().style.border = `4px solid red`;
+      this._eventForm.unBlockForm();
+    }, SHAKE_ANIMATION_TIMEOUT);
   }
 
 }

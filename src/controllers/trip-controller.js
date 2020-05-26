@@ -87,7 +87,7 @@ export default class TripController {
         break;
       case SortType.TIME:
         sortByNotDefult();
-        sortedItems = events.slice().sort((a, b) => (b.endDate - b.startDate) - (a.endDate - a.startDate));
+        sortedItems = events.slice().sort((a, b) => (b.endEventTime - b.startEventTime) - (a.endEventTime - a.startEventTime));
         this.renderDay(sortedItems);
         break;
       case SortType.PRICE:
@@ -98,24 +98,41 @@ export default class TripController {
     }
   }
 
+  _unBlockAddButton() {
+    const addButton = document.querySelector(`.trip-main__event-add-btn`);
+    addButton.disabled = false;
+  }
+
   _onDataChange(pointController, oldData, newData) {
     // добавление
     if (oldData === EmptyPoint) {
       this._creatingPoint = null;
       if (newData === null) {
         pointController.destroy();
+        this._updateEvents();
       } else {
-        this._pointsModel.addPoint(newData);
-        remove(this._container);
-        const form = document.querySelector(`.trip-events__item`);
-        form.remove();
-        this.render();
-        // pointController.render(newData, PointControllerMode.ADD);
+        this._api.createPoint(newData)
+          .then((pointModel) => {
+            this._pointsModel.addPoint(pointModel);
+            remove(this._container);
+            const form = document.querySelector(`.trip-events__item`);
+            form.remove();
+            this.render();
+            this._unBlockAddButton();
+          })
+          .catch(() => {
+            pointController.catchError();
+          });
       }
-    }
-    // удаление
-    if (newData === null) {
-      this._pointsModel.removePoint(oldData.id);
+    } else if (newData === null) { // удаление
+      this._api.deletePoint(oldData.id)
+        .then(() => {
+          this._pointsModel.removePoint(oldData.id);
+          pointController.destroy();
+        })
+        .catch(() => {
+          pointController.catchError();
+        });
     } else {
       // обнавление
       this._api.updatePoint(oldData.id, newData)
@@ -125,6 +142,9 @@ export default class TripController {
             pointController.render(pointModel, PointControllerMode.DEFAULT);
             this._updateEvents();
           }
+        })
+        .catch(() => {
+          pointController.catchError();
         });
     }
   }
@@ -155,7 +175,6 @@ export default class TripController {
       return;
     }
     this._onViewChange();
-    // this._eventsSort.getSortType();
     this.getEventsSort(SortType.EVENT);
     document.querySelector(`#sort-event`).checked = true;
     this._pointsModel.setFilter(FilterType.EVERYTHING);
