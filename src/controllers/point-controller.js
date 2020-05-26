@@ -35,7 +35,7 @@ export default class PointController {
       const offersChecked = [];
       checkboxes.forEach((element, index) => {
         if (element.checked) {
-          offersChecked.push(eventOffers.offers[index]);
+          offersChecked.push(eventOffers[index]);
         }
       });
       return new PointModel({
@@ -66,6 +66,8 @@ export default class PointController {
       });
       this._onDataChange(this, event, null);
       this._eventForm.blockForm();
+      const addButton = document.querySelector(`.trip-main__event-add-btn`);
+      addButton.disabled = false;
     });
 
     this._eventForm.setSubmitFormHandler((evt) => {

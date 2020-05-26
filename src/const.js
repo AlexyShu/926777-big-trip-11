@@ -60,5 +60,8 @@ export const EmptyPoint = {
 
 export const DefaultButtonsText = {
   deleteButtonText: `Delete`,
+  canselButtonText: `Cancel`,
   saveButtonText: `Save`
 };
+
+

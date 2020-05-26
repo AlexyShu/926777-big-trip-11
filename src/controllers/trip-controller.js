@@ -98,6 +98,11 @@ export default class TripController {
     }
   }
 
+  _unBlockAddButton() {
+    const addButton = document.querySelector(`.trip-main__event-add-btn`);
+    addButton.disabled = false;
+  }
+
   _onDataChange(pointController, oldData, newData) {
     // добавление
     if (oldData === EmptyPoint) {
@@ -113,8 +118,7 @@ export default class TripController {
             const form = document.querySelector(`.trip-events__item`);
             form.remove();
             this.render();
-            const addButton = document.querySelector(`.trip-main__event-add-btn`);
-            addButton.disabled = false;
+            this._unBlockAddButton();
           })
           .catch(() => {
             pointController.catchError();
@@ -171,7 +175,6 @@ export default class TripController {
       return;
     }
     this._onViewChange();
-    // this._eventsSort.getSortType();
     this.getEventsSort(SortType.EVENT);
     document.querySelector(`#sort-event`).checked = true;
     this._pointsModel.setFilter(FilterType.EVERYTHING);
