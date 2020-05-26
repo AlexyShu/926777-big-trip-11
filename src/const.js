@@ -62,4 +62,3 @@ export const DefaultButtonsText = {
   deleteButtonText: `Delete`,
   saveButtonText: `Save`
 };
-

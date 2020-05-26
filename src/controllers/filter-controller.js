@@ -40,5 +40,4 @@ export default class FilterController {
     this._activeFilterType = filterType;
     this._pointsModel.setFilter(filterType);
   }
-
 }

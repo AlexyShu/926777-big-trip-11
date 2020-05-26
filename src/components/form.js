@@ -1,4 +1,4 @@
-import {doFirstLetterUppercase, dateFormatforForm} from '../utils/common.js';
+import {doFirstLetterUppercase, dateFormatforForm, chooseOfferCourse} from '../utils/common.js';
 import {TripTypes, Mode, DefaultButtonsText} from '../const.js';
 import AbstractSmartComponent from "./abstract-smart-component.js";
 import flatpickr from "flatpickr";
@@ -12,7 +12,7 @@ const createOffersTemplate = (offers, type) => {
   return (`<div class="event__available-offers">
   ${offers.map(({title, price}) => {
       const id = Math.random();
-      const isChecked = false;
+      const isChecked = true;
       return `<div class="event__offer-selector">
       <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-${id}" type="checkbox" name="event-offer-${type}" ${isChecked ? `checked` : ``}>
       <label class="event__offer-label" for="event-offer-${type}-${id}">
@@ -41,6 +41,7 @@ const createFormTemplate = (event, store, externalData) => {
   const {name, description} = event.destination;
   const picturesTemplate = createPicturesTemplate(event.destination.pictures);
   const eventOffers = store.getOffers().find((el) => el.type === event.eventType);
+  const course = chooseOfferCourse(eventType);
   return (`<form class="trip-events__item  event  event--edit" action="#" method="post">
       <header class="event__header">
            <div class="event__type-wrapper">
@@ -50,7 +51,6 @@ const createFormTemplate = (event, store, externalData) => {
              </label>
              <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
              <div class="event__type-list">
-
              ${Object.keys(TripTypes).map((group) => {
       return (`<fieldset class="event__type-group">
                   <legend class="visually-hidden">${TripTypes[group]}</legend>
@@ -68,7 +68,7 @@ const createFormTemplate = (event, store, externalData) => {
         </div>
         <div class="event__field-group  event__field-group--destination">
            <label class="event__label  event__type-output" for="event-destination-1">
-           ${eventType}
+           ${eventType} ${course}
            </label>
            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${name}" list="destination-list-1">
            ${createCitySelectTemplate(store.getDestinationNames())}
@@ -170,7 +170,6 @@ export default class EventFormComponent extends AbstractSmartComponent {
 
   _applyFlatpickr() {
     this._deleteFlatpickrs();
-
     this._flatpickrStartDate = this._setFlatpickr(this.getElement().querySelector(`#event-start-time-1`), this._card.startEventTime);
     this._flatpickrEndDate = this._setFlatpickr(this.getElement().querySelector(`#event-end-time-1`), this._card.endEventTime, this._card.startEventTime);
   }
@@ -211,7 +210,6 @@ export default class EventFormComponent extends AbstractSmartComponent {
     this.setSubmitFormHandler(this._submitHandler);
     this.setResetButtonHandler(this._resetHandler);
     this.addListeners();
-
     if (this._mode === Mode.DEFAULT) {
       this.setResetButtonHandler(this._cancelHandler);
     }
@@ -227,7 +225,6 @@ export default class EventFormComponent extends AbstractSmartComponent {
         this.rerender();
       });
     });
-
     const eventInput = element.querySelector(`.event__input--destination`);
     if (eventInput.value === ``) {
       eventInput.setCustomValidity(`Please select a valid value from list.`);

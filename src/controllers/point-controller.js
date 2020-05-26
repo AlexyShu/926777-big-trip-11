@@ -26,7 +26,7 @@ export default class PointController {
     const oldEventItem = this._eventItem;
     const oldEventForm = this._eventForm;
 
-    this._eventItem = new CardComponent(event);
+    this._eventItem = new CardComponent(event, this._store);
     this._eventForm = new EventFormComponent(event, this._store);
 
     const parseFormData = (formData) => {

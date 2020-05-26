@@ -276,6 +276,4 @@ export default class StatisticsComponent extends AbstractSmartComponent {
   destroy() {
     this._resetCharts();
   }
-
-
 }

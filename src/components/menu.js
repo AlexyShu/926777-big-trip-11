@@ -2,9 +2,9 @@ import AbstractComponent from "./abstract-component.js";
 
 const createMenuTemplate = () => {
   return (`<nav class="trip-controls__trip-tabs  trip-tabs">
-  <a class="trip-tabs__btn table trip-tabs__btn--active" href="#">Table</a>
-  <a class="trip-tabs__btn statics" href="#">Stats</a>
-</nav>`
+    <a class="trip-tabs__btn table trip-tabs__btn--active" href="#">Table</a>
+    <a class="trip-tabs__btn statics" href="#">Stats</a>
+  </nav>`
   );
 };
 

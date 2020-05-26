@@ -54,4 +54,14 @@ export const doFirstLetterUppercase = (string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
 };
 
+export const chooseOfferCourse = (eventType) => {
+  let offerCourse;
+  if (eventType === `restaurant` || eventType === `sightseeing` || eventType === `check-in`) {
+    offerCourse = `in`;
+  } else {
+    offerCourse = `to`;
+  }
+  return offerCourse;
+};
+
 

@@ -104,6 +104,7 @@ export default class TripController {
       this._creatingPoint = null;
       if (newData === null) {
         pointController.destroy();
+        this._updateEvents();
       } else {
         this._api.createPoint(newData)
           .then((pointModel) => {
@@ -112,6 +113,8 @@ export default class TripController {
             const form = document.querySelector(`.trip-events__item`);
             form.remove();
             this.render();
+            const addButton = document.querySelector(`.trip-main__event-add-btn`);
+            addButton.disabled = false;
           })
           .catch(() => {
             pointController.catchError();
