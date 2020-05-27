@@ -1,5 +1,5 @@
-import {doFirstLetterUppercase, dateFormatforForm, chooseOfferCourse} from '../utils/common.js';
-import {TripTypes, Mode, DefaultButtonsText} from '../const.js';
+import {doFirstLetterUppercase, dateFormatforForm, getPrepositionForEventType} from "../utils/common.js";
+import {TripTypes, Mode, DefaultButtonsText} from "../const.js";
 import AbstractSmartComponent from "./abstract-smart-component.js";
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
@@ -36,12 +36,12 @@ const createCitySelectTemplate = (places) => {
 };
 
 
-const createFormTemplate = (event, store, externalData) => {
+const createFormTemplate = (event, store, externalData, isNew) => {
   const {eventType, startEventTime, endEventTime, price, isFavorite} = event;
   const {name, description} = event.destination;
   const picturesTemplate = createPicturesTemplate(event.destination.pictures);
   const eventOffers = store.getOffers().find((el) => el.type === event.eventType);
-  const course = chooseOfferCourse(eventType);
+  const preposition = getPrepositionForEventType(eventType);
   return (`<form class="trip-events__item  event  event--edit" action="#" method="post">
       <header class="event__header">
            <div class="event__type-wrapper">
@@ -68,7 +68,7 @@ const createFormTemplate = (event, store, externalData) => {
         </div>
         <div class="event__field-group  event__field-group--destination">
            <label class="event__label  event__type-output" for="event-destination-1">
-           ${eventType} ${course}
+           ${eventType} ${preposition}
            </label>
            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${name}" list="destination-list-1">
            ${createCitySelectTemplate(store.getDestinationNames())}
@@ -92,7 +92,7 @@ const createFormTemplate = (event, store, externalData) => {
            <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price}">
         </div>
         <button class="event__save-btn  btn  btn--blue" type="submit">${externalData.saveButtonText}</button>
-        <button class="event__reset-btn" type="reset">${externalData.deleteButtonText}</button>
+        <button class="event__reset-btn" type="reset">${isNew ? DefaultButtonsText.canselButtonText : externalData.deleteButtonText}</button>
         <input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite ? `checked` : ``}>
         <label class="event__favorite-btn" for="event-favorite-1">
           <span class="visually-hidden">Add to favorite</span>
@@ -140,13 +140,15 @@ export default class EventFormComponent extends AbstractSmartComponent {
     this._externalData = DefaultButtonsText;
     this._destinations = store.getDestinations();
     this._offers = store.getOffers();
+    this._townsList = store.getDestinationNames();
+    this._isNewForm = false;
 
     this._applyFlatpickr();
     this.addListeners();
   }
 
   getTemplate() {
-    return createFormTemplate(this._card, this._store, this._externalData);
+    return createFormTemplate(this._card, this._store, this._externalData, this._isNewForm);
   }
 
   removeElement() {
@@ -226,11 +228,13 @@ export default class EventFormComponent extends AbstractSmartComponent {
       });
     });
     const eventInput = element.querySelector(`.event__input--destination`);
-    if (eventInput.value === ``) {
-      eventInput.setCustomValidity(`Please select a valid value from list.`);
-    }
     eventInput.addEventListener(`change`, (evt) => {
       this._destination.name = evt.target.value;
+      this._townsList.forEach((el) => {
+        if (eventInput.value !== el) {
+          eventInput.setCustomValidity(`Please select a valid value from list.`);
+        }
+      });
       const town = this._destinations.find((el) => el.name === this._destination.name);
       this._destination.description = town ? town.description : ``;
       this._destination.pictures = town ? town.pictures : ``;
@@ -259,4 +263,9 @@ export default class EventFormComponent extends AbstractSmartComponent {
     form.querySelectorAll(`input`).forEach((input) => (input.disabled = false));
     form.querySelectorAll(`button`).forEach((button) => (button.disabled = false));
   }
+
+  getFormType() {
+    this._isNewForm = true;
+  }
+
 }

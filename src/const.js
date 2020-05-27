@@ -52,8 +52,8 @@ export const EmptyPoint = {
     pictures: []
   },
   offers: [],
-  startEventTime: new Date(),
-  endEventTime: new Date(),
+  startEventTime: Date.now(),
+  endEventTime: Date.now(),
   price: 0,
   isFavorite: false
 };
@@ -62,6 +62,18 @@ export const DefaultButtonsText = {
   deleteButtonText: `Delete`,
   canselButtonText: `Cancel`,
   saveButtonText: `Save`
+};
+
+export const ConnectingButtonsText = {
+  deleteButtonText: `Deleting...`,
+  saveButtonText: `Saving...`
+};
+
+export const Method = {
+  GET: `GET`,
+  POST: `POST`,
+  PUT: `PUT`,
+  DELETE: `DELETE`
 };
 
 

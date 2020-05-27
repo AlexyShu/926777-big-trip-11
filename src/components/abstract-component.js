@@ -1,5 +1,5 @@
 import {createElement} from "../utils/render.js";
-import {HIDDEN_CLASS} from '../const.js';
+import {HIDDEN_CLASS} from "../const.js";
 
 export default class AbstractComponent {
   constructor() {

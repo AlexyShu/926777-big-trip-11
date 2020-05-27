@@ -11,7 +11,7 @@ export default class AddEventButton extends AbstractComponent {
     this.getElement().addEventListener(`click`, handler);
   }
 
-  blockButton() {
+  disableButton() {
     this.getElement().disabled = true;
   }
 }

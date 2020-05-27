@@ -1,8 +1,8 @@
 import AbstractSmartComponent from "./abstract-smart-component.js";
 import {TripTypes} from "../const.js";
 import moment from "moment";
-import Chart from 'chart.js';
-import ChartDataLabels from 'chartjs-plugin-datalabels';
+import Chart from "chart.js";
+import ChartDataLabels from "chartjs-plugin-datalabels";
 
 
 const TitleName = {
@@ -16,50 +16,6 @@ const LabelPrefix = {
   TIMES: `x`,
   HOURS: `h`
 };
-
-// const EventEmoji = [
-//   {
-//     name: `taxi`,
-//     icon: `🚕`
-//   },
-//   {
-//     name: `bus`,
-//     icon: `🚌`
-//   },
-//   {
-//     name: `train`,
-//     icon: `🚂`
-//   },
-//   {
-//     name: `ship`,
-//     icon: `🚢`
-//   },
-//   {
-//     name: `transport`,
-//     icon: `🚊`
-//   },
-//   {
-//     name: `drive`,
-//     icon: `🚗`
-//   },
-//   {
-//     name: `flight`,
-//     icon: `✈`
-//   },
-//   {
-//     name: `check-in`,
-//     icon: `🏨`
-//   },
-//   {
-//     name: `sightseeing`,
-//     icon: `🏛`
-//   },
-//   {
-//     name: `restaurant`,
-//     icon: `🍴`
-//   }
-// ];
-
 
 const generateChartsData = (events) => {
   const moneyStatistics = {};

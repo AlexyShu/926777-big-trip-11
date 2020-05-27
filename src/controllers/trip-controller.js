@@ -1,11 +1,11 @@
-import NoEventComponent from '../components/no-event.js';
-import EventSortComponent from '../components/event-sort.js';
-import TripDayComponent from '../components/day-number.js';
-import EventListComponent from '../components/events-list.js';
-import {render, RenderPosition, remove} from '../utils/render.js';
-import {makeGroupedEvents} from '../utils/common.js';
-import PointController from './point-controller.js';
-import {FilterType, SortType, EmptyPoint, Mode as PointControllerMode} from '../const.js';
+import NoEventComponent from "../components/no-event.js";
+import EventSortComponent from "../components/event-sort.js";
+import TripDayComponent from "../components/day-number.js";
+import EventListComponent from "../components/events-list.js";
+import {render, RenderPosition, remove} from "../utils/render.js";
+import {makeGroupedEvents} from "../utils/common.js";
+import PointController from "./point-controller.js";
+import {FilterType, SortType, EmptyPoint, Mode as PointControllerMode} from "../const.js";
 
 export default class TripController {
   constructor(container, pointsModel, api, store) {
@@ -121,7 +121,7 @@ export default class TripController {
             this._unBlockAddButton();
           })
           .catch(() => {
-            pointController.catchError();
+            pointController.errorHandler();
           });
       }
     } else if (newData === null) { // удаление
@@ -131,7 +131,7 @@ export default class TripController {
           pointController.destroy();
         })
         .catch(() => {
-          pointController.catchError();
+          pointController.errorHandler();
         });
     } else {
       // обнавление
@@ -144,7 +144,7 @@ export default class TripController {
           }
         })
         .catch(() => {
-          pointController.catchError();
+          pointController.errorHandler();
         });
     }
   }

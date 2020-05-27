@@ -1,5 +1,5 @@
 import {Months} from "../const.js";
-import {dateFormat} from '../utils/common.js';
+import {dateFormat} from "../utils/common.js";
 import AbstractComponent from "./abstract-component.js";
 
 const createTripDayItemTemplate = (dayCount, startDate) => {

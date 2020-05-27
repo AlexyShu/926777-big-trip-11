@@ -1,8 +1,8 @@
-import EventFormComponent from '../components/form.js';
-import CardComponent from '../components/event.js';
-import PointModel from '../models/point-model';
-import {replace, render, remove, RenderPosition} from '../utils/render.js';
-import {KeyCode, Mode, SHAKE_ANIMATION_TIMEOUT} from '../const.js';
+import EventFormComponent from "../components/form.js";
+import CardComponent from "../components/event.js";
+import PointModel from "../models/point-model";
+import {replace, render, remove, RenderPosition} from "../utils/render.js";
+import {KeyCode, Mode, SHAKE_ANIMATION_TIMEOUT, ConnectingButtonsText} from "../const.js";
 import flatpickr from "flatpickr";
 
 
@@ -18,6 +18,7 @@ export default class PointController {
     this._replaceFormToEvent = this._replaceFormToEvent.bind(this);
     this._replaceEventToForm = this._replaceEventToForm.bind(this);
     this._onEscPress = this._onEscPress.bind(this);
+    this._onEscPressForNewForm = this._onEscPressForNewForm.bind(this);
   }
 
   render(event, mode) {
@@ -31,11 +32,11 @@ export default class PointController {
 
     const parseFormData = (formData) => {
       const eventOffers = this._store.getOffers().find((el) => el.type === event.eventType);
-      const checkboxes = document.querySelectorAll(`.event__offer-checkbox`);
+      const checkboxes = this._eventForm.getElement().querySelectorAll(`.event__offer-checkbox`);
       const offersChecked = [];
       checkboxes.forEach((element, index) => {
         if (element.checked) {
-          offersChecked.push(eventOffers[index]);
+          offersChecked.push(eventOffers.offers[index]);
         }
       });
       return new PointModel({
@@ -62,7 +63,7 @@ export default class PointController {
 
     this._eventForm.setResetButtonHandler(() => {
       this._eventForm.setData({
-        deleteButtonText: `Deleting...`,
+        deleteButtonText: ConnectingButtonsText.deleteButtonText
       });
       this._onDataChange(this, event, null);
       this._eventForm.blockForm();
@@ -73,7 +74,7 @@ export default class PointController {
     this._eventForm.setSubmitFormHandler((evt) => {
       evt.preventDefault();
       this._eventForm.setData({
-        saveButtonText: `Saving...`
+        saveButtonText: ConnectingButtonsText.saveButtonText
       });
       const formData = this._eventForm.getData();
       const data = parseFormData(formData, event);
@@ -105,7 +106,10 @@ export default class PointController {
           remove(oldEventItem);
           remove(oldEventForm);
         } else {
+          // document.addEventListener(`keydown`, this._onEscPressForNewForm);
           document.querySelector(`.trip-sort`).after(this._eventForm.getElement());
+          this._eventForm.getFormType();
+
         }
         break;
     }
@@ -138,6 +142,16 @@ export default class PointController {
     }
   }
 
+  _onEscPressForNewForm(evt) {
+    if (evt.keyCode === KeyCode.ESC) {
+      remove(this._eventForm);
+      document.removeEventListener(`keydown`, this._onEscPressForNewForm);
+      const addButton = document.querySelector(`.trip-main__event-add-btn`);
+      addButton.disabled = false;
+    }
+  }
+
+
   _setDefaultView() {
     if (this._mode !== Mode.DEFAULT) {
       this._replaceFormToEvent();
@@ -150,7 +164,7 @@ export default class PointController {
     document.removeEventListener(`keydown`, this._onEscPress);
   }
 
-  catchError() {
+  errorHandler() {
     this._eventForm.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
     this._eventItem.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
     setTimeout(() => {

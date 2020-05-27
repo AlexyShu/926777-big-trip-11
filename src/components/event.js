@@ -1,4 +1,4 @@
-import {timeFormat, dateFormat, calculateTimeInterval, chooseOfferCourse} from '../utils/common.js';
+import {timeFormat, dateFormat, calculateTimeInterval, getPrepositionForEventType} from "../utils/common.js";
 import AbstractComponent from "./abstract-component.js";
 
 const createOffersTemplate = (offers) => {
@@ -17,14 +17,14 @@ const createOffersTemplate = (offers) => {
 const createCardTemplate = (event, store) => {
   const {eventType, startEventTime, endEventTime, price} = event;
   const {name} = event.destination;
-  const course = chooseOfferCourse(eventType);
-  const eventOffers = store.getOffers().find((el) => el.type === event.eventType);
+  const preposition = getPrepositionForEventType(eventType);
+  // const eventOffers = store.getOffers().find((el) => el.type === event.eventType);
   return (`<li class="trip-events__item">
       <div class="event">
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/${eventType}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${eventType} ${course} ${name}</h3>
+        <h3 class="event__title">${eventType} ${preposition} ${name}</h3>
         <div class="event__schedule">
           <p class="event__time">
           <time class="event__start-time" datetime="${dateFormat(startEventTime)}">${timeFormat(startEventTime)}</time>
@@ -37,7 +37,7 @@ const createCardTemplate = (event, store) => {
           &euro;&nbsp;<span class="event__price-value"> ${price} </span>
         </p>
         <h4 class="visually-hidden">Offers:</h4>
-        ${createOffersTemplate(eventOffers.offers)}
+        ${createOffersTemplate(event.offers)}
         <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>
         </button>
