@@ -36,11 +36,11 @@ const createCitySelectTemplate = (places) => {
 };
 
 
-const createFormTemplate = (event, store, externalData, isNew) => {
-  const {eventType, startEventTime, endEventTime, price, isFavorite} = event;
-  const {name, description} = event.destination;
-  const picturesTemplate = createPicturesTemplate(event.destination.pictures);
-  const eventOffers = store.getOffers().find((el) => el.type === event.eventType);
+const createFormTemplate = (point, store, externalData, isNew) => {
+  const {eventType, startEventTime, endEventTime, price, isFavorite} = point;
+  const {name, description} = point.destination;
+  const picturesTemplate = createPicturesTemplate(point.destination.pictures);
+  const pointOffers = store.getOffers().find((el) => el.type === point.eventType);
   const preposition = getPrepositionForEventType(eventType);
   return (`<form class="trip-events__item  event  event--edit" action="#" method="post">
       <header class="event__header">
@@ -107,7 +107,7 @@ const createFormTemplate = (event, store, externalData, isNew) => {
       <section class="event__details">
         <section class="event__section  event__section--offers">
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-          ${createOffersTemplate(eventOffers.offers, eventOffers.type)}
+          ${createOffersTemplate(pointOffers.offers, pointOffers.type)}
         </section>
         <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>

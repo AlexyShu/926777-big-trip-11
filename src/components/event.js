@@ -14,11 +14,11 @@ const createOffersTemplate = (offers) => {
   );
 };
 
-const createCardTemplate = (event, store) => {
-  const {eventType, startEventTime, endEventTime, price} = event;
-  const {name} = event.destination;
+const createCardTemplate = (point, store) => {
+  const {eventType, startEventTime, endEventTime, price} = point;
+  const {name} = point.destination;
   const preposition = getPrepositionForEventType(eventType);
-  // const eventOffers = store.getOffers().find((el) => el.type === event.eventType);
+  // const pointOffers = store.getOffers().find((el) => el.type === point.eventType);
   return (`<li class="trip-events__item">
       <div class="event">
         <div class="event__type">
@@ -37,7 +37,7 @@ const createCardTemplate = (event, store) => {
           &euro;&nbsp;<span class="event__price-value"> ${price} </span>
         </p>
         <h4 class="visually-hidden">Offers:</h4>
-        ${createOffersTemplate(event.offers)}
+        ${createOffersTemplate(point.offers)}
         <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>
         </button>

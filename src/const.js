@@ -2,9 +2,9 @@ export const HIDDEN_CLASS = `visually-hidden`;
 
 export const SHAKE_ANIMATION_TIMEOUT = 600;
 
-export const KeyCode = {
-  ESC: 27
-};
+export const AUTHORIZATION = `Basic kukurukublablabla`;
+
+export const END_POINT = `https://11.ecmascript.pages.academy/big-trip`;
 
 export const TripTypes = {
   TRANSFER: [`bus`, `drive`, `flight`, `ship`, `taxi`, `train`, `transport`],
@@ -23,7 +23,12 @@ export const Months = [
   `Sep`,
   `Oct`,
   `Nov`,
-  `Dec`];
+  `Dec`
+];
+
+export const KeyCode = {
+  ESC: 27
+};
 
 export const SortType = {
   EVENT: `event`,

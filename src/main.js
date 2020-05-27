@@ -11,10 +11,7 @@ import API from "./api.js";
 import Store from "./store.js";
 import PointsModel from "./models/points-model.js";
 import {render, RenderPosition, remove} from "./utils/render.js";
-import {DefaultButtonsText} from "./const.js";
-
-const AUTHORIZATION = `Basic kukurukublablabla`;
-const END_POINT = `https://11.ecmascript.pages.academy/big-trip`;
+import {DefaultButtonsText, AUTHORIZATION, END_POINT} from "./const.js";
 
 const siteMenuElement = document.querySelector(`.trip-main__trip-controls h2`);
 const siteFilterElement = document.querySelector(`.trip-main__trip-controls`);
@@ -39,11 +36,12 @@ render(siteFilterElement, addEventButton, RenderPosition.AFTEREND);
 render(tripEventsSection, statistics, RenderPosition.AFTEREND);
 
 addEventButton.setClickButtonHandler(() => {
+  debugger
   tripController.createPoint();
   addEventButton.disableButton();
   filterController.changeByDefaultFilter();
   filterController.render();
-  document.querySelector(`.event__reset-btn`).textContent = DefaultButtonsText.canselButtonText;
+  // document.querySelector(`.event__reset-btn`).textContent = DefaultButtonsText.canselButtonText;
 });
 
 

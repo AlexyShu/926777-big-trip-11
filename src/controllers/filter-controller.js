@@ -6,7 +6,6 @@ export default class FilterController {
   constructor(container, pointsModel) {
     this._container = container;
     this._pointsModel = pointsModel;
-
     this._filterComponent = null;
     this._activeFilterType = FilterType.EVERYTHING;
     this._onFilterChange = this._onFilterChange.bind(this);

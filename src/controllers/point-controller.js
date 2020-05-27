@@ -5,7 +5,6 @@ import {replace, render, remove, RenderPosition} from "../utils/render.js";
 import {KeyCode, Mode, SHAKE_ANIMATION_TIMEOUT, ConnectingButtonsText} from "../const.js";
 import flatpickr from "flatpickr";
 
-
 export default class PointController {
   constructor(container, onDataChange, onViewChange, store) {
     this._container = container;
@@ -21,40 +20,13 @@ export default class PointController {
     this._onEscPressForNewForm = this._onEscPressForNewForm.bind(this);
   }
 
-  render(event, mode) {
+  render(point, mode) {
     this._mode = mode;
-
     const oldEventItem = this._eventItem;
     const oldEventForm = this._eventForm;
 
-    this._eventItem = new CardComponent(event, this._store);
-    this._eventForm = new EventFormComponent(event, this._store);
-
-    const parseFormData = (formData) => {
-      const eventOffers = this._store.getOffers().find((el) => el.type === event.eventType);
-      const checkboxes = this._eventForm.getElement().querySelectorAll(`.event__offer-checkbox`);
-      const offersChecked = [];
-      checkboxes.forEach((element, index) => {
-        if (element.checked) {
-          offersChecked.push(eventOffers.offers[index]);
-        }
-      });
-      return new PointModel({
-        "id": event.id,
-        "destination": {
-          "name": formData.get(`event-destination`),
-          "description": event.destination.description,
-          "pictures": event.destination.pictures
-        },
-        "type": formData.get(`event-type`),
-        "date_from": flatpickr.parseDate(formData.get(`event-start-time`), `d/m/y H:i`),
-        "date_to": flatpickr.parseDate(formData.get(`event-end-time`), `d/m/y H:i`),
-        "base_price": parseInt(formData.get(`event-price`), 10),
-        "offers": offersChecked,
-        "is_favorite": false
-      });
-    };
-
+    this._eventItem = new CardComponent(point, this._store);
+    this._eventForm = new EventFormComponent(point, this._store);
 
     this._eventItem.setRollupButtonHandler(() => {
       this._replaceEventToForm();
@@ -65,7 +37,7 @@ export default class PointController {
       this._eventForm.setData({
         deleteButtonText: ConnectingButtonsText.deleteButtonText
       });
-      this._onDataChange(this, event, null);
+      this._onDataChange(this, point, null);
       this._eventForm.blockForm();
       const addButton = document.querySelector(`.trip-main__event-add-btn`);
       addButton.disabled = false;
@@ -73,12 +45,12 @@ export default class PointController {
 
     this._eventForm.setSubmitFormHandler((evt) => {
       evt.preventDefault();
+      const formData = this._eventForm.getData();
+      const data = this._parseFormData(formData, point);
       this._eventForm.setData({
         saveButtonText: ConnectingButtonsText.saveButtonText
       });
-      const formData = this._eventForm.getData();
-      const data = parseFormData(formData, event);
-      this._onDataChange(this, event, data);
+      this._onDataChange(this, point, data);
       this._eventForm.blockForm();
       this._eventForm.getElement().style.border = `none`;
     });
@@ -89,9 +61,9 @@ export default class PointController {
           this._replaceFormToEvent();
         });
         this._eventForm.setFavotiteButtonClickHandler(() => {
-          const newPoint = PointModel.clone(event);
+          const newPoint = PointModel.clone(point);
           newPoint.isFavorite = !newPoint.isFavorite;
-          this._onDataChange(this, event, newPoint);
+          this._onDataChange(this, point, newPoint);
         });
         if (oldEventItem && oldEventForm) {
           replace(this._eventItem, oldEventItem);
@@ -106,19 +78,37 @@ export default class PointController {
           remove(oldEventItem);
           remove(oldEventForm);
         } else {
-          // document.addEventListener(`keydown`, this._onEscPressForNewForm);
+          document.addEventListener(`keydown`, this._onEscPressForNewForm);
           document.querySelector(`.trip-sort`).after(this._eventForm.getElement());
           this._eventForm.getFormType();
-
         }
         break;
     }
   }
 
-  setDefaultView() {
-    if (this._mode !== Mode.DEFAULT) {
-      this. _replaceFormToEvent();
-    }
+  _parseFormData(formData, point) {
+    const eventOffers = this._store.getOffers().find((el) => el.type === point.eventType);
+    const checkboxes = this._eventForm.getElement().querySelectorAll(`.event__offer-checkbox`);
+    const offersChecked = [];
+    checkboxes.forEach((element, index) => {
+      if (element.checked) {
+        offersChecked.push(eventOffers.offers[index]);
+      }
+    });
+    return new PointModel({
+      "id": point.id,
+      "destination": {
+        "name": formData.get(`event-destination`),
+        "description": point.destination.description,
+        "pictures": point.destination.pictures
+      },
+      "type": formData.get(`event-type`),
+      "date_from": flatpickr.parseDate(formData.get(`event-start-time`), `d/m/y H:i`),
+      "date_to": flatpickr.parseDate(formData.get(`event-end-time`), `d/m/y H:i`),
+      "base_price": parseInt(formData.get(`event-price`), 10),
+      "offers": offersChecked,
+      "is_favorite": false
+    });
   }
 
   _replaceFormToEvent() {
@@ -151,7 +141,6 @@ export default class PointController {
     }
   }
 
-
   _setDefaultView() {
     if (this._mode !== Mode.DEFAULT) {
       this._replaceFormToEvent();
@@ -178,5 +167,4 @@ export default class PointController {
       this._eventForm.unBlockForm();
     }, SHAKE_ANIMATION_TIMEOUT);
   }
-
 }

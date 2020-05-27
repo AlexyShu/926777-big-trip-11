@@ -1,16 +1,5 @@
 import moment from "moment";
 
-// функция возвращающая случайное целое число
-// export const getRandomIntegerNumber = (min, max) => {
-//   return min + Math.floor(max * Math.random());
-// };
-
-// функциявозвращает случайный эелемент массива
-// export const getRandomArrayItem = (array) => {
-//   const randomIndex = getRandomIntegerNumber(0, array.length);
-//   return array[randomIndex];
-// };
-
 export const timeFormat = (date) => {
   return moment(date).format(`HH:mm`);
 };
@@ -37,14 +26,14 @@ export const calculateTimeInterval = (time1, time2) => {
 
 const castInterval = (timeValue, unitOfTime) => timeValue < 10 ? `0${timeValue}${unitOfTime}` : `${timeValue}${unitOfTime}`;
 
-export const makeGroupedEvents = (events) => {
+export const makeGroupedEvents = (points) => {
   const groupedEvents = new Map();
-  events.forEach((event) => {
-    const startInMilliseconds = new Date(event.startEventTime).setHours(1, 0, 0, 0);
+  points.forEach((point) => {
+    const startInMilliseconds = new Date(point.startEventTime).setHours(1, 0, 0, 0);
     if (groupedEvents.has(startInMilliseconds)) {
-      groupedEvents.get(startInMilliseconds).push(event);
+      groupedEvents.get(startInMilliseconds).push(point);
     } else {
-      groupedEvents.set(startInMilliseconds, [event]);
+      groupedEvents.set(startInMilliseconds, [point]);
     }
   });
   return groupedEvents;

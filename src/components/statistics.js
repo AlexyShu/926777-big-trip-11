@@ -17,7 +17,7 @@ const LabelPrefix = {
   HOURS: `h`
 };
 
-const generateChartsData = (events) => {
+const generateChartsData = (points) => {
   const moneyStatistics = {};
 
   const transportStatistics = {};
@@ -27,21 +27,21 @@ const generateChartsData = (events) => {
 
   const timeStatictics = {};
 
-  events.forEach((event) => {
-    if (event.eventType in moneyStatistics) {
-      moneyStatistics[event.eventType] += Number(event.price);
+  points.forEach((point) => {
+    if (point.eventType in moneyStatistics) {
+      moneyStatistics[point.eventType] += Number(point.price);
     } else {
-      moneyStatistics[event.eventType] = Number(event.price);
+      moneyStatistics[point.eventType] = Number(point.price);
     }
 
-    if (event.eventType in transportStatistics) {
-      transportStatistics[event.eventType] += 1;
+    if (point.eventType in transportStatistics) {
+      transportStatistics[point.eventType] += 1;
     }
 
-    if (event.eventType in timeStatictics) {
-      timeStatictics[event.eventType] += event.endEventTime - event.startEventTime;
+    if (point.eventType in timeStatictics) {
+      timeStatictics[point.eventType] += point.endEventTime - point.startEventTime;
     } else {
-      timeStatictics[event.eventType] = event.endEventTime - event.startEventTime;
+      timeStatictics[point.eventType] = point.endEventTime - point.startEventTime;
     }
   });
 

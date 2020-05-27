@@ -3,7 +3,7 @@ import {FilterType} from "../const.js";
 
 export default class Points {
   constructor() {
-    this._events = [];
+    this._points = [];
     this._activeFilterType = FilterType.EVERYTHING;
     this._dataChangeHandlers = [];
     this._filterChangeHandlers = [];
@@ -11,16 +11,16 @@ export default class Points {
 
   // метод для получения карточек
   getPoints() {
-    return getPointsByFilter(this._events, this._activeFilterType);
+    return getPointsByFilter(this._points, this._activeFilterType);
   }
   // метод для получения карточек
   getPointsAll() {
-    return this._events;
+    return this._points;
   }
 
   // метод для заполнения карточек
-  setPoints(events) {
-    this._events = Array.from(events);
+  setPoints(points) {
+    this._points = Array.from(points);
     this._callHandlers(this._dataChangeHandlers);
   }
 
@@ -34,7 +34,6 @@ export default class Points {
     handlers.forEach((handler) => handler());
   }
 
-
   setFilter(filterType) {
     this._activeFilterType = filterType;
     this._callHandlers(this._filterChangeHandlers);
@@ -45,30 +44,30 @@ export default class Points {
   }
 
   // метод для обновления одной карточки
-  updatePoint(id, event) {
-    const index = this._events.findIndex((it) => it.id === id);
+  updatePoint(id, point) {
+    const index = this._points.findIndex((it) => it.id === id);
     if (index === -1) {
       return false;
     }
-    this._events = [].concat(this._events.slice(0, index), event, this._events.slice(index + 1));
+    this._points = [].concat(this._points.slice(0, index), point, this._points.slice(index + 1));
     this._callHandlers(this._dataChangeHandlers);
     return true;
   }
 
   // из массива удали
   removePoint(id) {
-    const index = this._events.findIndex((it) => it.id === id);
+    const index = this._points.findIndex((it) => it.id === id);
     if (index === -1) {
       return false;
     }
-    this._events = [].concat(this._events.slice(0, index), this._events.slice(index + 1));
+    this._points = [].concat(this._points.slice(0, index), this._points.slice(index + 1));
     this._callHandlers(this._dataChangeHandlers);
     return true;
   }
 
   // в массив добавь
-  addPoint(event) {
-    this._events = [].concat(event, this._events);
+  addPoint(point) {
+    this._points = [].concat(point, this._points);
     this._callHandlers(this._dataChangeHandlers);
   }
 }

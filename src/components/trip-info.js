@@ -6,6 +6,7 @@ export default class TripInfoComponent extends AbstractComponent {
     super();
     this._cards = cards;
   }
+
   getTemplate() {
     const startRouteDate = new Date(this._cards[0].startEventTime);
     const endRouteDate = new Date(this._cards[this._cards.length - 1].startEventTime);
