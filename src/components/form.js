@@ -8,13 +8,19 @@ const createPicturesTemplate = (pics) => {
   return pics.map(({src, description}) => `<img class="event__photo" src="${src}" alt="${description}"></img>`).join(`\n`);
 };
 
-const createOffersTemplate = (offers, type) => {
+const createOffersTemplate = (offers, type, point) => {
   return (`<div class="event__available-offers">
   ${offers.map(({title, price}) => {
       const id = Math.random();
-      const isChecked = true;
+      let isChecked;
+      for (let i = 0; i < point.offers.lenght; i++) {
+        if (title === point.offers[i].title && price === point.offers[i].price) {
+          isChecked = true;
+        }
+      }
       return `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-${id}" type="checkbox" name="event-offer-${type}" ${isChecked ? `checked` : ``}>
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-${id}" type="checkbox"
+      name="event-offer-${type}" ${isChecked ? `checked` : ``}>
       <label class="event__offer-label" for="event-offer-${type}-${id}">
       <span class="event__offer-title"> ${title} </span>
       &plus;
@@ -82,7 +88,7 @@ const createFormTemplate = (point, store, externalData, isNew) => {
            <label class="visually-hidden" for="event-end-time-1">
            To
            </label>
-           <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dateFormatforForm(endEventTime)}">
+           <input class="event__input  event__input--time end-date" id="event-end-time-1" type="text" name="event-end-time" value="${dateFormatforForm(endEventTime)}">
         </div>
         <div class="event__field-group  event__field-group--price">
            <label class="event__label" for="event-price-1">
@@ -107,7 +113,7 @@ const createFormTemplate = (point, store, externalData, isNew) => {
       <section class="event__details">
         <section class="event__section  event__section--offers">
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-          ${createOffersTemplate(pointOffers.offers, pointOffers.type)}
+          ${createOffersTemplate(pointOffers.offers, pointOffers.type, point)}
         </section>
         <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
@@ -159,6 +165,12 @@ export default class EventFormComponent extends AbstractSmartComponent {
   rerender() {
     super.rerender();
     this._applyFlatpickr();
+  }
+
+  _controlEndDataInput() {
+    if (this._card.startEventTime < this._card.endEventTime) {
+      document.querySelector(`.end-date`).setCustomValidity(`The start date of the trip can't be longer then the end of the trip.`);
+    }
   }
 
   _deleteFlatpickrs() {

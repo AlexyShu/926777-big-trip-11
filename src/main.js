@@ -36,7 +36,6 @@ render(siteFilterElement, addEventButton, RenderPosition.AFTEREND);
 render(tripEventsSection, statistics, RenderPosition.AFTEREND);
 
 addEventButton.setClickButtonHandler(() => {
-  debugger
   tripController.createPoint();
   addEventButton.disableButton();
   filterController.changeByDefaultFilter();
