@@ -17,7 +17,6 @@ export default class PointController {
     this._replaceFormToEvent = this._replaceFormToEvent.bind(this);
     this._replaceEventToForm = this._replaceEventToForm.bind(this);
     this._onEscPress = this._onEscPress.bind(this);
-    this._onEscPressForNewForm = this._onEscPressForNewForm.bind(this);
   }
 
   render(point, mode) {
@@ -78,9 +77,9 @@ export default class PointController {
           remove(oldEventItem);
           remove(oldEventForm);
         } else {
-          document.addEventListener(`keydown`, this._onEscPressForNewForm);
           document.querySelector(`.trip-sort`).after(this._eventForm.getElement());
           this._eventForm.getFormType();
+          document.addEventListener(`keydown`, this._onEscPress);
         }
         break;
     }
@@ -127,18 +126,15 @@ export default class PointController {
   _onEscPress(evt) {
     if (evt.keyCode === KeyCode.ESC) {
       evt.preventDefault();
+      if (this._mode === Mode.ADD) {
+        this. destroy();
+        this._onViewChange();
+      }
       this._replaceFormToEvent();
       document.removeEventListener(`keydown`, this._onEscPress);
     }
-  }
-
-  _onEscPressForNewForm(evt) {
-    if (evt.keyCode === KeyCode.ESC) {
-      remove(this._eventForm);
-      document.removeEventListener(`keydown`, this._onEscPressForNewForm);
-      const addButton = document.querySelector(`.trip-main__event-add-btn`);
-      addButton.disabled = false;
-    }
+    const addButton = document.querySelector(`.trip-main__event-add-btn`);
+    addButton.disabled = false;
   }
 
   _setDefaultView() {

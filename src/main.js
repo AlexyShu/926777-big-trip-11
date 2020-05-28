@@ -40,7 +40,7 @@ addEventButton.setClickButtonHandler(() => {
   addEventButton.disableButton();
   filterController.changeByDefaultFilter();
   filterController.render();
-  // document.querySelector(`.event__reset-btn`).textContent = DefaultButtonsText.canselButtonText;
+  document.querySelector(`.event__reset-btn`).textContent = DefaultButtonsText.canselButtonText;
 });
 
 

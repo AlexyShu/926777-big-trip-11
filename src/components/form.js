@@ -1,6 +1,7 @@
 import {doFirstLetterUppercase, dateFormatforForm, getPrepositionForEventType} from "../utils/common.js";
 import {TripTypes, Mode, DefaultButtonsText} from "../const.js";
 import AbstractSmartComponent from "./abstract-smart-component.js";
+import moment from "moment";
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
 
@@ -13,7 +14,7 @@ const createOffersTemplate = (offers, type, point) => {
   ${offers.map(({title, price}) => {
       const id = Math.random();
       let isChecked;
-      for (let i = 0; i < point.offers.lenght; i++) {
+      for (let i = 0; i < point.offers.length; i++) {
         if (title === point.offers[i].title && price === point.offers[i].price) {
           isChecked = true;
         }
@@ -252,6 +253,14 @@ export default class EventFormComponent extends AbstractSmartComponent {
       this._destination.pictures = town ? town.pictures : ``;
       this.rerender();
     });
+
+    element.querySelector(`#event-start-time-1`)
+      .addEventListener(`change`, (evt) => {
+        this._card.startEventTime = moment(evt.target.value, `DD/MM/YY HH:mm`).valueOf();
+        this._card.endEventTime = this._card.startEventTime > this._card.endEventTime
+          ? this._card.startEventTime : this._card.endEventTime;
+        this.rerender();
+      });
   }
 
   getData() {

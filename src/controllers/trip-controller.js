@@ -152,6 +152,7 @@ export default class TripController {
   _onViewChange() {
     this._pointControllers.forEach((it) => {
       it._setDefaultView();
+      this._creatingPoint = null;
     });
   }
 
@@ -168,10 +169,6 @@ export default class TripController {
 
   _onFilterChange() {
     this._updateEvents();
-  }
-
-  _destroyCreatingPoint() {
-    this._creatingPoint = null;
   }
 
   createPoint() {
