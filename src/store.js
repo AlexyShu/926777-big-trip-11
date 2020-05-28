@@ -23,5 +23,4 @@ export default class Store {
   getOffers() {
     return this._offers;
   }
-
 }

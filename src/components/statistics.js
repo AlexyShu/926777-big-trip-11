@@ -1,56 +1,35 @@
 import AbstractSmartComponent from "./abstract-smart-component.js";
-import {TripTypes} from "../const.js";
+import {TripTypes, TitleName, LabelPrefix} from "../const.js";
 import moment from "moment";
 import Chart from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 
-
-const TitleName = {
-  MONEY: `MONEY`,
-  TRANSPORT: `TRANSPORT`,
-  TIME: `TIME SPENT`
-};
-
-const LabelPrefix = {
-  EURO: `€`,
-  TIMES: `x`,
-  HOURS: `h`
-};
-
 const generateChartsData = (points) => {
   const moneyStatistics = {};
-
   const transportStatistics = {};
   for (let i = 0; i < TripTypes.TRANSFER.length; i++) {
     transportStatistics[TripTypes.TRANSFER[i]] = 0;
   }
-
   const timeStatictics = {};
-
   points.forEach((point) => {
     if (point.eventType in moneyStatistics) {
       moneyStatistics[point.eventType] += Number(point.price);
     } else {
       moneyStatistics[point.eventType] = Number(point.price);
     }
-
     if (point.eventType in transportStatistics) {
       transportStatistics[point.eventType] += 1;
     }
-
     if (point.eventType in timeStatictics) {
       timeStatictics[point.eventType] += point.endEventTime - point.startEventTime;
     } else {
       timeStatictics[point.eventType] = point.endEventTime - point.startEventTime;
     }
   });
-
   const moneyData = Object.entries(moneyStatistics).sort((a, b) => b[1] - a[1]);
-
   const transportData = Object.entries(transportStatistics)
     .filter((item) => item[1] !== 0)
     .sort((a, b) => b[1] - a[1]);
-
   const timeData = Object.entries(timeStatictics)
     .map((item) => {
       return [
@@ -60,7 +39,6 @@ const generateChartsData = (points) => {
     })
     .filter((item) => item[1] !== 0)
     .sort((a, b) => b[1] - a[1]);
-
   return {
     moneyData,
     transportData,
@@ -159,11 +137,9 @@ export default class StatisticsComponent extends AbstractSmartComponent {
   constructor(pointsModel) {
     super();
     this._pointsModel = pointsModel;
-
     this._moneyChart = null;
     this._transportChart = null;
     this._timeChart = null;
-
     this._renderCharts();
   }
 
@@ -171,21 +147,14 @@ export default class StatisticsComponent extends AbstractSmartComponent {
     return createStatisticsTemplate();
   }
 
-  recoveryListeners() {}
-
   _renderCharts() {
     const element = this.getElement();
-
     const moneyCtx = element.querySelector(`.statistics__chart--money`);
     const transportCtx = element.querySelector(`.statistics__chart--transport`);
     const timeCtx = element.querySelector(`.statistics__chart--time`);
-
-    // this._resetCharts();
-
     const {moneyData, transportData, timeData} = generateChartsData(
         this._pointsModel.getPointsAll()
     );
-
     this._moneyChart = renderChart(
         moneyCtx,
         moneyData,
@@ -217,17 +186,17 @@ export default class StatisticsComponent extends AbstractSmartComponent {
       this._moneyChart.destroy();
       this._moneyChart = null;
     }
-
     if (this._transportChart) {
       this._transportChart.destroy();
       this._transportChart = null;
     }
-
     if (this._colorsChart) {
       this._colorsChart.destroy();
       this._colorsChart = null;
     }
   }
+
+  recoveryListeners() {}
 
   destroy() {
     this._resetCharts();

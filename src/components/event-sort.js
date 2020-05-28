@@ -40,10 +40,6 @@ export default class EventSortComponent extends AbstractComponent {
     return createEventSortTemplate();
   }
 
-  getSortType() {
-    return this._currenSortType;
-  }
-
   setSortTypeChangeHandler(handler) {
     this.getElement().addEventListener(`click`, (evt) => {
       evt.preventDefault();

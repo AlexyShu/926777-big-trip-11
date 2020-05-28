@@ -14,11 +14,10 @@ const createOffersTemplate = (offers) => {
   );
 };
 
-const createCardTemplate = (point, store) => {
+const createCardTemplate = (point) => {
   const {eventType, startEventTime, endEventTime, price} = point;
   const {name} = point.destination;
   const preposition = getPrepositionForEventType(eventType);
-  // const pointOffers = store.getOffers().find((el) => el.type === point.eventType);
   return (`<li class="trip-events__item">
       <div class="event">
         <div class="event__type">
@@ -47,14 +46,13 @@ const createCardTemplate = (point, store) => {
 };
 
 export default class CardComponent extends AbstractComponent {
-  constructor(card, store) {
+  constructor(card) {
     super();
     this._card = card;
-    this._store = store;
   }
 
   getTemplate() {
-    return createCardTemplate(this._card, this._store);
+    return createCardTemplate(this._card);
   }
 
   setRollupButtonHandler(handler) {

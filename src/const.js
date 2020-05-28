@@ -81,4 +81,16 @@ export const Method = {
   DELETE: `DELETE`
 };
 
+export const TitleName = {
+  MONEY: `MONEY`,
+  TRANSPORT: `TRANSPORT`,
+  TIME: `TIME SPENT`
+};
+
+export const LabelPrefix = {
+  EURO: `€`,
+  TIMES: `x`,
+  HOURS: `h`
+};
+
 

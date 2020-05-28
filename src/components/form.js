@@ -42,7 +42,6 @@ const createCitySelectTemplate = (places) => {
   );
 };
 
-
 const createFormTemplate = (point, store, externalData, isNew) => {
   const {eventType, startEventTime, endEventTime, price, isFavorite} = point;
   const {name, description} = point.destination;
@@ -89,7 +88,7 @@ const createFormTemplate = (point, store, externalData, isNew) => {
            <label class="visually-hidden" for="event-end-time-1">
            To
            </label>
-           <input class="event__input  event__input--time end-date" id="event-end-time-1" type="text" name="event-end-time" value="${dateFormatforForm(endEventTime)}">
+           <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dateFormatforForm(endEventTime)}">
         </div>
         <div class="event__field-group  event__field-group--price">
            <label class="event__label" for="event-price-1">
@@ -130,7 +129,6 @@ const createFormTemplate = (point, store, externalData, isNew) => {
   );
 };
 
-
 export default class EventFormComponent extends AbstractSmartComponent {
   constructor(card, store) {
     super();
@@ -149,7 +147,6 @@ export default class EventFormComponent extends AbstractSmartComponent {
     this._offers = store.getOffers();
     this._townsList = store.getDestinationNames();
     this._isNewForm = false;
-
     this._applyFlatpickr();
     this.addListeners();
   }
@@ -166,12 +163,6 @@ export default class EventFormComponent extends AbstractSmartComponent {
   rerender() {
     super.rerender();
     this._applyFlatpickr();
-  }
-
-  _controlEndDataInput() {
-    if (this._card.startEventTime < this._card.endEventTime) {
-      document.querySelector(`.end-date`).setCustomValidity(`The start date of the trip can't be longer then the end of the trip.`);
-    }
   }
 
   _deleteFlatpickrs() {
@@ -253,7 +244,6 @@ export default class EventFormComponent extends AbstractSmartComponent {
       this._destination.pictures = town ? town.pictures : ``;
       this.rerender();
     });
-
     element.querySelector(`#event-start-time-1`)
       .addEventListener(`change`, (evt) => {
         this._card.startEventTime = moment(evt.target.value, `DD/MM/YY HH:mm`).valueOf();
@@ -288,5 +278,4 @@ export default class EventFormComponent extends AbstractSmartComponent {
   getFormType() {
     this._isNewForm = true;
   }
-
 }

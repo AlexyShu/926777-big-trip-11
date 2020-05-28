@@ -11,10 +11,6 @@ export default class FilterController {
     this._onFilterChange = this._onFilterChange.bind(this);
   }
 
-  changeByDefaultFilter() {
-    this._activeFilterType = FilterType.EVERYTHING;
-  }
-
   render() {
     const filters = Object.values(FilterType).map((filterType) => {
       return {
@@ -22,12 +18,9 @@ export default class FilterController {
         isChecked: filterType === this._activeFilterType,
       };
     });
-
     const oldComponent = this._filterComponent;
-
     this._filterComponent = new FiltersComponent(filters);
     this._filterComponent.setOnFilterChange(this._onFilterChange);
-
     if (oldComponent) {
       replace(this._filterComponent, oldComponent);
     } else {
@@ -38,5 +31,9 @@ export default class FilterController {
   _onFilterChange(filterType) {
     this._activeFilterType = filterType;
     this._pointsModel.setFilter(filterType);
+  }
+
+  changeByDefaultFilter() {
+    this._activeFilterType = FilterType.EVERYTHING;
   }
 }

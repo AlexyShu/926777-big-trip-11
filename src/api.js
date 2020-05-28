@@ -31,7 +31,6 @@ export default class API {
     .then((response) => response.json());
   }
 
-  // метод обнавления точки маршрута
   updatePoint(id, data) {
     return this._load({
       url: `points/${id}`,
@@ -43,7 +42,6 @@ export default class API {
       .then(Point.parsePoint);
   }
 
-  // метод создания новой точки маршрута
   createPoint(point) {
     return this._load({
       url: `points`,
@@ -55,7 +53,6 @@ export default class API {
       .then(Point.parsePoint);
   }
 
-  // метод удаления точки маршрута
   deletePoint(id) {
     return this._load({
       url: `points/${id}`,

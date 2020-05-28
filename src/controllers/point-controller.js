@@ -23,15 +23,12 @@ export default class PointController {
     this._mode = mode;
     const oldEventItem = this._eventItem;
     const oldEventForm = this._eventForm;
-
-    this._eventItem = new CardComponent(point, this._store);
+    this._eventItem = new CardComponent(point);
     this._eventForm = new EventFormComponent(point, this._store);
-
     this._eventItem.setRollupButtonHandler(() => {
       this._replaceEventToForm();
       document.addEventListener(`keydown`, this._onEscPress);
     });
-
     this._eventForm.setResetButtonHandler(() => {
       this._eventForm.setData({
         deleteButtonText: ConnectingButtonsText.deleteButtonText
@@ -41,7 +38,6 @@ export default class PointController {
       const addButton = document.querySelector(`.trip-main__event-add-btn`);
       addButton.disabled = false;
     });
-
     this._eventForm.setSubmitFormHandler((evt) => {
       evt.preventDefault();
       const formData = this._eventForm.getData();
@@ -53,7 +49,6 @@ export default class PointController {
       this._eventForm.blockForm();
       this._eventForm.getElement().style.border = `none`;
     });
-
     switch (mode) {
       case Mode.DEFAULT:
         this._eventForm.setRpllupFormButtonClick(() => {

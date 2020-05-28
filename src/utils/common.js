@@ -12,10 +12,6 @@ export const dateFormatforForm = (date) => {
   return moment(date).format(`DD/MM/YY HH:mm`);
 };
 
-// export const parseDateWithoutTime = (dateString) => moment(dateString, `YYYY MMM DD`).valueOf();
-
-export const parseDate = (dateString) => moment(dateString, `DD/MM/YY HH:mm`).valueOf();
-
 export const calculateTimeInterval = (time1, time2) => {
   const daysInterval = moment(time2).diff(moment(time1), `days`);
   const hoursInterval = moment(time2).diff(moment(time1), `hours`) - daysInterval * 24;

@@ -22,7 +22,6 @@ export const render = (container, component, place) => {
   }
 };
 
-// функция для отрисовки DOM-элементов
 export const createElement = (template) => {
   const newElement = document.createElement(`div`);
   newElement.innerHTML = template;

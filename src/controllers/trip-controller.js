@@ -14,15 +14,12 @@ export default class TripController {
     this._store = store;
     this._eventsSort = new EventSortComponent();
     this._noEventComponent = new NoEventComponent();
-
     this._pointControllers = [];
     this._creatingPoint = null;
     this._pointsModel = pointsModel;
-
     this._onDataChange = this._onDataChange.bind(this);
     this._onViewChange = this._onViewChange.bind(this);
     this._onFilterChange = this._onFilterChange.bind(this);
-
     this._pointsModel.setFilterChangeHandler(this._onFilterChange);
   }
 
@@ -47,7 +44,6 @@ export default class TripController {
       remove(this._noEventComponent);
       render(siteTripEventElement, this._container, RenderPosition.BEFOREEND);
       render(siteTripEventElement, this._eventsSort, RenderPosition.AFTERBEGIN);
-
       if (isGroupOnDays) {
         const eventGroups = makeGroupedEvents(points);
         let dayCount = 0;
@@ -55,19 +51,15 @@ export default class TripController {
           dayCount++;
           this.renderDay(tripEvents, dayCount);
         });
-
         this._eventsSort.setSortTypeChangeHandler((sortType) => {
           this.getEventsSort(sortType);
         });
-
       } else {
         this.renderDay(points, 0);
-
         this._eventsSort.setSortTypeChangeHandler((sortType) => {
           this.getEventsSort(sortType);
         });
       }
-
     }
   }
 
@@ -104,7 +96,6 @@ export default class TripController {
   }
 
   _onDataChange(pointController, oldData, newData) {
-    // добавление
     if (oldData === EmptyPoint) {
       this._creatingPoint = null;
       if (newData === null) {
@@ -124,7 +115,7 @@ export default class TripController {
             pointController.errorHandler();
           });
       }
-    } else if (newData === null) { // удаление
+    } else if (newData === null) {
       this._api.deletePoint(oldData.id)
         .then(() => {
           this._pointsModel.removePoint(oldData.id);
@@ -134,7 +125,6 @@ export default class TripController {
           pointController.errorHandler();
         });
     } else {
-      // обнавление
       this._api.updatePoint(oldData.id, newData)
         .then((pointModel) => {
           const isSuccess = this._pointsModel.updatePoint(oldData.id, pointModel);
@@ -192,5 +182,4 @@ export default class TripController {
     this._container.show();
     this._eventsSort.show();
   }
-
 }
