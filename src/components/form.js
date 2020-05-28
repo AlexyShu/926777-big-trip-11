@@ -139,6 +139,7 @@ export default class EventFormComponent extends AbstractSmartComponent {
     this._rollupHandler = null;
     this._resetHandler = null;
     this._submitHandler = null;
+    this._favoriteHandler = null;
     this._mode = Mode.DEFAULT;
     this._type = card.TripTypes;
     this._destination = card.destination;
@@ -210,6 +211,8 @@ export default class EventFormComponent extends AbstractSmartComponent {
   setFavotiteButtonClickHandler(handler) {
     this.getElement().querySelector(`.event__favorite-btn`)
       .addEventListener(`click`, handler);
+
+    this._favoriteHandler = handler;
   }
 
   recoveryListeners() {
@@ -218,6 +221,7 @@ export default class EventFormComponent extends AbstractSmartComponent {
     this.addListeners();
     if (this._mode === Mode.DEFAULT) {
       this.setResetButtonHandler(this._cancelHandler);
+      this.setFavotiteButtonClickHandler(this._favoriteHandler);
     }
   }
 
@@ -251,6 +255,12 @@ export default class EventFormComponent extends AbstractSmartComponent {
           ? this._card.startEventTime : this._card.endEventTime;
         this.rerender();
       });
+    if (element.querySelector(`.event__favorite-checkbox`)) {
+      element.querySelector(`.event__favorite-checkbox`)
+          .addEventListener(`change`, (evt) => {
+            this._card.isFavorite = evt.target.checked;
+          });
+    }
   }
 
   getData() {

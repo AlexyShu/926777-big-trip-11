@@ -15,7 +15,7 @@ export default class TripController {
     this._eventsSort = new EventSortComponent();
     this._noEventComponent = new NoEventComponent();
     this._pointControllers = [];
-    this._creatingPoint = null;
+    this._newPoint = null;
     this._pointsModel = pointsModel;
     this._onDataChange = this._onDataChange.bind(this);
     this._onViewChange = this._onViewChange.bind(this);
@@ -97,7 +97,7 @@ export default class TripController {
 
   _onDataChange(pointController, oldData, newData) {
     if (oldData === EmptyPoint) {
-      this._creatingPoint = null;
+      this._newPoint = null;
       if (newData === null) {
         pointController.destroy();
         this._updateEvents();
@@ -142,7 +142,7 @@ export default class TripController {
   _onViewChange() {
     this._pointControllers.forEach((it) => {
       it._setDefaultView();
-      this._creatingPoint = null;
+      this._newPoint = null;
     });
   }
 
@@ -162,15 +162,15 @@ export default class TripController {
   }
 
   createPoint() {
-    if (this._creatingPoint) {
+    if (this._newPoint) {
       return;
     }
     this._onViewChange();
     this.getEventsSort(SortType.EVENT);
     document.querySelector(`#sort-event`).checked = true;
     this._pointsModel.setFilter(FilterType.EVERYTHING);
-    this._creatingPoint = new PointController(this._container.getElement(), this._onDataChange, this._onViewChange, this._store);
-    this._creatingPoint.render(EmptyPoint, PointControllerMode.ADD);
+    this._newPoint = new PointController(this._container.getElement(), this._onDataChange, this._onViewChange, this._store);
+    this._newPoint.render(EmptyPoint, PointControllerMode.ADD);
   }
 
   hide() {
