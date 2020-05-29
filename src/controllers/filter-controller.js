@@ -1,6 +1,6 @@
 import {render, RenderPosition, replace} from "../utils/render.js";
 import {FilterType} from "../const.js";
-import FiltersComponent from "../components/filters.js";
+import Filters from "../components/filters.js";
 
 export default class FilterController {
   constructor(container, pointsModel) {
@@ -19,7 +19,7 @@ export default class FilterController {
       };
     });
     const oldComponent = this._filterComponent;
-    this._filterComponent = new FiltersComponent(filters);
+    this._filterComponent = new Filters(filters);
     this._filterComponent.setOnFilterChange(this._onFilterChange);
     if (oldComponent) {
       replace(this._filterComponent, oldComponent);

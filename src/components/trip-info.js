@@ -1,7 +1,7 @@
 import AbstractComponent from "./abstract-component.js";
 import {Months} from "../const.js";
 
-export default class TripInfoComponent extends AbstractComponent {
+export default class TripInfo extends AbstractComponent {
   constructor(cards) {
     super();
     this._cards = cards;

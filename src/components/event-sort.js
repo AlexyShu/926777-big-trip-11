@@ -30,7 +30,7 @@ const createEventSortTemplate = () => {
     </form>`);
 };
 
-export default class EventSortComponent extends AbstractComponent {
+export default class EventSort extends AbstractComponent {
   constructor() {
     super();
     this._currenSortType = SortType.EVENT;

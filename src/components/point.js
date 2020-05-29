@@ -1,4 +1,4 @@
-import {timeFormat, dateFormat, calculateTimeInterval, getPrepositionForEventType} from "../utils/common.js";
+import {timeFormat, dateFormat, calculateTimeInterval, getPrepositionForEventType, getUpperCaseString} from "../utils/common.js";
 import AbstractComponent from "./abstract-component.js";
 
 const createOffersTemplate = (offers) => {
@@ -23,7 +23,7 @@ const createCardTemplate = (point) => {
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/${eventType}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${eventType} ${preposition} ${name}</h3>
+        <h3 class="event__title">${getUpperCaseString(eventType)} ${preposition} ${name}</h3>
         <div class="event__schedule">
           <p class="event__time">
           <time class="event__start-time" datetime="${dateFormat(startEventTime)}">${timeFormat(startEventTime)}</time>
@@ -45,7 +45,7 @@ const createCardTemplate = (point) => {
   );
 };
 
-export default class CardComponent extends AbstractComponent {
+export default class Point extends AbstractComponent {
   constructor(card) {
     super();
     this._card = card;

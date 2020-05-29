@@ -1,5 +1,5 @@
-import {doFirstLetterUppercase, dateFormatforForm, getPrepositionForEventType} from "../utils/common.js";
-import {TripTypes, Mode, DefaultButtonsText} from "../const.js";
+import {doFirstLetterUppercase, dateFormatforForm, getPrepositionForEventType, getUpperCaseString} from "../utils/common.js";
+import {TripTypes, Mode, DefaultButtonsText, HIDDEN_CLASS} from "../const.js";
 import AbstractSmartComponent from "./abstract-smart-component.js";
 import moment from "moment";
 import flatpickr from "flatpickr";
@@ -14,11 +14,12 @@ const createOffersTemplate = (offers, type, point) => {
   ${offers.map(({title, price}) => {
       const id = Math.random();
       let isChecked;
-      for (let i = 0; i < point.offers.length; i++) {
-        if (title === point.offers[i].title && price === point.offers[i].price) {
+      point.offers.some((it) => {
+        if (it.title === title && it.price === price) {
           isChecked = true;
         }
-      }
+      });
+      isChecked = false;
       return `<div class="event__offer-selector">
       <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-${id}" type="checkbox"
       name="event-offer-${type}" ${isChecked ? `checked` : ``}>
@@ -48,6 +49,12 @@ const createFormTemplate = (point, store, externalData, isNew) => {
   const picturesTemplate = createPicturesTemplate(point.destination.pictures);
   const pointOffers = store.getOffers().find((el) => el.type === point.eventType);
   const preposition = getPrepositionForEventType(eventType);
+  // const offersBlock = document.querySelector(`.event__section--offers`);
+  // if (pointOffers.offers.length === 0) {
+  //   offersBlock.classList.add(HIDDEN_CLASS);
+  // } else {
+  //   offersBlock.classList.remove(HIDDEN_CLASS);
+  // }
   return (`<form class="trip-events__item  event  event--edit" action="#" method="post">
       <header class="event__header">
            <div class="event__type-wrapper">
@@ -74,7 +81,7 @@ const createFormTemplate = (point, store, externalData, isNew) => {
         </div>
         <div class="event__field-group  event__field-group--destination">
            <label class="event__label  event__type-output" for="event-destination-1">
-           ${eventType} ${preposition}
+           ${getUpperCaseString(eventType)} ${preposition}
            </label>
            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${name}" list="destination-list-1">
            ${createCitySelectTemplate(store.getDestinationNames())}
@@ -129,7 +136,7 @@ const createFormTemplate = (point, store, externalData, isNew) => {
   );
 };
 
-export default class EventFormComponent extends AbstractSmartComponent {
+export default class PointForm extends AbstractSmartComponent {
   constructor(card, store) {
     super();
     this._card = card;
@@ -245,7 +252,7 @@ export default class EventFormComponent extends AbstractSmartComponent {
       });
       const town = this._destinations.find((el) => el.name === this._destination.name);
       this._destination.description = town ? town.description : ``;
-      this._destination.pictures = town ? town.pictures : ``;
+      this._destination.pictures = town ? town.pictures : [];
       this.rerender();
     });
     element.querySelector(`#event-start-time-1`)

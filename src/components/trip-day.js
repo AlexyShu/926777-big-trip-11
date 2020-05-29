@@ -19,7 +19,7 @@ const createTripDayItemTemplate = (dayCount, startDate) => {
   );
 };
 
-export default class TripDayComponent extends AbstractComponent {
+export default class TripDay extends AbstractComponent {
   constructor(cards, dayCount) {
     super();
     this._cards = cards;

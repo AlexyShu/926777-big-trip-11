@@ -1,7 +1,7 @@
-import NoEventComponent from "../components/no-event.js";
-import EventSortComponent from "../components/event-sort.js";
-import TripDayComponent from "../components/day-number.js";
-import EventListComponent from "../components/events-list.js";
+import NoEvent from "../components/no-event.js";
+import EventSort from "../components/event-sort.js";
+import TripDay from "../components/trip-day.js";
+import EventsList from "../components/events-list.js";
 import {render, RenderPosition, remove} from "../utils/render.js";
 import {makeGroupedEvents} from "../utils/common.js";
 import PointController from "./point-controller.js";
@@ -12,8 +12,8 @@ export default class TripController {
     this._container = container;
     this._api = api;
     this._store = store;
-    this._eventsSort = new EventSortComponent();
-    this._noEventComponent = new NoEventComponent();
+    this._eventsSort = new EventSort();
+    this._noEventComponent = new NoEvent();
     this._pointControllers = [];
     this._newPoint = null;
     this._pointsModel = pointsModel;
@@ -24,9 +24,9 @@ export default class TripController {
   }
 
   renderDay(points, dayCount) {
-    const dayComponent = new TripDayComponent(points, dayCount);
+    const dayComponent = new TripDay(points, dayCount);
     render(this._container.getElement(), dayComponent, RenderPosition.BEFOREEND);
-    const eventList = new EventListComponent();
+    const eventList = new EventsList();
     render(dayComponent.getElement(), eventList, RenderPosition.BEFOREEND);
     points.forEach((point) => {
       const pointController = new PointController(eventList.getElement(), this._onDataChange, this._onViewChange, this._store);
@@ -80,12 +80,12 @@ export default class TripController {
       case SortType.TIME:
         sortByNotDefult();
         sortedItems = points.slice().sort((a, b) => (b.endEventTime - b.startEventTime) - (a.endEventTime - a.startEventTime));
-        this.renderDay(sortedItems);
+        this.renderDay(sortedItems, 0);
         break;
       case SortType.PRICE:
         sortByNotDefult();
         sortedItems = points.slice().sort((a, b) => b.price - a.price);
-        this.renderDay(sortedItems);
+        this.renderDay(sortedItems, 0);
         break;
     }
   }

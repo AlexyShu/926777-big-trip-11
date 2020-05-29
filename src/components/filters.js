@@ -1,7 +1,7 @@
 
 import AbstractComponent from "./abstract-component.js";
 
-export default class FiltersComponent extends AbstractComponent {
+export default class Filters extends AbstractComponent {
   constructor(filters) {
     super();
     this._filters = filters;

@@ -1,6 +1,6 @@
 import moment from "moment";
 
-export default class Point {
+export default class PointModel {
   constructor(data) {
     this.id = data[`id`];
     this.eventType = data[`type`];
@@ -26,15 +26,15 @@ export default class Point {
   }
 
   static parsePoint(data) {
-    return new Point(data);
+    return new PointModel(data);
   }
 
   static parsePoints(data) {
-    return data.map(Point.parsePoint);
+    return data.map(PointModel.parsePoint);
   }
 
   static clone(data) {
-    return new Point(data.toRAW());
+    return new PointModel(data.toRAW());
   }
 }
 

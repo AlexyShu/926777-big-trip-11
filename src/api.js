@@ -1,4 +1,4 @@
-import Point from "./models/point-model.js";
+import PointModel from "./models/point-model.js";
 import {Method} from "./const.js";
 
 const checkStatus = (response) => {
@@ -18,7 +18,7 @@ export default class API {
   getPoints() {
     return this._load({url: `points`})
       .then((response) => response.json())
-      .then(Point.parsePoints);
+      .then(PointModel.parsePoints);
   }
 
   getDestinations() {
@@ -39,7 +39,7 @@ export default class API {
       headers: new Headers({"Content-Type": `application/json`})
     })
       .then((response) => response.json())
-      .then(Point.parsePoint);
+      .then(PointModel.parsePoint);
   }
 
   createPoint(point) {
@@ -50,7 +50,7 @@ export default class API {
       headers: new Headers({"Content-Type": `application/json`})
     })
       .then((response) => response.json())
-      .then(Point.parsePoint);
+      .then(PointModel.parsePoint);
   }
 
   deletePoint(id) {

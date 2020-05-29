@@ -49,4 +49,7 @@ export const getPrepositionForEventType = (eventType) => {
   return offerCourse;
 };
 
-
+export const getUpperCaseString = (string) => {
+  const upperCaseString = string[0].toUpperCase() + string.slice(1);
+  return upperCaseString;
+};

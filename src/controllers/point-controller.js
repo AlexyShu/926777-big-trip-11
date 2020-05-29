@@ -1,5 +1,5 @@
-import EventFormComponent from "../components/form.js";
-import CardComponent from "../components/event.js";
+import PointForm from "../components/point-form.js";
+import Point from "../components/point.js";
 import PointModel from "../models/point-model";
 import {replace, render, remove, RenderPosition} from "../utils/render.js";
 import {KeyCode, Mode, SHAKE_ANIMATION_TIMEOUT, ConnectingButtonsText} from "../const.js";
@@ -23,8 +23,8 @@ export default class PointController {
     this._mode = mode;
     const oldEventItem = this._eventItem;
     const oldEventForm = this._eventForm;
-    this._eventItem = new CardComponent(point);
-    this._eventForm = new EventFormComponent(point, this._store);
+    this._eventItem = new Point(point);
+    this._eventForm = new PointForm(point, this._store);
     this._eventItem.setRollupButtonHandler(() => {
       this._replaceEventToForm();
       document.addEventListener(`keydown`, this._onEscPress);
@@ -83,10 +83,10 @@ export default class PointController {
   _parseFormData(formData, point) {
     const eventOffers = this._store.getOffers().find((el) => el.type === point.eventType);
     const checkboxes = this._eventForm.getElement().querySelectorAll(`.event__offer-checkbox`);
-    const offersChecked = [];
+    const checkedOffers = [];
     checkboxes.forEach((element, index) => {
       if (element.checked) {
-        offersChecked.push(eventOffers.offers[index]);
+        checkedOffers.push(eventOffers.offers[index]);
       }
     });
     return new PointModel({
@@ -100,7 +100,7 @@ export default class PointController {
       "date_from": flatpickr.parseDate(formData.get(`event-start-time`), `d/m/y H:i`),
       "date_to": flatpickr.parseDate(formData.get(`event-end-time`), `d/m/y H:i`),
       "base_price": parseInt(formData.get(`event-price`), 10),
-      "offers": offersChecked,
+      "offers": checkedOffers,
       "is_favorite": false
     });
   }

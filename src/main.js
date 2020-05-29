@@ -1,12 +1,12 @@
-import AddEventButton from "./components/add-button.js";
+import AddButton from "./components/add-button.js";
 import FlterController from "./controllers/filter-controller.js";
 import InfoController from "./controllers/info-controller.js";
-import SiteMenuComponent from "./components/menu.js";
+import Menu from "./components/menu.js";
 import TripController from "./controllers/trip-controller.js";
-import TripDaysListComponent from "./components/days-list.js";
-import StatisticsComponent from "./components/statistics.js";
-import LoadingListComponent from "./components/loading-list.js";
-import LoadErrorListComponent from "./components/loading-error-list.js";
+import TripDaysList from "./components/trip-days-list.js";
+import Statistics from "./components/statistics.js";
+import LoadingList from "./components/loading-list.js";
+import LoadingErrorList from "./components/loading-error-list.js";
 import API from "./api.js";
 import Store from "./store.js";
 import PointsModel from "./models/points-model.js";
@@ -20,14 +20,14 @@ const tripEventsSection = document.querySelector(`.trip-events`);
 const api = new API(END_POINT, AUTHORIZATION);
 const store = new Store();
 const pointsModel = new PointsModel();
-const menu = new SiteMenuComponent();
+const menu = new Menu();
 const filterController = new FlterController(siteFilterElement, pointsModel);
-const addEventButton = new AddEventButton();
-const tripDaysList = new TripDaysListComponent();
+const addEventButton = new AddButton();
+const tripDaysList = new TripDaysList();
 const tripController = new TripController(tripDaysList, pointsModel, api, store);
-const statistics = new StatisticsComponent(pointsModel);
+const statistics = new Statistics(pointsModel);
 const infoController = new InfoController(siteFilterElement, pointsModel);
-const loadingList = new LoadingListComponent();
+const loadingList = new LoadingList();
 
 render(document.querySelector(`.trip-events`), loadingList, RenderPosition.AFTERBEGIN);
 render(siteMenuElement, menu, RenderPosition.AFTEREND);
@@ -73,5 +73,5 @@ api.getPoints()
   })
   .catch(() => {
     remove(loadingList);
-    render(document.querySelector(`.trip-events`), new LoadErrorListComponent(), RenderPosition.AFTERBEGIN);
+    render(document.querySelector(`.trip-events`), new LoadingErrorList(), RenderPosition.AFTERBEGIN);
   });
