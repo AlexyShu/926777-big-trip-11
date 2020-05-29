@@ -29,7 +29,7 @@ const statistics = new Statistics(pointsModel);
 const infoController = new InfoController(siteFilterElement, pointsModel);
 const loadingList = new LoadingList();
 
-render(document.querySelector(`.trip-events`), loadingList, RenderPosition.AFTERBEGIN);
+render(tripEventsSection, loadingList, RenderPosition.AFTERBEGIN);
 render(siteMenuElement, menu, RenderPosition.AFTEREND);
 filterController.render();
 render(siteFilterElement, addEventButton, RenderPosition.AFTEREND);

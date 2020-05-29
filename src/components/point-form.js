@@ -1,5 +1,5 @@
 import {doFirstLetterUppercase, dateFormatforForm, getPrepositionForEventType, getUpperCaseString} from "../utils/common.js";
-import {TripTypes, Mode, DefaultButtonsText, HIDDEN_CLASS} from "../const.js";
+import {TripTypes, Mode, DefaultButtonsText} from "../const.js";
 import AbstractSmartComponent from "./abstract-smart-component.js";
 import moment from "moment";
 import flatpickr from "flatpickr";
@@ -10,17 +10,22 @@ const createPicturesTemplate = (pics) => {
 };
 
 const createOffersTemplate = (offers, type, point) => {
-  return (`<div class="event__available-offers">
+  if (offers.length === 0) {
+    return ``;
+  } else {
+    return (`<section class="event__section  event__section--offers">
+  <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+  <div class="event__available-offers">
   ${offers.map(({title, price}) => {
-      const id = Math.random();
-      let isChecked;
-      point.offers.some((it) => {
-        if (it.title === title && it.price === price) {
-          isChecked = true;
-        }
-      });
-      isChecked = false;
-      return `<div class="event__offer-selector">
+        const id = Math.random();
+        let isChecked;
+        point.offers.some((it) => {
+          if (it.title === title && it.price === price) {
+            isChecked = true;
+          }
+        });
+        isChecked = false;
+        return `<div class="event__offer-selector">
       <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-${id}" type="checkbox"
       name="event-offer-${type}" ${isChecked ? `checked` : ``}>
       <label class="event__offer-label" for="event-offer-${type}-${id}">
@@ -29,9 +34,11 @@ const createOffersTemplate = (offers, type, point) => {
      &euro;&nbsp;<span class="event__offer-price">${price}</span>
      </label>
    </div>`;
-    }).join(`\n`)}
-  </div>`
-  );
+      }).join(`\n`)}
+  </div>
+  </section>`
+    );
+  }
 };
 
 const createCitySelectTemplate = (places) => {
@@ -49,12 +56,6 @@ const createFormTemplate = (point, store, externalData, isNew) => {
   const picturesTemplate = createPicturesTemplate(point.destination.pictures);
   const pointOffers = store.getOffers().find((el) => el.type === point.eventType);
   const preposition = getPrepositionForEventType(eventType);
-  // const offersBlock = document.querySelector(`.event__section--offers`);
-  // if (pointOffers.offers.length === 0) {
-  //   offersBlock.classList.add(HIDDEN_CLASS);
-  // } else {
-  //   offersBlock.classList.remove(HIDDEN_CLASS);
-  // }
   return (`<form class="trip-events__item  event  event--edit" action="#" method="post">
       <header class="event__header">
            <div class="event__type-wrapper">
@@ -118,10 +119,7 @@ const createFormTemplate = (point, store, externalData, isNew) => {
         </button>
       </header>
       <section class="event__details">
-        <section class="event__section  event__section--offers">
-          <h3 class="event__section-title  event__section-title--offers">Offers</h3>
           ${createOffersTemplate(pointOffers.offers, pointOffers.type, point)}
-        </section>
         <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
           <p class="event__destination-description">${description}</p>
@@ -262,11 +260,11 @@ export default class PointForm extends AbstractSmartComponent {
           ? this._card.startEventTime : this._card.endEventTime;
         this.rerender();
       });
-    if (element.querySelector(`.event__favorite-checkbox`)) {
-      element.querySelector(`.event__favorite-checkbox`)
-          .addEventListener(`change`, (evt) => {
-            this._card.isFavorite = evt.target.checked;
-          });
+    const favoriteButtun = element.querySelector(`.event__favorite-checkbox`);
+    if (favoriteButtun === true) {
+      favoriteButtun.addEventListener(`change`, (evt) => {
+        this._card.isFavorite = evt.target.checked;
+      });
     }
   }
 

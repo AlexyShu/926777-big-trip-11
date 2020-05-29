@@ -7,8 +7,8 @@ import ChartDataLabels from "chartjs-plugin-datalabels";
 const generateChartsData = (points) => {
   const moneyStatistics = {};
   const transportStatistics = {};
-  for (let i = 0; i < TripTypes.TRANSFER.length; i++) {
-    transportStatistics[TripTypes.TRANSFER[i]] = 0;
+  for (let value of TripTypes.TRANSFER) {
+    transportStatistics[value] = 0;
   }
   const timeStatictics = {};
   points.forEach((point) => {

@@ -17,6 +17,7 @@ export default class TripController {
     this._pointControllers = [];
     this._newPoint = null;
     this._pointsModel = pointsModel;
+    this._currenSortType = SortType.EVENT;
     this._onDataChange = this._onDataChange.bind(this);
     this._onViewChange = this._onViewChange.bind(this);
     this._onFilterChange = this._onFilterChange.bind(this);
@@ -76,16 +77,19 @@ export default class TripController {
         this._container.getElement().innerHTML = ``;
         sortedItems = points.slice();
         this.render();
+        this._currenSortType = sortType;
         break;
       case SortType.TIME:
         sortByNotDefult();
         sortedItems = points.slice().sort((a, b) => (b.endEventTime - b.startEventTime) - (a.endEventTime - a.startEventTime));
         this.renderDay(sortedItems, 0);
+        this._currenSortType = sortType;
         break;
       case SortType.PRICE:
         sortByNotDefult();
         sortedItems = points.slice().sort((a, b) => b.price - a.price);
         this.renderDay(sortedItems, 0);
+        this._currenSortType = sortType;
         break;
     }
   }
@@ -154,11 +158,13 @@ export default class TripController {
 
   _updateEvents() {
     this._removeEvents();
+    this.getEventsSort(this._currenSortType);
     this.render();
   }
 
   _onFilterChange() {
-    this._updateEvents();
+    this._removeEvents();
+    this.render();
   }
 
   createPoint() {
