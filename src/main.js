@@ -73,5 +73,5 @@ api.getPoints()
   })
   .catch(() => {
     remove(loadingList);
-    render(document.querySelector(`.trip-events`), new LoadingErrorList(), RenderPosition.AFTERBEGIN);
+    render(tripEventsSection, new LoadingErrorList(), RenderPosition.AFTERBEGIN);
   });

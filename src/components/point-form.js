@@ -18,13 +18,7 @@ const createOffersTemplate = (offers, type, point) => {
   <div class="event__available-offers">
   ${offers.map(({title, price}) => {
         const id = Math.random();
-        let isChecked;
-        point.offers.some((it) => {
-          if (it.title === title && it.price === price) {
-            isChecked = true;
-          }
-        });
-        isChecked = false;
+        const isChecked = point.offers.some((offer) => offer.title === title && offer.price === price);
         return `<div class="event__offer-selector">
       <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-${id}" type="checkbox"
       name="event-offer-${type}" ${isChecked ? `checked` : ``}>
@@ -242,12 +236,12 @@ export default class PointForm extends AbstractSmartComponent {
     });
     const eventInput = element.querySelector(`.event__input--destination`);
     eventInput.addEventListener(`change`, (evt) => {
-      this._destination.name = evt.target.value;
       this._townsList.forEach((el) => {
         if (eventInput.value !== el) {
           eventInput.setCustomValidity(`Please select a valid value from list.`);
         }
       });
+      this._destination.name = evt.target.value;
       const town = this._destinations.find((el) => el.name === this._destination.name);
       this._destination.description = town ? town.description : ``;
       this._destination.pictures = town ? town.pictures : [];
@@ -261,7 +255,7 @@ export default class PointForm extends AbstractSmartComponent {
         this.rerender();
       });
     const favoriteButtun = element.querySelector(`.event__favorite-checkbox`);
-    if (favoriteButtun === true) {
+    if (favoriteButtun) {
       favoriteButtun.addEventListener(`change`, (evt) => {
         this._card.isFavorite = evt.target.checked;
       });
