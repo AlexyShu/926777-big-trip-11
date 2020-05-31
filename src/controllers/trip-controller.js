@@ -62,6 +62,12 @@ export default class TripController {
         });
       }
     }
+    const tripTotalPrice = document.querySelector(`.trip-info__cost-value`);
+    tripTotalPrice.textContent = points.reduce((totalPrice, it) => {
+      return totalPrice + parseInt(it.price, 10) + it.offers.reduce((totalOfferPrice, offer) => {
+        return totalOfferPrice + parseInt(offer.price, 10);
+      }, 0);
+    }, 0);
   }
 
   getEventsSort(sortType) {

@@ -144,7 +144,6 @@ export default class PointForm extends AbstractSmartComponent {
     this._destination = card.destination;
     this._externalData = DefaultButtonsText;
     this._destinations = store.getDestinations();
-    this._offers = store.getOffers();
     this._townsList = store.getDestinationNames();
     this._isNewForm = false;
     this._applyFlatpickr();
@@ -229,23 +228,19 @@ export default class PointForm extends AbstractSmartComponent {
     element.querySelectorAll(`.event__type-input`).forEach((it) => {
       it.addEventListener(`change`, (evt) => {
         this._card.eventType = evt.target.value;
-        const cardType = this._offers.find((el) => el.type === this._card.eventType);
-        this._card.offers = cardType ? cardType.offers : ``;
         this.rerender();
       });
     });
     const eventInput = element.querySelector(`.event__input--destination`);
     eventInput.addEventListener(`change`, (evt) => {
-      this._townsList.forEach((el) => {
-        if (eventInput.value !== el) {
-          eventInput.setCustomValidity(`Please select a valid value from list.`);
-        }
-      });
-      this._destination.name = evt.target.value;
-      const town = this._destinations.find((el) => el.name === this._destination.name);
-      this._destination.description = town ? town.description : ``;
-      this._destination.pictures = town ? town.pictures : [];
-      this.rerender();
+      if (this._townsList.some((el) => el === eventInput.value)) {
+        this._destination.name = evt.target.value;
+        const town = this._destinations.find((el) => el.name === this._destination.name);
+        this._destination.description = town ? town.description : ``;
+        this._destination.pictures = town ? town.pictures : [];
+        this.rerender();
+      }
+      eventInput.setCustomValidity(`Please select a valid value from list.`);
     });
     element.querySelector(`#event-start-time-1`)
       .addEventListener(`change`, (evt) => {

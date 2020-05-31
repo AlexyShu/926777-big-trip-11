@@ -67,8 +67,8 @@ api.getPoints()
   .then(() => api.getOffers())
   .then((offers) => store.setOffers(offers))
   .then(() => {
-    tripController.render();
     infoController.render();
+    tripController.render();
     remove(loadingList);
   })
   .catch(() => {

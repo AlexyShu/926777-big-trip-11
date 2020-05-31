@@ -12,12 +12,6 @@ export default class InfoController {
     const tripInfoComponent = new TripInfo(cards);
     if (cards.length !== 0) {
       render(this._container, tripInfoComponent, RenderPosition.BEFOREBEGIN);
-      const tripTotalPrice = document.querySelector(`.trip-info__cost-value`);
-      tripTotalPrice.textContent = cards.reduce((totalPrice, it) => {
-        return totalPrice + parseInt(it.price, 10) + it.offers.reduce((totalOfferPrice, offer) => {
-          return totalOfferPrice + parseInt(offer.price, 10);
-        }, 0);
-      }, 0);
     }
   }
 }
