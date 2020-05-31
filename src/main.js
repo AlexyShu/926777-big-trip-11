@@ -12,6 +12,7 @@ import Store from "./store.js";
 import PointsModel from "./models/points-model.js";
 import {render, RenderPosition, remove} from "./utils/render.js";
 import {DefaultButtonsText, AUTHORIZATION, END_POINT} from "./const.js";
+import {removeButton} from "./utils/common.js";
 
 const siteMenuElement = document.querySelector(`.trip-main__trip-controls h2`);
 const siteFilterElement = document.querySelector(`.trip-main__trip-controls`);
@@ -41,6 +42,7 @@ addEventButton.setClickButtonHandler(() => {
   filterController.changeByDefaultFilter();
   filterController.render();
   document.querySelector(`.event__reset-btn`).textContent = DefaultButtonsText.canselButtonText;
+  removeButton();
 });
 
 

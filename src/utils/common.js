@@ -53,3 +53,8 @@ export const getUpperCaseString = (string) => {
   const upperCaseString = string[0].toUpperCase() + string.slice(1);
   return upperCaseString;
 };
+
+export const removeButton = () => {
+  document.querySelector(`.event__favorite-btn`).remove();
+  document.querySelector(`.event__rollup-btn`).remove();
+};
