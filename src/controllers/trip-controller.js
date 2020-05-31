@@ -165,7 +165,6 @@ export default class TripController {
   _updateEvents() {
     this._removeEvents();
     this.getEventsSort(this._currenSortType);
-    this.render();
   }
 
   _onFilterChange() {
