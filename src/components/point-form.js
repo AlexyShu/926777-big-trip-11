@@ -1,5 +1,5 @@
 import {doFirstLetterUppercase, dateFormatforForm, getPrepositionForEventType, getUpperCaseString} from "../utils/common.js";
-import {TripTypes, Mode, DefaultButtonsText} from "../const.js";
+import {TripTypes, Mode, DefaultButtonsText, VALIDATION} from "../const.js";
 import AbstractSmartComponent from "./abstract-smart-component.js";
 import moment from "moment";
 import flatpickr from "flatpickr";
@@ -232,6 +232,9 @@ export default class PointForm extends AbstractSmartComponent {
       });
     });
     const eventInput = element.querySelector(`.event__input--destination`);
+    if (eventInput.value === ``) {
+      eventInput.setCustomValidity(VALIDATION);
+    }
     eventInput.addEventListener(`change`, (evt) => {
       if (this._townsList.some((el) => el === eventInput.value)) {
         this._destination.name = evt.target.value;
@@ -240,7 +243,7 @@ export default class PointForm extends AbstractSmartComponent {
         this._destination.pictures = town ? town.pictures : [];
         this.rerender();
       }
-      eventInput.setCustomValidity(`Please select a valid value from list.`);
+      eventInput.setCustomValidity(VALIDATION);
     });
     element.querySelector(`#event-start-time-1`)
       .addEventListener(`change`, (evt) => {

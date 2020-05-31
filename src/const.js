@@ -4,6 +4,8 @@ export const SHAKE_ANIMATION_TIMEOUT = 600;
 
 export const AUTHORIZATION = `Basic kukurukublablabla`;
 
+export const VALIDATION = `Please select a valid value from list.`;
+
 export const END_POINT = `https://11.ecmascript.pages.academy/big-trip`;
 
 export const TripTypes = {
