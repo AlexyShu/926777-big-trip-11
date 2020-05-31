@@ -35,6 +35,16 @@ const createOffersTemplate = (offers, type, point) => {
   }
 };
 
+const createDestinationTemplate = (point) => {
+  if (point.name === ``) {
+    return ``;
+  } else {
+    return (`<h3 class="event__section-title  event__section-title--destination">Destination</h3>
+    <p class="event__destination-description">${point.description}</p>`
+    );
+  }
+};
+
 const createCitySelectTemplate = (places) => {
   return (`<datalist id="destination-list-1">
   ${places.map((it) => {
@@ -46,7 +56,7 @@ const createCitySelectTemplate = (places) => {
 
 const createFormTemplate = (point, store, externalData, isNew) => {
   const {eventType, startEventTime, endEventTime, price, isFavorite} = point;
-  const {name, description} = point.destination;
+  const {name} = point.destination;
   const picturesTemplate = createPicturesTemplate(point.destination.pictures);
   const pointOffers = store.getOffers().find((el) => el.type === point.eventType);
   const preposition = getPrepositionForEventType(eventType);
@@ -115,8 +125,7 @@ const createFormTemplate = (point, store, externalData, isNew) => {
       <section class="event__details">
           ${createOffersTemplate(pointOffers.offers, pointOffers.type, point)}
         <section class="event__section  event__section--destination">
-          <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-          <p class="event__destination-description">${description}</p>
+          ${createDestinationTemplate(point.destination)}
           <div class="event__photos-container">
              <div class="event__photos-tape">
              ${picturesTemplate}
